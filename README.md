@@ -2,6 +2,8 @@
 
 A library for symbolic mathematic computing and scientific computing.
 
+We start from an imitation of Mathematica. But we try to make more connected to C++, and allow people to enjoy its feature conveniently in C++ programs. For example, parse a text input "Sin[1/x]+2*y^2" and instantly get a std function !
+
 *mathS=math+Science|math+Symbol*
 
 # Introduction
