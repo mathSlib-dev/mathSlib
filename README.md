@@ -2,7 +2,7 @@
 
 A library for symbolic mathematic computing and scientific computing.
 
-We start from an imitation of Mathematica. But we try to make more connected to C++, and allow people to enjoy its feature conveniently in C++ programs. For example, parse a text input "Sin[1/x]+2*y^2" and instantly get a std function !
+We start from an imitation of Mathematica. We try to make it more connected to C++, and allow people to enjoy its feature conveniently in C++ programs. For example, parse a text input "Sin[1/x]+2*y^2" and instantly get a std function !
 
 *mathS=math+Science|math+Symbol*
 
@@ -13,7 +13,7 @@ We start from an imitation of Mathematica. But we try to make more connected to 
 * Basic definitions of `MathObject` 
 * Basic definitions of `NMathObject`
 * Documentations of above and basic ideas.
-* A previous half-finished C# project [MathiS](https://github.com/EasternJournalist/MathiS) , based on string matching and lambda expression, which has already successfully assemble a function and plot graphics, but less extensible.
+* A previous half-finished C# project [MathiS](https://github.com/EasternJournalist/MathiS) , based on string matching and lambda expression, which has already successfully assembled functions and plot graphics, but less extensible.
 * Nothing else.
 
 ## What's to be done
@@ -52,7 +52,7 @@ This is our timeline.
           std::string expr;
           std::cin >> expr;
           auto f = ToStdFunction<double,void>(assembler.assemble(parser.parse(expr)));
-          std::cout << "=" f() << std::endl;
+          std::cout << "=" << f() << std::endl;
       }
       return 0;
   }
@@ -73,7 +73,7 @@ This is our timeline.
 
   * **Rule**: Use a chain of rules to transform `MathObject`, so that we can perform symbolic integral, differential, simplify any expression.
   * **NAlgorithms**: Adopt numeric computing algorithms. Performing interpolation, numeric integral, matrix decomposition, numeric optimization, linear programming, solving linear and non-linear equations, statistics, etc. . Also many other interesting utilities.(This will take a very long time)
-  * **Interpretor**: More controlling functions, and allow user to execute a mathS script. Similar to a Mathematica program.
+  * **Interpreter**: More controlling functions, and allow user to execute a mathS script. Similar to a Mathematica program.
 
 * *Step 3*: Advanced part
 
