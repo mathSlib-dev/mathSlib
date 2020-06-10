@@ -33,7 +33,7 @@ namespace mathS
 			// STRING:		Enclosed with "". The Char \ has the same meaning in C++ string. 
 			//
 			// VECTOR:		Enclosed with {}. Inside a vector, there is a list of all elements.
-			NUMBER, VARIABLE,  STRING, VECTOR,
+			NUMBER, VARIABLE,  STRING, VECTOR, EMPTY,
 			// Level 2: _OBJECT[_PARAMETER]
 			FUNCTION,
 			// Level 3: _OBJECT[[_LOC]]
@@ -57,8 +57,12 @@ namespace mathS
 			// SENTENCE_LIST
 			
 			// Level 12: _A,_B,_C,...,_Z
-			LIST
+			LIST,
+
+			// Level -1: 
+			ERROR
 		};
+		static const int LEVEL_EMPTY = 1;
 		static const int LEVEL_NUMBER = 1;
 		static const int LEVEL_VARIBALE = 1;
 		static const int LEVEL_STRING = 1;
@@ -73,7 +77,7 @@ namespace mathS
 		static const int LEVEL_MAP = 9;
 		static const int LEVEL_EQUATION = 10;
 		static const int LEVEL_LIST = 12;
-
+		static const int LEVEL_ERROR = -1;
 	public:
 
 		MathObject() {};
@@ -81,7 +85,10 @@ namespace mathS
 
 		virtual Type GetType() = 0;
 		virtual std::string GetString() = 0;
-		virtual int Level() = 0;
+		virtual int Level() const = 0;
+
+
+		static MathObject* DeepCopy(MathObject* obj);
 	};
 
 	// list type math object. 
@@ -110,6 +117,7 @@ namespace mathS
 		std::string number;
 		
 		Number() {}
+		Number(const std::string num_str) : number {num_str}{}
 		~Number() {}
 
 		Type GetType() { return Type::NUMBER; };
@@ -131,6 +139,10 @@ namespace mathS
 	{
 	public:
 		std::string name;
+
+		Variable() {};
+		Variable(const std::string name_str) :name{ name_str } {};
+		~Variable() {}
 
 		Type GetType() { return Type::VARIABLE; };
 		int Level() const { return LEVEL_VARIBALE; };
@@ -250,7 +262,28 @@ namespace mathS
 		std::string GetString();
 	};
 
+	class ErrorObject : public MathObject
+	{
+	public:
+		std::string info;
 
+		ErrorObject() {}
+		ErrorObject(const std::string info) :info{ info } {};
+		~ErrorObject() {};
+
+		Type GetType() { return Type::ERROR; };
+		int Level() const { return LEVEL_ERROR; };
+		std::string GetString() { return info; };
+	};
+
+	class EmptyObject : public MathObject
+	{
+	public:
+
+		Type GetType() { return Type::EMPTY; };
+		int Level() const { return LEVEL_EMPTY; };
+		std::string GetString() { return std::string(); };
+	};
 	/*
 	class Matrix : public MathObject
 	{

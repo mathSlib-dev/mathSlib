@@ -126,6 +126,8 @@ std::string mathS::Equation::GetString()
 std::string mathS::ListObject::GetString()
 {
 	std::string ret;
+	if (components.size() == 0)
+		return "";
 	if (components[0]->Level() < LEVEL_LIST)
 		ret += components[0]->GetString();
 	else
