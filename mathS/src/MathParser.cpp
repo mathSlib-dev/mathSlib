@@ -8,6 +8,18 @@ bool mathS::Parser::is_figure(char c)
 	return '0' <= c && c <= '9';
 }
 
+inline bool mathS::Parser::is_op(char c)
+{
+	// TODO
+	return false;
+}
+
+bool mathS::Parser::is_varchar(char c)
+{
+	// TODO
+	return false;
+}
+
 MathObject* mathS::Parser::Parse(const std::string& str, int& i, int lv)
 {
 	int len = str.size();
@@ -61,11 +73,10 @@ MathObject* mathS::Parser::parse_variable(const std::string& str, int& i)
 		if (is_varchar(str[i]))
 			continue;
 		if (is_op(str[i]))
-			return new Variable(str.substr(ibegin, i - ibegin));
+			break;
 		return new ErrorObject("Parse: Bad symbol after " + str.substr(ibegin, i - ibegin));
 	}
-	if (i == len)
-		new ErrorObject("Parse: Bad symbol after " + str.substr(ibegin, i - ibegin));
+	return new Variable(str.substr(ibegin, i - ibegin));
 }
 
 MathObject* mathS::Parser::parse_vector(const std::string& str, int& i)
@@ -77,16 +88,22 @@ MathObject* mathS::Parser::parse_vector(const std::string& str, int& i)
 	i++;
 	MathObject* vlist = parse_list_forced(str, i);
 	if (vlist == nullptr)
-		return new ErrorObject("Parse: Unexpected error in parsing. ");
+		return new ErrorObject(std::string("Parse: Unexpected error in parsing. "));
 	if (vlist->GetType() == MathObject::Type::ERROR)
 		return vlist;
 	if (i>=len || str[i] != '}')
 	{
 		delete vlist;
-		return new ErrorObject("Parse: Unmatched brackets.");
+		return new ErrorObject(std::string("Parse: Unmatched brackets."));
 	}
 	i++;
 	Vector* ret = new Vector;
 	ret->list = dynamic_cast<ListObject*>(vlist);
 	return ret;
+}
+
+mathS::MathObject* mathS::Parser::parse_list_forced(const std::string& str, int& i)
+{
+	// TODO: parse一个list，（哪怕只有一个元素，也强制为list）
+	return nullptr;
 }
