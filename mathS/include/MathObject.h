@@ -80,8 +80,8 @@ namespace mathS
 		static const int LEVEL_ERROR = -1;
 	public:
 
-		MathObject() {};
-		virtual ~MathObject() = 0;
+		//MathObject() {};
+		virtual ~MathObject() {};
 
 		virtual Type GetType() = 0;
 		virtual std::string GetString() = 0;
@@ -127,6 +127,11 @@ namespace mathS
 
 	class String : public MathObject
 	{
+
+	public:
+		String() {}
+		~String() {}
+
 	public:
 		std::string str;
 
@@ -153,6 +158,9 @@ namespace mathS
 	{
 		// eg. {7,x,y}
 	public:
+		Vector() {}
+		~Vector() { delete list; }
+	public:
 		ListObject* list;
 
 		Type GetType() { return Type::VECTOR; };
@@ -164,6 +172,9 @@ namespace mathS
 	{
 		// eg. f[x], Sin[u]
 	public:
+		Function() {}
+		~Function() { delete function; delete parameter; }
+	public:
 		MathObject* function;
 		MathObject* parameter;
 
@@ -174,6 +185,10 @@ namespace mathS
 
 	class Locate : public MathObject
 	{
+		// eg: arr[3], {a,b,3}[2]
+	public:
+		Locate() {}
+		~Locate() { delete object; delete location; };
 	public:
 		MathObject* object;
 		MathObject* location;
@@ -185,6 +200,9 @@ namespace mathS
 	class Power : public MathObject
 	{
 		// eg. a^5, x^y, y^p^q (this is equivalent to y^(p^q))
+	public:
+		Power() {}
+		~Power() { delete base; delete exponent; }
 	public:
 		MathObject* base;
 		MathObject* exponent;
@@ -198,6 +216,9 @@ namespace mathS
 	{
 		// eg. /y   /(x+y*z)
 	public:
+		Inverse() {}
+		~Inverse() { delete component; }
+	public:
 		MathObject* component;
 
 		Type GetType() { return Type::INVERSE; };
@@ -207,6 +228,12 @@ namespace mathS
 
 	class Item : public MathObject
 	{
+	public:
+		Item() {}
+		~Item() { 
+			for (auto it : factors) 
+				delete it;
+		}
 		// eg. x1*x2   x/y
 	public:
 		std::vector<MathObject*> factors;
@@ -218,6 +245,9 @@ namespace mathS
 
 	class Opposite : public MathObject 
 	{
+	public:
+		Opposite() {};
+		~Opposite() { delete component; }
 		// -x, -y*z, -{1,2}*u/p
 	public:
 		MathObject* component;
@@ -230,6 +260,12 @@ namespace mathS
 	{
 		// eg. 3.2+4*y+6/(x+1)
 	public:
+		Polynomial() {}
+		~Polynomial() {
+			for (auto it : items)
+				delete it;
+		}
+	public:
 		std::vector<Item*> items;
 
 		Type GetType() { return Type::POLYNOMIAL; };
@@ -240,6 +276,9 @@ namespace mathS
 	class Map : public MathObject
 	{
 		// eg. attr -> 1
+	public:
+		Map() {}
+		~Map() { delete key; delete value; }
 	public:
 		MathObject* key;
 		MathObject* value;
@@ -252,6 +291,9 @@ namespace mathS
 	class Equation : public MathObject
 	{
 		// eg. a==b, u<v,
+	public:
+		Equation() {}
+		~Equation() { delete left; delete right; }
 	public:
 		std::string op;
 		MathObject* left;
@@ -278,6 +320,10 @@ namespace mathS
 
 	class EmptyObject : public MathObject
 	{
+	public:
+		EmptyObject(){}
+		~EmptyObject() {}
+
 	public:
 
 		Type GetType() { return Type::EMPTY; };
@@ -311,6 +357,5 @@ namespace mathS
 		}
 	};
 	
-	void Match();
 	
 }

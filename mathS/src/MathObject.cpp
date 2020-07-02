@@ -54,7 +54,7 @@ std::string mathS::Inverse::GetString()
 std::string mathS::Item::GetString()
 {
 	std::string ret;
-	if (factors[0]->Level < LEVEL_ITEM)
+	if (factors[0]->Level() < LEVEL_ITEM)
 	{
 		if (factors[0]->GetType() == Type::INVERSE)
 			ret += "1";
@@ -67,7 +67,7 @@ std::string mathS::Item::GetString()
 
 	for (int i = 1; i < factors.size(); i++)
 	{
-		if (factors[i]->Level < LEVEL_ITEM)
+		if (factors[i]->Level() < LEVEL_ITEM)
 		{
 			if (factors[i]->GetType() != Type::INVERSE)
 				ret += "*";
@@ -95,7 +95,7 @@ std::string mathS::Polynomial::GetString()
 
 	for (int i = 0; i < items.size(); i++)
 	{
-		if (items[i]->Level < LEVEL_POLYNOMIAL)
+		if (items[i]->Level() < LEVEL_POLYNOMIAL)
 		{
 			if (items[i]->GetType() != Type::OPPOSITE)
 				ret += "+";
@@ -138,4 +138,10 @@ std::string mathS::ListObject::GetString()
 		else
 			ret += ",(" + components[i]->GetString() + ")";
 	return ret;
+}
+
+mathS::MathObject* mathS::MathObject::DeepCopy(MathObject* obj)
+{
+	// TODO
+	return nullptr;
 }
