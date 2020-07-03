@@ -1,23 +1,15 @@
 #include <MathObject.h>
 
-std::string mathS::Number::GetString()
-{
-	return number;
-}
-
-std::string mathS::String::GetString()
-{
-	return str;
-}
-
-std::string mathS::Variable::GetString()
-{
-	return name;
-}
-
 std::string mathS::Vector::GetString()
 {
 	return "{" + list->GetString() + "}";
+}
+
+mathS::MathObject* mathS::Vector::DeepCopy()
+{
+	Vector* ret= new Vector();
+	ret->list = dynamic_cast<ListObject*>(list->DeepCopy());
+	return ret;
 }
 
 std::string mathS::Function::GetString()
@@ -28,12 +20,28 @@ std::string mathS::Function::GetString()
 		return "(" + function->GetString() + ")" + "[" + parameter->GetString() + "]";
 }
 
+mathS::MathObject* mathS::Function::DeepCopy()
+{
+	Function* ret = new Function();
+	ret->function = function->DeepCopy();
+	ret->parameter = parameter->DeepCopy();
+	return ret;
+}
+
 std::string mathS::Locate::GetString()
 {
 	if (object->Level() <= LEVEL_LOCATE)
 		return object->GetString() + "[[" + location->GetString() + "]]";
 	else
 		return "(" + object->GetString() + ")" + "[[" + object->GetString() + "]]";
+}
+
+mathS::MathObject* mathS::Locate::DeepCopy()
+{
+	Locate* ret = new Locate();
+	ret->object = object->DeepCopy();
+	ret->location = location->DeepCopy();
+	return ret;
 }
 
 std::string mathS::Power::GetString()
@@ -43,12 +51,27 @@ std::string mathS::Power::GetString()
 		(exponent->Level() <= LEVEL_POWER ? base->GetString() : "(" + exponent->GetString() + ")");
 }
 
+mathS::MathObject* mathS::Power::DeepCopy()
+{
+	Power* ret = new Power();
+	ret->base = base->DeepCopy();
+	ret->exponent = exponent->DeepCopy();
+	return ret;
+}
+
 std::string mathS::Inverse::GetString()
 {
 	if (component->Level() <= LEVEL_INVERSE)
 		return "/" + component->GetString();
 	else
 		return "/(" + component->GetString() + ")";
+}
+
+mathS::MathObject* mathS::Inverse::DeepCopy()
+{
+	Inverse* ret = new Inverse();
+	ret->component = component->DeepCopy();
+	return ret;
 }
 
 std::string mathS::Item::GetString()
@@ -81,12 +104,28 @@ std::string mathS::Item::GetString()
 	return ret;
 }
 
+mathS::MathObject* mathS::Item::DeepCopy()
+{
+	Item* ret = new Item();
+	ret->factors.reserve(factors.size());
+	for (auto it : factors)
+		ret->factors.push_back(it->DeepCopy());
+	return ret;
+}
+
 std::string mathS::Opposite::GetString()
 {
 	if (component->Level() <= LEVEL_OPPOSITE)
 		return "-" + component->GetString();
 	else
 		return "-(" + component->GetString() + ")";
+}
+
+mathS::MathObject* mathS::Opposite::DeepCopy()
+{
+	Opposite* ret = new Opposite();
+	ret->component = component->DeepCopy();
+	return ret;
 }
 
 std::string mathS::Polynomial::GetString()
@@ -109,6 +148,15 @@ std::string mathS::Polynomial::GetString()
 	return ret;
 }
 
+mathS::MathObject* mathS::Polynomial::DeepCopy()
+{
+	Polynomial* ret = new Polynomial();
+	ret->items.reserve(items.size());
+	for (auto it : items)
+		ret->items.push_back(it->DeepCopy());
+	return nullptr;
+}
+
 std::string mathS::Map::GetString()
 {
 	return
@@ -116,11 +164,27 @@ std::string mathS::Map::GetString()
 		(value->Level() < LEVEL_MAP ? value->GetString() : "(" + value->GetString() + ")");
 }
 
-std::string mathS::Equation::GetString()
+mathS::MathObject* mathS::Map::DeepCopy()
+{
+	Map* ret = new Map();
+	ret->key = key->DeepCopy();
+	ret->value = value->DeepCopy();
+	return ret;
+}
+
+std::string mathS::Compare::GetString()
 {
 	return
-		(left->Level() < LEVEL_EQUATION ? left->GetString() : "(" + left->GetString() + ")") + op +
-		(right->Level() < LEVEL_EQUATION ? right->GetString() : "(" + right->GetString() + ")");
+		(left->Level() < LEVEL_COMPARE ? left->GetString() : "(" + left->GetString() + ")") + op +
+		(right->Level() < LEVEL_COMPARE ? right->GetString() : "(" + right->GetString() + ")");
+}
+
+mathS::MathObject* mathS::Compare::DeepCopy()
+{
+	Compare* ret = new Compare();
+	ret->left = left->DeepCopy();
+	ret->right = right->DeepCopy();
+	return ret;
 }
 
 std::string mathS::ListObject::GetString()
@@ -140,8 +204,31 @@ std::string mathS::ListObject::GetString()
 	return ret;
 }
 
-mathS::MathObject* mathS::MathObject::DeepCopy(MathObject* obj)
+mathS::MathObject* mathS::ListObject::DeepCopy()
 {
-	// TODO
-	return nullptr;
+	ListObject* ret = new ListObject();
+	ret->components.reserve(components.size());
+	for (auto it : components)
+		ret->components.push_back(it->DeepCopy());
+	return ret;
+}
+
+std::string mathS::Atom::GetString()
+{
+	return str;
+}
+
+mathS::MathObject* mathS::Atom::DeepCopy()
+{
+	return new Atom(str);
+}
+
+mathS::MathObject* mathS::ErrorObject::DeepCopy()
+{
+	return new ErrorObject(info);
+}
+
+mathS::MathObject* mathS::EmptyObject::DeepCopy()
+{
+	return new EmptyObject();
 }

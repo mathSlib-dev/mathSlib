@@ -44,7 +44,7 @@ MathObject* mathS::Parser::parse_number(const std::string& str, int& i)
 		if (is_figure(str[i])) 
 			continue;
 		if (is_op(str[i]))
-			return new Number(str.substr(ibegin, i-ibegin));
+			return new Atom(str.substr(ibegin, i-ibegin));
 		if (str[i] == '.' && pointflag)
 			break;
 		else
@@ -53,12 +53,12 @@ MathObject* mathS::Parser::parse_number(const std::string& str, int& i)
 		{
 			i++;
 			if (i==len || is_op(str[i]))
-				return new Number(str.substr(ibegin, i-ibegin));
+				return new Atom(str.substr(ibegin, i-ibegin));
 			else break;
 		}
 	}
 	if(i==len)
-		return new Number(str.substr(ibegin, i-ibegin));
+		return new Atom(str.substr(ibegin, i-ibegin));
 	return new ErrorObject("Parse: Bad symbol after " + str.substr(ibegin, i - ibegin));
 }
 
@@ -76,7 +76,7 @@ MathObject* mathS::Parser::parse_variable(const std::string& str, int& i)
 			break;
 		return new ErrorObject("Parse: Bad symbol after " + str.substr(ibegin, i - ibegin));
 	}
-	return new Variable(str.substr(ibegin, i - ibegin));
+	return new Atom(str.substr(ibegin, i - ibegin));
 }
 
 MathObject* mathS::Parser::parse_vector(const std::string& str, int& i)

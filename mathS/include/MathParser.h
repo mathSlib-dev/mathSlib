@@ -30,6 +30,7 @@ namespace mathS
 		MathObject* Parse(const std::string& str, int& i, int lv);
 
 		// 识别特定的基本对象的函数. （通常是识别不超过特定级别的）
+		// 以下函数的已经有的实现可能并没有用，仅供参考。你可以按照自己的方法来实现
 		MathObject* parse_number(const std::string& str, int& i);
 		MathObject* parse_variable(const std::string& str, int& i);
 		MathObject* parse_string(const std::string& str, int& i);
