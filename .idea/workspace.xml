@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
+    <generated>
+      <config projectName="mathS" targetName="mathS" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6004e213-b01f-431a-9a59-222da6372f2a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/mathS/include/NMathObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/mathS/include/NMathObject.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mathS/src/NMathObject.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/mathS/src/NMathObject.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mathS/src/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/mathS/src/main.cpp" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1e53EAUvRvGYKDtyNj6aHB7hbIc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
+    <property name="js.buildTools.grunt.grunt-cli.package" value="" />
+    <property name="js.buildTools.gulp.gulp_package_dir" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
+    <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/mathS/src" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="mathS" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="mathS" TARGET_NAME="mathS" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="mathS" RUN_TARGET_NAME="mathS">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="js.build_tools.grunt">
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6004e213-b01f-431a-9a59-222da6372f2a" name="Default Changelist" comment="" />
+      <created>1593597512551</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1593597512551</updated>
+      <workItem from="1593597514821" duration="2981000" />
+      <workItem from="1593662114815" duration="8335000" />
+      <workItem from="1593867568950" duration="350000" />
+      <workItem from="1594005217050" duration="2747000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="426" y="259" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1593666042552">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="426" y="259" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1593666042552" />
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom" timestamp="1594007886280">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1594007886280" />
+    <state width="1398" height="245" key="GridCell.Tab.0.center" timestamp="1594007886278">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1594007886278" />
+    <state width="1398" height="245" key="GridCell.Tab.0.left" timestamp="1594007886278">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1594007886278" />
+    <state width="1398" height="245" key="GridCell.Tab.0.right" timestamp="1594007886279">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state width="1398" height="245" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1594007886279" />
+    <state x="420" y="206" width="600" height="488" key="find.popup" timestamp="1593781835290">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="420" y="206" width="600" height="488" key="find.popup/0.0.1440.900@0.0.1440.900" timestamp="1593781835290" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1593782168129">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1593782168129" />
+  </component>
+</project>

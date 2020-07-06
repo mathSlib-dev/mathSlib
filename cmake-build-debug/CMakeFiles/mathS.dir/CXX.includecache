@@ -1,0 +1,22 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../mathS/include/NMathObject.h
+vector
+-
+string
+-
+functional
+-
+
+/Users/zhengyuanhao/Documents/mathS/mathS/src/NMathObject.cpp
+NMathObject.h
+-
+string
+-
+

@@ -1,0 +1,4 @@
+"/Applications/CLion 2020.1 EAP.app/Contents/bin/cmake/mac/bin/cmake" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/zhengyuanhao/Documents/mathS
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/zhengyuanhao/Documents/mathS/cmake-build-debug
