@@ -82,8 +82,8 @@ This is our timeline.
   * Even  more diverse objects. 
 
     * **SparseList**: For large sparse matrix and algorithms.
-    * **Graph**: Build a graph, show it and perform graph algorithms.
-    * **Graphics**: Allow users to plot and draws with simple commands. (Very useful, but to make it great is not that easy)
+    * **Graph**: Build a graph, display and perform graph algorithms.
+    * **Graphics**: Allow users to plot and draw with simple commands. (Very useful, but to make it great is not that easy)
     * **Image**:  Read, process and show images.
     * ...
 
@@ -91,4 +91,8 @@ This is our timeline.
 
     (This is cool but maybe not practical. We are not supposed to repeat useless work, which has been done by others perfectly.)
 
-    * **MLlib**: Simple implementation of some machine learning algorithms
+    * **MLlib**: Simple implementation of machine learning algorithms
+
+# Development
+
+* See in `doc/dev-log-***.md`. 
