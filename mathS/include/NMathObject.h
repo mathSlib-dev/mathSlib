@@ -119,7 +119,7 @@ namespace mathS
 		*/
 
 
-		typedef std::function<NMathObject(NMathObject*)> NMathFunction;
+		typedef std::function<NMathObject*(NMathObject*)> NMathFunction;
 
 		
 		//typedef std::function<NValueType(NValueType, NValueType)> NBinaryOperator;

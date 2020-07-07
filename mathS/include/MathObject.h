@@ -84,8 +84,8 @@ namespace mathS
 		//MathObject() {};
 		virtual ~MathObject() {};
 
-		virtual Type GetType() = 0;
-		virtual std::string GetString() = 0;
+		virtual Type GetType() const = 0;
+		virtual std::string GetString() const = 0;
 		virtual int Level() const = 0;
 
 
@@ -106,9 +106,9 @@ namespace mathS
 				delete it;
 		}
 
-		Type GetType() { return Type::LIST; };
+		Type GetType() const { return Type::LIST; };
 		int Level() const { return LEVEL_LIST; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -128,9 +128,9 @@ namespace mathS
 		Atom(const std::string name_str) :str{ name_str } {};
 		~Atom() {}
 
-		Type GetType() { return Type::ATOM; };
+		Type GetType() const { return Type::ATOM; };
 		int Level() const { return LEVEL_ATOM; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -144,9 +144,9 @@ namespace mathS
 	public:
 		ListObject* list;
 
-		Type GetType() { return Type::VECTOR; };
+		Type GetType() const { return Type::VECTOR; };
 		int Level() const { return LEVEL_VECTOR; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -161,9 +161,9 @@ namespace mathS
 		MathObject* function;
 		MathObject* parameter;
 
-		Type GetType() { return Type::FUNCTION; };
+		Type GetType() const { return Type::FUNCTION; };
 		int Level() const { return LEVEL_FUNCTION; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -178,9 +178,9 @@ namespace mathS
 		MathObject* object;
 		MathObject* location;
 
-		Type GetType() { return Type::LOCATE; };
+		Type GetType() const { return Type::LOCATE; };
 		int Level() const { return LEVEL_LOCATE; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -194,9 +194,9 @@ namespace mathS
 		MathObject* base;
 		MathObject* exponent;
 
-		Type GetType() { return Type::POWER; };
+		Type GetType() const { return Type::POWER; };
 		int Level() const { return LEVEL_POWER; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -210,9 +210,9 @@ namespace mathS
 	public:
 		MathObject* component;
 
-		Type GetType() { return Type::INVERSE; };
+		Type GetType() const { return Type::INVERSE; };
 		int Level() const { return LEVEL_INVERSE; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -229,9 +229,9 @@ namespace mathS
 	public:
 		std::vector<MathObject*> factors;
 
-		Type GetType() { return Type::ITEM; };
+		Type GetType() const { return Type::ITEM; };
 		int Level() const { return LEVEL_ITEM; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -245,9 +245,9 @@ namespace mathS
 	public:
 		MathObject* component;
 		
-		Type GetType() { return Type::OPPOSITE; };
+		Type GetType() const { return Type::OPPOSITE; };
 		int Level() const { return LEVEL_OPPOSITE; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -263,9 +263,9 @@ namespace mathS
 	public:
 		std::vector<MathObject*> items;
 
-		Type GetType() { return Type::POLYNOMIAL; };
+		Type GetType() const { return Type::POLYNOMIAL; };
 		int Level() const { return LEVEL_POLYNOMIAL; };
-		std::string GetString();
+		std::string GetString() const;
 
 		MathObject* DeepCopy();
 	};
@@ -280,9 +280,9 @@ namespace mathS
 		MathObject* key;
 		MathObject* value;
 
-		Type GetType() { return Type::MAP; };
+		Type GetType() const { return Type::MAP; };
 		int Level() const { return LEVEL_MAP; };
-		std::string GetString();
+		std::string GetString() const ;
 
 		MathObject* DeepCopy();
 	};
@@ -298,9 +298,9 @@ namespace mathS
 		MathObject* left;
 		MathObject* right;
 
-		Type GetType() { return Type::COMPARE; };
+		Type GetType() const { return Type::COMPARE; };
 		int Level() const { return LEVEL_COMPARE; };
-		std::string GetString();
+		std::string GetString() const ;
 
 		MathObject* DeepCopy();
 	};
@@ -314,9 +314,9 @@ namespace mathS
 		ErrorObject(const std::string info) :info{ info } {};
 		~ErrorObject() {};
 
-		Type GetType() { return Type::ERROR; };
+		Type GetType() const { return Type::ERROR; };
 		int Level() const { return LEVEL_ERROR; };
-		std::string GetString() { return info; };
+		std::string GetString() const { return info; };
 
 		MathObject* DeepCopy();
 	};
@@ -329,9 +329,9 @@ namespace mathS
 
 	public:
 
-		Type GetType() { return Type::EMPTY; };
+		Type GetType() const { return Type::EMPTY; };
 		int Level() const { return LEVEL_EMPTY; };
-		std::string GetString() { return std::string(); };
+		std::string GetString() const { return std::string(); };
 
 		MathObject* DeepCopy();
 	};

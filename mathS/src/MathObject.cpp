@@ -1,6 +1,6 @@
 #include <MathObject.h>
 
-std::string mathS::Vector::GetString()
+std::string mathS::Vector::GetString() const
 {
 	return "{" + list->GetString() + "}";
 }
@@ -12,7 +12,7 @@ mathS::MathObject* mathS::Vector::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Function::GetString()
+std::string mathS::Function::GetString() const
 {
 	if (function->Level() <= LEVEL_FUNCTION)
 		return function->GetString() + "[" + parameter->GetString() + "]";
@@ -28,7 +28,7 @@ mathS::MathObject* mathS::Function::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Locate::GetString()
+std::string mathS::Locate::GetString() const
 {
 	if (object->Level() <= LEVEL_LOCATE)
 		return object->GetString() + "[[" + location->GetString() + "]]";
@@ -44,7 +44,7 @@ mathS::MathObject* mathS::Locate::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Power::GetString()
+std::string mathS::Power::GetString() const
 {
 	return
 		(base->Level() < LEVEL_POWER ? base->GetString() : "(" + base->GetString() + ")") + "^" +
@@ -59,7 +59,7 @@ mathS::MathObject* mathS::Power::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Inverse::GetString()
+std::string mathS::Inverse::GetString() const
 {
 	if (component->Level() <= LEVEL_INVERSE)
 		return "/" + component->GetString();
@@ -74,7 +74,7 @@ mathS::MathObject* mathS::Inverse::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Item::GetString()
+std::string mathS::Item::GetString() const
 {
 	std::string ret;
 	if (factors[0]->Level() < LEVEL_ITEM)
@@ -113,7 +113,7 @@ mathS::MathObject* mathS::Item::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Opposite::GetString()
+std::string mathS::Opposite::GetString() const
 {
 	if (component->Level() <= LEVEL_OPPOSITE)
 		return "-" + component->GetString();
@@ -128,7 +128,7 @@ mathS::MathObject* mathS::Opposite::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Polynomial::GetString()
+std::string mathS::Polynomial::GetString() const
 {
 	std::string ret;
 
@@ -157,7 +157,7 @@ mathS::MathObject* mathS::Polynomial::DeepCopy()
 	return nullptr;
 }
 
-std::string mathS::Map::GetString()
+std::string mathS::Map::GetString() const
 {
 	return
 		(key->Level() < LEVEL_MAP ? key->GetString() : "(" + key->GetString() + ")") + "->" +
@@ -172,7 +172,7 @@ mathS::MathObject* mathS::Map::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Compare::GetString()
+std::string mathS::Compare::GetString() const
 {
 	return
 		(left->Level() < LEVEL_COMPARE ? left->GetString() : "(" + left->GetString() + ")") + op +
@@ -187,7 +187,7 @@ mathS::MathObject* mathS::Compare::DeepCopy()
 	return ret;
 }
 
-std::string mathS::ListObject::GetString()
+std::string mathS::ListObject::GetString() const
 {
 	std::string ret;
 	if (components.size() == 0)
@@ -213,7 +213,7 @@ mathS::MathObject* mathS::ListObject::DeepCopy()
 	return ret;
 }
 
-std::string mathS::Atom::GetString()
+std::string mathS::Atom::GetString() const
 {
 	return str;
 }
