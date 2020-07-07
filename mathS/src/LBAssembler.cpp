@@ -29,7 +29,7 @@ NMath::NFunction mathS::Assembler::Assemble(MathObject* const expr, const std::v
 		}
 			break;
 		case MathObject::STRING:	// String ²»Ö§³Ö
-			return NMath::NFunctionError("Assembler::Assemle: String type object cannot converted to NMathObject.");
+			return NMath::NFunctionError("Assembler::Assemle: Cannot convert String type object to NMathObject.");
 			break;
 		default:
 			return NMath::NFunctionError("MathObject Error. ");

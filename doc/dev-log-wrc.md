@@ -1,6 +1,6 @@
 ## 2020-7-6
 
- ** \[任务\] **这个阶段我们有一下几个独立的开发任务
+ **\[任务\]** 这个阶段我们有一下几个独立的开发任务
 
 * Parser. 对输入的表达式文本解析，返回一个MathObject.
 
@@ -17,3 +17,19 @@
 
 * LBAssembler：给一个MathObject和参数名称列表，返回一个NMathFunction，即一个输入NMathObject返回NMathObject的函数。其原理是利用LBAssembler，在NMath体系下，组装出一个函数。可以附加一个功能ToStdFunction，把NMathFunction变为std::function，更方便对函数的使用。
 
+## 2020-7-7
+
+**[工作]** LBAssembler进度推进。
+
+* 介绍LBAssemble的原理：所谓Assemble，即把一个表达式的基本元素变成NFunction，根据表达式的结构，一层一层组装成更复杂运算的NFunction。例如已有两个NFunction，`f1,f2`，则他们的和就是下面的lambda表达式：
+
+  ```C++
+  [f1,f2](NMathObject* param)
+  {
+  	return f1(param)+f2(param);
+  }
+  ```
+
+  例如`2*x+sin(y)`是一个表达式，要组装出函数`f(x,y)`，需要把每个Atom看做是关于参数`x,y`的NFunction，然后再一层一层组装.
+
+* 本次工作，先实现了基本Atom的转换，也就是Number和Variable的组装。String不支持转换，因为没有对应的NMathObject。
