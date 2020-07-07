@@ -1,24 +1,20 @@
 #include "lexer.h"
 #include <iostream>
 
-#define SPACE(c) ((c) == ' ' || (c) == '\n' || (c) == '\t')
-#define _END (index >= content.length())
-#define NOT_END (index < content.length())
-
 void mathS::Lexer::get(mathS::Token& token) {
     token.text = "";
-    if (_END) {
+    if (index >= content.length()) {
         token.type = END;
         return;
     }
     char c = content[index++];
     // skip space
-    while (SPACE(c) && NOT_END) c = content[index++];
+    while (((c) == ' ' || (c) == '\n' || (c) == '\t') && (index < content.length())) c = content[index++];
     token.type = checkType(c);
     do {
         token.text += c;
         c = content[index++];
-    } while (checkType(c) == token.type);
+    } while (checkType(c) == token.type && index < content.length());
     index--;
 }
 

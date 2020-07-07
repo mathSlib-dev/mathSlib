@@ -206,6 +206,7 @@ namespace mathS
 		// eg. /y   /(x+y*z)
 	public:
 		Inverse() {}
+        Inverse(MathObject* const c) : component(c) {}
 		~Inverse() { delete component; }
 	public:
 		MathObject* component;
@@ -225,6 +226,7 @@ namespace mathS
 			for (auto it : factors) 
 				delete it;
 		}
+        void push(MathObject* const f) { factors.push_back(f); }
 		// eg. x1*x2   x/y
 	public:
 		std::vector<MathObject*> factors;

@@ -3,15 +3,14 @@
 
 #include <iostream>
 #include <lexer.h>
+#include <MathParser.h>
 
 using namespace mathS;
 
 int main() {
-    Lexer lexer(" rxt+fd__");
-    Token token;
-    while (token.type != END) {
-        lexer.get(token);
-        std::cout << token.text << std::endl;
-    }
+    Parser parser("a*b*c*d");
+    auto obj = parser.Parse();
+    std::cout << obj->GetString() << std::endl;
+    delete obj;
     return 0;
 }
