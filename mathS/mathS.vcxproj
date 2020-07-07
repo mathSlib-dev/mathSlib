@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\LBAssembler.cpp" />
+    <ClCompile Include="src\lexer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MathObject.cpp" />
     <ClCompile Include="src\NMathObject.cpp" />
@@ -158,7 +159,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\LBAssembler.h" />
+    <ClInclude Include="include\lexer.h" />
     <ClInclude Include="include\MathObject.h" />
+    <ClInclude Include="include\NMathFunctions.h" />
     <ClInclude Include="include\NMathObject.h" />
     <ClInclude Include="include\MathParser.h" />
   </ItemGroup>
