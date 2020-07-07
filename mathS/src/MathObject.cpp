@@ -213,6 +213,23 @@ mathS::MathObject* mathS::ListObject::DeepCopy()
 	return ret;
 }
 
+mathS::MathObject::Type mathS::Atom::AtomType() const
+{
+	if ('0' <= str[0] && str[0] <= '9')
+		return Type::NUMBER;
+	else if (('a' <= str[0] && str[0] <= 'z') || ('A' <= str[0] && str[0] <= 'Z') || str[0] == '_' || str[0] == '$')
+		return Type::VARIABLE;
+	else if ('\"' == str[0] && '\"' == str[str.length() - 1])
+		return Type::STRING;
+	else
+		return Type::ERROR;
+}
+
+double mathS::Atom::NumberValue() const
+{
+	return std::stod(str);
+}
+
 std::string mathS::Atom::GetString() const
 {
 	return str;

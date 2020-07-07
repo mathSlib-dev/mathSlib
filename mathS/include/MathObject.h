@@ -36,7 +36,7 @@ namespace mathS
 			//				Specific type of ATOM are distinguished only when it is needed.
 			//
 			// VECTOR:		Enclosed with {}. Inside a vector, there is a list of all elements.
-			ATOM, VECTOR, EMPTY,
+			ATOM, VECTOR, EMPTY, NUMBER, STRING, VARIABLE,
 			// Level 2: _OBJECT(_PARAMETER)
 			FUNCTION,
 			// Level 3: _OBJECT[_LOC]
@@ -129,6 +129,11 @@ namespace mathS
 		~Atom() {}
 
 		Type GetType() const { return Type::ATOM; };
+
+		Type AtomType() const;
+		// 返回数值. 暂时只支持double. 如果以后支持了复数，则需要修改此处.
+		double NumberValue() const;
+
 		int Level() const { return LEVEL_ATOM; };
 		std::string GetString() const;
 

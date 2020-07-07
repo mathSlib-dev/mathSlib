@@ -51,7 +51,7 @@ namespace mathS
 		{
 		public:
 			NValueType value;
-			
+
 			NAtom(NValueType v) :value{ v } {};
 			~NAtom() {};
 
@@ -68,7 +68,7 @@ namespace mathS
 		{
 		public:
 			std::vector<NMathObject*> components;
-			
+
 			NList() {};
 			NList(std::initializer_list<NMathObject*> _init_list) : components{ _init_list }
 			{
@@ -78,7 +78,7 @@ namespace mathS
 				for (auto it : _init_list)
 					components.push_back(new NAtom(it));
 			}
-			~NList(){
+			~NList() {
 				for (NMathObject* p : components)
 					delete p;
 			}
@@ -98,7 +98,7 @@ namespace mathS
 		public:
 			std::string info;
 
-			NMathError(const std::string info) : info { info }{};
+			NMathError(const std::string info) : info{ info } {};
 			~NMathError() {};
 
 			bool IsAtom()const { return false; };
@@ -106,7 +106,7 @@ namespace mathS
 			Type GetType() const { return Type::ERROR; };
 			int Size()const { return 0; };
 
-			std::string GetString() const{ return info; };
+			std::string GetString() const { return info; };
 		};
 		/*
 		class NMatrix : public NMathObject
@@ -118,10 +118,6 @@ namespace mathS
 		};
 		*/
 
-
-		typedef std::function<NMathObject*(NMathObject*)> NMathFunction;
-
-		
 		//typedef std::function<NValueType(NValueType, NValueType)> NBinaryOperator;
 //		template<class NBinaryOperator> NMathObject* ShapeWiseTemplate(NMathObject* a, NMathObject* b)
 //		{
@@ -193,31 +189,11 @@ namespace mathS
 		// Locate a part of obj. Cannot modify the depth of obj, since leaf nodes - NAtom is not changable.
 		NMathObject* PartLocate(NMathObject* obj, const std::vector<int>& loc);
 
-// Declare a shape wise NMathFunction with name o f FUNCNAME
-#define DECLARE_SHAPE_WISE_NMATHUNC_OP(FUNCNAME) NMathObject* FUNCNAME(NMathObject* const a, NMathObject* const b);
+		// Locate a part of obj. 
+		NMathObject* PartLocate(NMathObject* obj, const int loc);
 
-		// + - * /
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Plus)
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Subtract)
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Multiply)
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Divide)
 
-		// Basic NMath Functions
-		
-#define DECLARE_SHAPE_WISE_NMATHUNC_MONO(FUNCNAME) NMathObject* FUNCNAME(NMathObject* const a);
-
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Sin)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Cos)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Tan)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(ArcSin)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(ArcCos)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(ArcTan)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Log)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Exp)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Floor)
-
-		}
-	
+	}
 
 	/*
 	// Sparse MathObject

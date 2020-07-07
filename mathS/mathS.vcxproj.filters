@@ -33,6 +33,9 @@
     <ClCompile Include="src\lexer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\NFunction.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MathObject.h">
@@ -50,7 +53,10 @@
     <ClInclude Include="include\lexer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\NMathFunctions.h">
+    <ClInclude Include="include\string-switch.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NFunction.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

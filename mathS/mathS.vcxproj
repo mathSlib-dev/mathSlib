@@ -154,6 +154,7 @@
     <ClCompile Include="src\lexer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MathObject.cpp" />
+    <ClCompile Include="src\NFunction.cpp" />
     <ClCompile Include="src\NMathObject.cpp" />
     <ClCompile Include="src\MathParser.cpp" />
   </ItemGroup>
@@ -161,9 +162,10 @@
     <ClInclude Include="include\LBAssembler.h" />
     <ClInclude Include="include\lexer.h" />
     <ClInclude Include="include\MathObject.h" />
-    <ClInclude Include="include\NMathFunctions.h" />
+    <ClInclude Include="include\NFunction.h" />
     <ClInclude Include="include\NMathObject.h" />
     <ClInclude Include="include\MathParser.h" />
+    <ClInclude Include="include\string-switch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
