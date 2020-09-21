@@ -8,9 +8,15 @@
 using namespace mathS;
 
 int main() {
-    Parser parser("a*b*c*d");
-    auto obj = parser.Parse();
-    std::cout << obj->GetString() << std::endl;
-    delete obj;
+    std::string str;
+    std::cin >> str;
+    Lexer lexer(str);
+    Token token;
+    while (true) {
+        lexer.get(token);
+        if (token.type == Token::END)
+            break;
+        std::cout << token.text << std::endl;
+    }
     return 0;
 }

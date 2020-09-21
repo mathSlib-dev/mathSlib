@@ -16,16 +16,33 @@ namespace mathS
 	{
 		/* 
 		注意parser们何时会返回 nullptr，何时返回 MathErrorObject:
-
-		* 发现非法语法时，parse返回的是MathErrorObject，包含了语法错误的信息；如果发现了MathErrorObject，收到该返回值的母函数，会停止解析，并把错误信息传递上去
-		* 而例如parse_number识别到的不是数字，而是变量名，不一定不符合语法，会返回nullptr. 收到该返回值的母函数，会继续尝试其他的parser方法。
-		
 		*/
     public:
 	    Parser(const std::string& c) : lexer(c) { }
 	    MathObject* Parse();
     private:
-	    short priority(const std::string& c);
-	    Lexer lexer;
+		Lexer lexer;
+
+	    short level(const std::string& c);
+		/// <summary>
+		/// 从 start 位置开始解析一个对象，直到到达右括号或末尾. 若没有对象则返回 EmptyObject. 若检测到语法错误则返回ErrorObject
+		/// </summary>
+		/// <param name="tokens"></param>
+		/// <param name="start"></param>
+		/// <param name="i">引用变量，解析结束时，i在被解析的对象对应token的后一位索引(即往后继续解析开始的位置)</param>
+		/// <returns></returns>
+		MathObject* parseObject(const std::vector<Token>& tokens, const int start, int& i);
+
+		MathObject* parseAtom(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parseFunction(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parseLocate(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parsePower(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parseItem(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parsePolynomial(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parseMap(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parseCompare(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parseList(const std::vector<Token>& tokens, const int start, int& i);
+		MathObject* parseList_forced(const std::vector<Token>& tokens, const int start, int& i);
+
 	};
 }
