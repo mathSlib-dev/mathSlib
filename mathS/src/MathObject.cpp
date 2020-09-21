@@ -5,7 +5,7 @@ std::string mathS::Vector::GetString() const
 	return "{" + list->GetString() + "}";
 }
 
-mathS::MathObject* mathS::Vector::DeepCopy()
+mathS::MathObject* mathS::Vector::DeepCopy() const
 {
 	Vector* ret= new Vector();
 	ret->list = dynamic_cast<ListObject*>(list->DeepCopy());
@@ -20,7 +20,7 @@ std::string mathS::Function::GetString() const
 		return "(" + function->GetString() + ")" + "[" + parameter->GetString() + "]";
 }
 
-mathS::MathObject* mathS::Function::DeepCopy()
+mathS::MathObject* mathS::Function::DeepCopy() const
 {
 	Function* ret = new Function();
 	ret->function = function->DeepCopy();
@@ -31,12 +31,12 @@ mathS::MathObject* mathS::Function::DeepCopy()
 std::string mathS::Locate::GetString() const
 {
 	if (object->Level() <= LEVEL_LOCATE)
-		return object->GetString() + "[[" + location->GetString() + "]]";
+		return object->GetString() + "[" + location->GetString() + "]";
 	else
-		return "(" + object->GetString() + ")" + "[[" + object->GetString() + "]]";
+		return "(" + object->GetString() + ")" + "[" + object->GetString() + "]";
 }
 
-mathS::MathObject* mathS::Locate::DeepCopy()
+mathS::MathObject* mathS::Locate::DeepCopy() const
 {
 	Locate* ret = new Locate();
 	ret->object = object->DeepCopy();
@@ -51,7 +51,7 @@ std::string mathS::Power::GetString() const
 		(exponent->Level() <= LEVEL_POWER ? base->GetString() : "(" + exponent->GetString() + ")");
 }
 
-mathS::MathObject* mathS::Power::DeepCopy()
+mathS::MathObject* mathS::Power::DeepCopy() const
 {
 	Power* ret = new Power();
 	ret->base = base->DeepCopy();
@@ -67,7 +67,7 @@ std::string mathS::Inverse::GetString() const
 		return "/(" + component->GetString() + ")";
 }
 
-mathS::MathObject* mathS::Inverse::DeepCopy()
+mathS::MathObject* mathS::Inverse::DeepCopy() const
 {
 	Inverse* ret = new Inverse();
 	ret->component = component->DeepCopy();
@@ -77,34 +77,29 @@ mathS::MathObject* mathS::Inverse::DeepCopy()
 std::string mathS::Item::GetString() const
 {
 	std::string ret;
-	if (factors[0]->Level() < LEVEL_ITEM)
-	{
+	if (factors[0]->Level() < LEVEL_ITEM){
 		if (factors[0]->GetType() == Type::INVERSE)
 			ret += "1";
 		ret += factors[0]->GetString();
 	}
-	else
-	{
+	else{
 		ret += "(" + factors[0]->GetString() + ")";
 	}
 
-	for (int i = 1; i < factors.size(); i++)
-	{
-		if (factors[i]->Level() < LEVEL_ITEM)
-		{
+	for (int i = 1; i < factors.size(); i++){
+		if (factors[i]->Level() < LEVEL_ITEM){
 			if (factors[i]->GetType() != Type::INVERSE)
 				ret += "*";
 			ret += factors[i]->GetString();
 		}
-		else
-		{
+		else{
 			ret += "*(" + factors[i]->GetString() + ")";
 		}
 	}
 	return ret;
 }
 
-mathS::MathObject* mathS::Item::DeepCopy()
+mathS::MathObject* mathS::Item::DeepCopy() const
 {
 	Item* ret = new Item();
 	ret->factors.reserve(factors.size());
@@ -121,7 +116,7 @@ std::string mathS::Opposite::GetString() const
 		return "-(" + component->GetString() + ")";
 }
 
-mathS::MathObject* mathS::Opposite::DeepCopy()
+mathS::MathObject* mathS::Opposite::DeepCopy() const
 {
 	Opposite* ret = new Opposite();
 	ret->component = component->DeepCopy();
@@ -148,7 +143,7 @@ std::string mathS::Polynomial::GetString() const
 	return ret;
 }
 
-mathS::MathObject* mathS::Polynomial::DeepCopy()
+mathS::MathObject* mathS::Polynomial::DeepCopy() const
 {
 	Polynomial* ret = new Polynomial();
 	ret->items.reserve(items.size());
@@ -164,9 +159,9 @@ std::string mathS::Map::GetString() const
 		(value->Level() < LEVEL_MAP ? value->GetString() : "(" + value->GetString() + ")");
 }
 
-mathS::MathObject* mathS::Map::DeepCopy()
+mathS::MathObject* mathS::Map::DeepCopy() const
 {
-	Map* ret = new Map();
+	Map* ret = new Map;
 	ret->key = key->DeepCopy();
 	ret->value = value->DeepCopy();
 	return ret;
@@ -179,7 +174,7 @@ std::string mathS::Compare::GetString() const
 		(right->Level() < LEVEL_COMPARE ? right->GetString() : "(" + right->GetString() + ")");
 }
 
-mathS::MathObject* mathS::Compare::DeepCopy()
+mathS::MathObject* mathS::Compare::DeepCopy() const
 {
 	Compare* ret = new Compare();
 	ret->left = left->DeepCopy();
@@ -204,7 +199,7 @@ std::string mathS::ListObject::GetString() const
 	return ret;
 }
 
-mathS::MathObject* mathS::ListObject::DeepCopy()
+mathS::MathObject* mathS::ListObject::DeepCopy() const
 {
 	ListObject* ret = new ListObject();
 	ret->components.reserve(components.size());
@@ -235,17 +230,44 @@ std::string mathS::Atom::GetString() const
 	return str;
 }
 
-mathS::MathObject* mathS::Atom::DeepCopy()
+mathS::MathObject* mathS::Atom::DeepCopy() const
 {
 	return new Atom(str);
 }
 
-mathS::MathObject* mathS::ErrorObject::DeepCopy()
+mathS::MathObject* mathS::ErrorObject::DeepCopy() const
 {
 	return new ErrorObject(info);
 }
 
-mathS::MathObject* mathS::EmptyObject::DeepCopy()
+mathS::MathObject* mathS::EmptyObject::DeepCopy() const
 {
 	return new EmptyObject();
+}
+
+std::string mathS::FunctionalOperator::GetString() const
+{
+	std::string ret;
+	if (function->Level() <= LEVEL_FUNCOPERATOR)
+		ret = function->GetString() + "<<";
+	else
+		ret = "(" + function->GetString() + ")<<";
+	if(!variables.empty())
+		ret += variables[0]->GetString();
+	for (int i = 1; i < variables.size(); i++) 
+		ret += ","+variables[i]->GetString();
+	ret += "|" + fparameter->GetString() + ">>(" + parameter->GetString() + ")";
+	return ret;
+}
+
+mathS::MathObject* mathS::FunctionalOperator::DeepCopy() const
+{
+	FunctionalOperator* ret = new FunctionalOperator;
+	ret->function = function->DeepCopy();
+	for (auto itv : variables) 
+		ret->variables.push_back(dynamic_cast<Atom*>(itv->DeepCopy()));
+		
+	ret->fparameter = fparameter->DeepCopy();
+	ret->parameter = parameter->DeepCopy();
+	return ret;
 }

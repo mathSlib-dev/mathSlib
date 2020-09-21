@@ -37,8 +37,9 @@ namespace mathS
 			//
 			// VECTOR:		Enclosed with {}. Inside a vector, there is a list of all elements.
 			ATOM, VECTOR, EMPTY, NUMBER, STRING, VARIABLE,
-			// Level 2: _OBJECT(_PARAMETER)
-			FUNCTION,
+			// Level 2: _FUNCTION(_PARAMETER)
+			//		  : _FOPERATOR<<@VAR1,@VAR2,...|_FPARAMETER>>(_PARAMETER)
+			FUNCTION, FUNCOPERATOR,
 			// Level 3: _OBJECT[_LOC]
 			LOCATE,
 			// Level 4: _BASE^_EXPONENT
@@ -69,6 +70,7 @@ namespace mathS
 		static const int LEVEL_ATOM = 1;
 		static const int LEVEL_VECTOR = 1;
 		static const int LEVEL_FUNCTION = 2;
+		static const int LEVEL_FUNCOPERATOR = 2;
 		static const int LEVEL_LOCATE = 3;
 		static const int LEVEL_POWER = 4;
 		static const int LEVEL_INVERSE= 5;
@@ -78,6 +80,7 @@ namespace mathS
 		static const int LEVEL_MAP = 9;
 		static const int LEVEL_COMPARE = 10;
 		static const int LEVEL_LIST = 12;
+		static const int LEVEL_CLOSED = 99;
 		static const int LEVEL_ERROR = -1;
 	public:
 
@@ -89,7 +92,7 @@ namespace mathS
 		virtual int Level() const = 0;
 
 
-		virtual MathObject* DeepCopy() = 0;
+		virtual MathObject* DeepCopy() const = 0;
 	};
 
 	// list type math object. 
@@ -110,7 +113,9 @@ namespace mathS
 		int Level() const { return LEVEL_LIST; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
+
+		void push_back(MathObject* const obj) { components.push_back(obj); }
 	};
 
 	class Atom : public MathObject
@@ -137,7 +142,7 @@ namespace mathS
 		int Level() const { return LEVEL_ATOM; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class Vector : public MathObject
@@ -147,13 +152,13 @@ namespace mathS
 		Vector() {}
 		~Vector() { delete list; }
 	public:
-		ListObject* list;
+		ListObject* list = nullptr;
 
 		Type GetType() const { return Type::VECTOR; };
 		int Level() const { return LEVEL_VECTOR; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class Function : public MathObject
@@ -163,14 +168,32 @@ namespace mathS
 		Function() {}
 		~Function() { delete function; delete parameter; }
 	public:
-		MathObject* function;
-		MathObject* parameter;
+		MathObject* function = nullptr;
+		MathObject* parameter = nullptr;
 
 		Type GetType() const { return Type::FUNCTION; };
 		int Level() const { return LEVEL_FUNCTION; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
+	};
+	
+	class FunctionalOperator : public MathObject
+	{
+	public:
+		FunctionalOperator() {};
+		~FunctionalOperator() { delete function; delete fparameter; delete parameter; for (auto itv : variables) delete itv; };
+	public:
+		MathObject* function = nullptr;
+		std::vector<Atom*> variables;
+		MathObject* fparameter = nullptr;
+		MathObject* parameter = nullptr;
+
+		Type GetType() const { return Type::FUNCOPERATOR; };
+		int Level() const { return LEVEL_FUNCTION; };
+		std::string GetString() const;
+		
+		MathObject* DeepCopy() const;
 	};
 
 	class Locate : public MathObject
@@ -180,14 +203,14 @@ namespace mathS
 		Locate() {}
 		~Locate() { delete object; delete location; };
 	public:
-		MathObject* object;
-		MathObject* location;
+		MathObject* object = nullptr;
+		MathObject* location = nullptr;
 
 		Type GetType() const { return Type::LOCATE; };
 		int Level() const { return LEVEL_LOCATE; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 	class Power : public MathObject
 	{
@@ -196,14 +219,14 @@ namespace mathS
 		Power() {}
 		~Power() { delete base; delete exponent; }
 	public:
-		MathObject* base;
-		MathObject* exponent;
+		MathObject* base = nullptr;;
+		MathObject* exponent = nullptr;
 
 		Type GetType() const { return Type::POWER; };
 		int Level() const { return LEVEL_POWER; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class Inverse : public MathObject
@@ -214,13 +237,13 @@ namespace mathS
         Inverse(MathObject* const c) : component(c) {}
 		~Inverse() { delete component; }
 	public:
-		MathObject* component;
+		MathObject* component = nullptr;
 
 		Type GetType() const { return Type::INVERSE; };
 		int Level() const { return LEVEL_INVERSE; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class Item : public MathObject
@@ -231,7 +254,7 @@ namespace mathS
 			for (auto it : factors) 
 				delete it;
 		}
-        void push(MathObject* const f) { factors.push_back(f); }
+        void push_back(MathObject* const f) { factors.push_back(f); }
 		// eg. x1*x2   x/y
 	public:
 		std::vector<MathObject*> factors;
@@ -240,13 +263,14 @@ namespace mathS
 		int Level() const { return LEVEL_ITEM; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class Opposite : public MathObject 
 	{
 	public:
 		Opposite() {};
+		Opposite(MathObject* const component) :component{ component } {};
 		~Opposite() { delete component; }
 		// -x, -y*z, -{1,2}*u/p
 	public:
@@ -256,7 +280,7 @@ namespace mathS
 		int Level() const { return LEVEL_OPPOSITE; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 	class Polynomial : public MathObject
 	{
@@ -274,7 +298,9 @@ namespace mathS
 		int Level() const { return LEVEL_POLYNOMIAL; };
 		std::string GetString() const;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
+
+		void push_back(MathObject* const itm) { items.push_back(itm); };
 	};
 
 	class Map : public MathObject
@@ -282,6 +308,7 @@ namespace mathS
 		// eg. attr -> 1
 	public:
 		Map() {}
+		Map(MathObject* const a, MathObject* const b) :key{ a }, value{ b }{};
 		~Map() { delete key; delete value; }
 	public:
 		MathObject* key;
@@ -291,7 +318,7 @@ namespace mathS
 		int Level() const { return LEVEL_MAP; };
 		std::string GetString() const ;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class Compare : public MathObject
@@ -299,6 +326,7 @@ namespace mathS
 		// eg. a==b, u<v,
 	public:
 		Compare() {}
+		Compare(MathObject* const a, MathObject* const b) :left{ a }, right{ b }{};
 		~Compare() { delete left; delete right; }
 	public:
 		std::string op;
@@ -309,7 +337,7 @@ namespace mathS
 		int Level() const { return LEVEL_COMPARE; };
 		std::string GetString() const ;
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class ErrorObject : public MathObject
@@ -325,7 +353,7 @@ namespace mathS
 		int Level() const { return LEVEL_ERROR; };
 		std::string GetString() const { return info; };
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 
 	class EmptyObject : public MathObject
@@ -340,7 +368,7 @@ namespace mathS
 		int Level() const { return LEVEL_EMPTY; };
 		std::string GetString() const { return std::string(); };
 
-		MathObject* DeepCopy();
+		MathObject* DeepCopy() const;
 	};
 	/*
 	class Matrix : public MathObject
