@@ -272,7 +272,7 @@ Ptr<MathObject> mathS::Parser::parsePolynomial(const std::vector<Token>& tokens,
     }
     Ptr<MathObject> itm;
     Ptr<Polynomial> poly = New<Polynomial>();
-    if (tokens[i].text != "+" || tokens[i].text != "-") {
+    if (tokens[i].text != "+" && tokens[i].text != "-") {
         itm = parseItem(tokens, i, i);
         ERROR_CHECK(itm);
         poly->push_back(itm);
