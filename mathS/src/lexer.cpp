@@ -41,6 +41,8 @@ void mathS::Lexer::get(mathS::Token& token) {
                 token.text += content[index++];
             }
         };
+        if (token.text.length() == 1 || token.text.back() != '"' || token.text[token.text.length() - 2] == '\\')
+            token.text += '"';
         break;
     default:
         break;
