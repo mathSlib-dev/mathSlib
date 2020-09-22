@@ -110,7 +110,7 @@ mathS::MathObject* mathS::Item::DeepCopy() const
 
 std::string mathS::Opposite::GetString() const
 {
-	if (component->Level() <= LEVEL_OPPOSITE)
+	if (component->Level() < LEVEL_OPPOSITE)
 		return "-" + component->GetString();
 	else
 		return "-(" + component->GetString() + ")";
