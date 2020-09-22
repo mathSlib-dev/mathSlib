@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <Ptr.h>
 
 namespace mathS
 {
@@ -67,28 +68,25 @@ namespace mathS
 		class NList : public NMathObject
 		{
 		public:
-			std::vector<NMathObject*> components;
+			std::vector<Ptr<NMathObject>> components;
 
 			NList() {};
-			NList(std::initializer_list<NMathObject*> _init_list) : components{ _init_list }
+			NList(std::initializer_list<Ptr<NMathObject>> _init_list) : components{ _init_list }
 			{
 			}
 			NList(std::initializer_list<NValueType> _init_list)
 			{
 				for (auto it : _init_list)
-					components.push_back(new NAtom(it));
+					components.push_back(New<NAtom>(it));
 			}
-			~NList() {
-				for (NMathObject* p : components)
-					delete p;
-			}
+			~NList() {}
 
 			Type GetType() const { return Type::LIST; }
 			bool IsAtom() const { return false; }
 			bool IsError() const { return false; }
 			int Size() const { return components.size(); };
 
-			NMathObject* PartLocate(const std::vector<int>& loc)const;
+			Ptr<NMathObject> PartLocate(const std::vector<int>& loc)const;
 			std::string GetString() const;
 		};
 
@@ -119,7 +117,7 @@ namespace mathS
 		*/
 
 		//typedef std::function<NValueType(NValueType, NValueType)> NBinaryOperator;
-//		template<class NBinaryOperator> NMathObject* ShapeWiseTemplate(NMathObject* a, NMathObject* b)
+//		template<class NBinaryOperator> Ptr<NMathObject> ShapeWiseTemplate(Ptr<NMathObject> a, Ptr<NMathObject> b)
 //		{
 //			static NBinaryOperator op;
 //			using NType = NMathObject::Type;
@@ -156,7 +154,7 @@ namespace mathS
 //					return new NMathError("Shape-wise operation : Shapes of " + alist->GetString() + " and " + blist->GetString() + "do not match. ");
 //
 //				NList* ret;
-//				NMathObject* newnode;
+//				Ptr<NMathObject> newnode;
 //				for (int i = 0; i < absize; i++)
 //				{
 //					newnode = ShapeWiseTemplate<NBinaryOperator>(alist->components[i], blist->components[i]);
@@ -184,13 +182,13 @@ namespace mathS
 //		}
 
 		// Locate a part of obj and return a reference. Note that this is unsafe because it does not check the indices!
-		NMathObject*& PartLocate_ref(NMathObject* obj, const std::vector<int>& loc);
+		Ptr<NMathObject>& PartLocate_ref(Ptr<NMathObject> obj, const std::vector<int>& loc);
 
 		// Locate a part of obj. Cannot modify the depth of obj, since leaf nodes - NAtom is not changable.
-		NMathObject* PartLocate(NMathObject* obj, const std::vector<int>& loc);
+		Ptr<NMathObject> PartLocate(Ptr<NMathObject> obj, const std::vector<int>& loc);
 
 		// Locate a part of obj. 
-		NMathObject* PartLocate(NMathObject* obj, const int loc);
+		Ptr<NMathObject> PartLocate(Ptr<NMathObject> obj, const int loc);
 
 
 	}

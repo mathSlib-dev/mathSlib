@@ -1,8 +1,9 @@
 #include <LBAssembler.h>
 
 using namespace mathS;
+using namespace mathS::NMath;
 
-NMath::NFunction mathS::Assembler::Assemble(MathObject* const expr, const std::vector<std::string>& params)
+NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, const std::vector<std::string>& params)
 {
 	// TODO
 
@@ -10,11 +11,11 @@ NMath::NFunction mathS::Assembler::Assemble(MathObject* const expr, const std::v
 	{
 	case MathObject::ATOM:
 	{
-		Atom* atomexpr = dynamic_cast<Atom*>(expr);
+		Ptr<Atom> atomexpr = Dynamic_cast<Atom, MathObject>(expr);
 		switch (atomexpr->AtomType())
 		{
 		case MathObject::NUMBER: // Number 直接返回值
-			return NMath::NFunctionAtom(atomexpr->NumberValue());
+			return NFunctionAtom(atomexpr->NumberValue());
 			break;
 		case MathObject::VARIABLE:	// Variable 对应参数列表
 		{
@@ -23,8 +24,8 @@ NMath::NFunction mathS::Assembler::Assemble(MathObject* const expr, const std::v
 				if (params[i] == atomexpr->str) break;
 			if (i >= params.size())
 				return NMath::NFunctionError("Assembler::Assemble: Variable " + atomexpr->str + " is not specified as a parameter.");
-			return [i](NMath::NMathObject* param) {
-				return NMath::PartLocate(param, i);
+			return [i](Ptr<NMathObject> param) {
+				return PartLocate(param, i);
 			};
 		}
 			break;

@@ -51,7 +51,7 @@ mathS::Token::TYPE mathS::Lexer::checkType(char c) {
     // ÅÐ¶Ï×Ö·ûÀàÐÍ
     if ((c >= '0' && c <= '9')
         ||(c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
-        || c == '_'|| c == '@' || c == '#') 
+        || c == '_'|| c == '@' || c == '#' || c == '$') 
         return Token::NUMORSYMB;
     if (c == '"')
         return Token::STRING;

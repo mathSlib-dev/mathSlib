@@ -59,5 +59,8 @@
     <ClInclude Include="include\NFunction.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\Ptr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -32,7 +32,7 @@ namespace mathS
 
 		// 根据表达式expr，组装一个以expr中的出现的变量为参数的函数。参数的顺序是param_str所给出的。
 		// 如 expr = sin(u)*v, params={u, v}，那么返回的函数就是f(x1,x2)=sin(x1)*x2.
-		NMath::NFunction Assemble(MathObject* const expr, const std::vector<std::string>& params);
+		NMath::NFunction Assemble(Ptr<MathObject> expr, const std::vector<std::string>& params);
 		
 	};
 }
