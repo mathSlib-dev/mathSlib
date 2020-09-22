@@ -16,7 +16,6 @@ int main() {
         std::cin >> str;
         auto m = Parser(str).Parse();
         std::cout << m->GetString() << std::endl;
-        _CrtDumpMemoryLeaks();
     }
     return 0;
 }

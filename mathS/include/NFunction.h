@@ -8,7 +8,7 @@ namespace mathS
 {
 	namespace NMath
 	{
-		typedef std::function<NMathObject* (NMathObject*)> NFunction;
+		typedef std::function<Ptr<NMathObject>(Ptr<NMathObject>)> NFunction;
 
 		// NFunctionµƒError¿‡–Õ.
 		NFunction NFunctionError(const std::string info);
@@ -16,7 +16,7 @@ namespace mathS
 		NFunction NFunctionAtom(const NValueType v);
 
 		// Declare a shape wise NMathFunction with name o f FUNCNAME
-#define DECLARE_SHAPE_WISE_NMATHUNC_OP(FUNCNAME) NMathObject* FUNCNAME(NMathObject* const a, NMathObject* const b);
+#define DECLARE_SHAPE_WISE_NMATHUNC_OP(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> const a, Ptr<NMathObject> const b);
 
 		// + - * /
 		DECLARE_SHAPE_WISE_NMATHUNC_OP(Plus)
@@ -26,7 +26,7 @@ namespace mathS
 
 		// Basic NMath Functions
 
-#define DECLARE_SHAPE_WISE_NMATHUNC_MONO(FUNCNAME) NMathObject* FUNCNAME(NMathObject* const a);
+#define DECLARE_SHAPE_WISE_NMATHUNC_MONO(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> const a);
 
 		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Sin)
 		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Cos)

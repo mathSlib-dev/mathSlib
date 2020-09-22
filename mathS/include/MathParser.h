@@ -19,7 +19,7 @@ namespace mathS
 		*/
     public:
 	    Parser(const std::string& c) : lexer(c) { }
-	    MathObject* Parse();
+	    Ptr<MathObject> Parse();
     private:
 		Lexer lexer;
 
@@ -31,18 +31,18 @@ namespace mathS
 		/// <param name="start"></param>
 		/// <param name="i">引用变量，解析结束时，i在被解析的对象对应token的后一位索引(即往后继续解析开始的位置)</param>
 		/// <returns></returns>
-		MathObject* parseObject(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseObject(const std::vector<Token>& tokens, const int start, int& i);
 
-		MathObject* parseAtom(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parseFunction(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parseLocate(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parsePower(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parseItem(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parsePolynomial(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parseMap(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parseCompare(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parseList(const std::vector<Token>& tokens, const int start, int& i);
-		MathObject* parseList_forced(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseAtom(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseFunction(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseLocate(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parsePower(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseItem(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parsePolynomial(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseMap(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseCompare(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseList(const std::vector<Token>& tokens, const int start, int& i);
+		Ptr<MathObject> parseList_forced(const std::vector<Token>& tokens, const int start, int& i);
 
 	};
 }

@@ -165,6 +165,7 @@
     <ClInclude Include="include\NFunction.h" />
     <ClInclude Include="include\NMathObject.h" />
     <ClInclude Include="include\MathParser.h" />
+    <ClInclude Include="include\Ptr.h" />
     <ClInclude Include="include\string-switch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
