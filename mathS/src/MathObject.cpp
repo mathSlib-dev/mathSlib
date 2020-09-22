@@ -206,6 +206,7 @@ mathS::MathObject* mathS::ListObject::DeepCopy() const
 	for (auto it : components)
 		ret->components.push_back(it->DeepCopy());
 	return ret;
+	
 }
 
 mathS::MathObject::Type mathS::Atom::AtomType() const

@@ -4,9 +4,39 @@
 #include <string>
 #include <functional>
 
+
 namespace mathS
 {
+	class MathObject;
+	class ListObject;
+	class Atom;
+	class Vector;
+	class Function;
+	class FunctionalOperator;
+	class Locate;
+	class Power;
+	class Inverse;
+	class Item;
+	class Opposite;
+	class Polynomial;
+	class Map;
+	class Compare;
+	class List;
+	class ErrorObject;
+	class EmptyObject;
 
+	template<class T>
+	class Ptr :std::shared_ptr<T> {
+	public:
+		template<class... _Types>
+		static Ptr<T> New(_Types&& ..._Args) {
+			return std::make_shared<T>(_Args);
+		}
+		template<class T2>
+		static Ptr<T2> Dynamic_cast(const Ptr<T> p) {
+			return std::dynamic_pointer_cast<T2>(p);
+		}
+	};
 
 	class MathObject
 	{

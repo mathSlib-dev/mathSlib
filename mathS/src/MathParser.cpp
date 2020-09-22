@@ -16,7 +16,13 @@ MathObject *Parser::Parse() {
     }
     
     int i;
-    return  parseObject(tokens, 0, i);
+    auto obj = parseObject(tokens, 0, i);
+    if (i < tokens.size()) {
+        delete obj;
+        return new ErrorObject("Parse: Syntax Error. Unexpected Symbol " + tokens[i].text);
+    }
+    
+    return obj;
 }
 
 short Parser::level(const std::string &c) {
