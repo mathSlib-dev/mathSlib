@@ -4,19 +4,19 @@
 #include <iostream>
 #include <lexer.h>
 #include <MathParser.h>
+#include<crtdbg.h>
 
 using namespace mathS;
 
 int main() {
     std::string str;
-    std::cin >> str;
-    Lexer lexer(str);
-    Token token;
+
+    // 测试 parser
     while (true) {
-        lexer.get(token);
-        if (token.type == Token::END)
-            break;
-        std::cout << token.text << std::endl;
+        std::cin >> str;
+        auto m = Parser(str).Parse();
+        std::cout << m->GetString() << std::endl;
+        _CrtDumpMemoryLeaks();
     }
     return 0;
 }

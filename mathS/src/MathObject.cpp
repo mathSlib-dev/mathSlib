@@ -15,9 +15,9 @@ mathS::MathObject* mathS::Vector::DeepCopy() const
 std::string mathS::Function::GetString() const
 {
 	if (function->Level() <= LEVEL_FUNCTION)
-		return function->GetString() + "[" + parameter->GetString() + "]";
+		return function->GetString() + "(" + parameter->GetString() + ")";
 	else
-		return "(" + function->GetString() + ")" + "[" + parameter->GetString() + "]";
+		return "(" + function->GetString() + ")" + "(" + parameter->GetString() + ")";
 }
 
 mathS::MathObject* mathS::Function::DeepCopy() const
@@ -48,7 +48,7 @@ std::string mathS::Power::GetString() const
 {
 	return
 		(base->Level() < LEVEL_POWER ? base->GetString() : "(" + base->GetString() + ")") + "^" +
-		(exponent->Level() <= LEVEL_POWER ? base->GetString() : "(" + exponent->GetString() + ")");
+		(exponent->Level() <= LEVEL_POWER ? exponent->GetString() : "(" + exponent->GetString() + ")");
 }
 
 mathS::MathObject* mathS::Power::DeepCopy() const
@@ -131,7 +131,7 @@ std::string mathS::Polynomial::GetString() const
 	{
 		if (items[i]->Level() < LEVEL_POLYNOMIAL)
 		{
-			if (items[i]->GetType() != Type::OPPOSITE)
+			if (items[i]->GetType() != Type::OPPOSITE && i != 0)
 				ret += "+";
 			ret += items[i]->GetString();
 		}

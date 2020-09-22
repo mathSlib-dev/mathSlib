@@ -15,8 +15,8 @@ MathObject *Parser::Parse() {
         tokens.push_back(tok);
     }
     
-
-    return  nullptr;
+    int i;
+    return  parseObject(tokens, 0, i);
 }
 
 short Parser::level(const std::string &c) {
@@ -170,6 +170,7 @@ MathObject* mathS::Parser::parseFunction(const std::vector<Token>& tokens, const
             delete f; for (auto itv : vars) delete itv; delete fpara;
             return new ErrorObject("Parser: Unmatched <<");
         }
+        i++;
         if (!(i < tokens.size() && tokens[i].text == "(")) {
             delete f; for (auto itv : vars) delete itv; delete fpara;
             return new ErrorObject("Parser: Incompleted Functional Operator");
@@ -240,7 +241,7 @@ MathObject* mathS::Parser::parsePower(const std::vector<Token>& tokens, const in
     if (!(i < tokens.size() && tokens[i].text == "^")) {
         return b;
     }
-    auto e = parsePower(tokens, start, i);
+    auto e = parsePower(tokens, i + 1, i);
     if (e->GetType() == MathObject::ERROR) {
         delete b;
         return e;
