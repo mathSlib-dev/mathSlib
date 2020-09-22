@@ -333,7 +333,7 @@ namespace mathS
 		// eg. a==b, u<v,
 	public:
 		Compare() {}
-		Compare(Ptr<MathObject> const a, Ptr<MathObject> const b) :left{ a }, right{ b }{};
+		Compare(Ptr<MathObject> const a, const std::string op, Ptr<MathObject> const b) :left{ a }, op{ op }, right{ b }{};
 		~Compare() {}
 	public:
 		std::string op;

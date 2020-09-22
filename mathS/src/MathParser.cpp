@@ -191,13 +191,13 @@ Ptr<MathObject> mathS::Parser::parseLocate(const std::vector<Token>& tokens, con
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_LOCATE) {
         return obj;
     }
-    if (tokens[i].text != "[") {
+    if (tokens[i].text == "[") {
         auto loc = parseObject(tokens, i + 1, i);
         ERROR_CHECK(loc);
 
         if (!(i < tokens.size() && tokens[i].text == "]")) 
             return New<ErrorObject>("Parse: Syntax Error. Unmatched brace [");
-        
+        i++;
         Ptr<Locate> lc = New<Locate>();
         lc->object = obj;
         lc->location = loc;
@@ -331,10 +331,11 @@ Ptr<MathObject> mathS::Parser::parseCompare(const std::vector<Token>& tokens, co
     if (level(tokens[i].text) != MathObject::LEVEL_COMPARE) {
         return New<ErrorObject>("Parse: Syntax Error. Unexpected Symbol " + tokens[i].text);
     }
+    std::string op = tokens[i].text;
     auto b = parseMap(tokens, i + 1, i);
     ERROR_CHECK(b);
 
-    Ptr<Compare> cmp = New<Compare>(a, b);
+    Ptr<Compare> cmp = New<Compare>(a, op, b);
     return cmp;
 }
 
