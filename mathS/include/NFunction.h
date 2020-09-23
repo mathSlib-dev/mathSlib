@@ -14,9 +14,10 @@ namespace mathS
 		NFunction NFunctionError(const std::string info);
 		// NFunction的Atom类型。直接返回值 v 的函数。
 		NFunction NFunctionAtom(const NValueType v);
-
+		
+		Ptr<NMathObject> Power(Ptr<NMathObject> base, Ptr<NMathObject> exponent);
 		// Declare a shape wise NMathFunction with name o f FUNCNAME
-#define DECLARE_SHAPE_WISE_NMATHUNC_OP(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> const a, Ptr<NMathObject> const b);
+#define DECLARE_SHAPE_WISE_NMATHUNC_OP(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> a, Ptr<NMathObject> b);
 
 		// + - * /
 		DECLARE_SHAPE_WISE_NMATHUNC_OP(Plus)
@@ -26,7 +27,7 @@ namespace mathS
 
 		// Basic NMath Functions
 
-#define DECLARE_SHAPE_WISE_NMATHUNC_MONO(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> const a);
+#define DECLARE_SHAPE_WISE_NMATHUNC_MONO(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> a);
 
 		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Sin)
 		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Cos)
