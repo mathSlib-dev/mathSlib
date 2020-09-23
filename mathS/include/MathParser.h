@@ -14,11 +14,12 @@ namespace mathS
 {
 	class Parser
 	{
-		/* 
-		注意parser们何时会返回 nullptr，何时返回 MathErrorObject:
-		*/
+
     public:
+	    // 从字符串初始化
 	    Parser(const std::string& c) : lexer(c) { }
+
+		// 获得解析的 MathObject 符号表达式对象
 	    Ptr<MathObject> Parse();
     private:
 		Lexer lexer;
