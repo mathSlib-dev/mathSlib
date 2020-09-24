@@ -61,3 +61,34 @@
 ## 2020-9-23
 
  **[工作]** LBAssembler 大部分开发完成。
+
+
+
+## 2020-9-23
+
+**[工作]** 实现了FucntionalOperator，并用数值求和Sum测试，LBAssembler开发完成。对于每次运行独立的单条命令，不需要考虑更多的上下文，已经够用。
+
+**[约定]** MathObject框架变动，废弃了ListObject。本来ListObject的引入，就是为了方便统一处理函数的参数列表、向量的元素列表、索引定位的列表，但这样会导致其他的麻烦：
+
+1. 每次对函数的参数都要作类型检查是否为ListObject，ListObject中套了一个MathObject， 和直接一个MathObject，应当是等价的，而他们能表示为不同的结构，会增加处理的麻烦；
+2. 转为NMath时，由于NList不像Vector那样，是List套一层Vector，所以会混淆函数多元函数和向量作为参数的函数，即f(x,y)和f({x,y})。如果要区分，则不得不强制给参数套一层List，即参数的第一层一定是List，而这与MathObject的Function表示逻辑不同，Function是允许不套List的
+3. ListObject会导致语法过于灵活，可能出现(1,2)\*3之类的写法，而这是没有意义的，应当表达成{1,2}\*3的向量形式。
+
+因此我们放弃ListObject作为中间对象，这并不影响MathObject的表达能力。凡是允许多元组的地方，直接在相应的MathObject中内置std::vector。他们的处理方法，如Parse， Assemble是类似的。
+
+为了废弃ListObject，框架从上至下进行了很多变动，因为原本ListObject的地位很重要。但改动后，能感觉到代码更优美了，少了很多的检查，例如我们不再需要EmptyObject，因为std::vector为空时，直接表达了函数参数为空，或者索引列表为空这些情况，而不必需要EmptyObject。其他地方则用不到EmptyObject。
+
+原本ListObject的代码并不能算删掉，因为对于List的处理方法是不变的，这些代码被修改后重新用上了。
+
+**[任务]** 总结一下各个模块
+
+* Symbolic
+  * MathObject
+  * Rule=Match&Replace
+  * RuleLibrary：Grad，Derivative，Simplify，Integrate，Compute...
+* LBAssembler：MathObject->NFunction
+* Numeric
+  * NMathObject
+  * NFunction
+  * NFunctionLibrary
+  * NFuncOperatorLibrary
