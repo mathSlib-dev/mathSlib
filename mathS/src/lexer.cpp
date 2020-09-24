@@ -39,6 +39,8 @@ void mathS::Lexer::get(mathS::Token& token) {
                 token.text += content[index++];
             }
         };
+        if (token.text.length() == 1 || token.text.back() != '"' || token.text[token.text.length() - 2] == '\\')
+            token.text += '"';
         break;
     default:
         break;
@@ -47,7 +49,7 @@ void mathS::Lexer::get(mathS::Token& token) {
 
 mathS::Token::TYPE mathS::Lexer::checkType(char c) {
     // ÅÐ¶Ï×Ö·ûÀàÐÍ
-    if ((c >= '0' && c <= '9')
+    if ((c >= '0' && c <= '9'||c=='.')
         ||(c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
         || c == '_'|| c == '@' || c == '#' || c == '$') 
         return Token::NUMORSYMB;

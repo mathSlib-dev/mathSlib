@@ -2,19 +2,70 @@
 
 A library for symbolic mathematic computing and scientific computing.
 
-We start from an imitation of Mathematica. We try to make it more connected to C++, and allow people to enjoy its feature conveniently in C++ programs. For example, parse a text input "Sin[1/x]+2*y^2" and instantly get a std function !
+We start from an imitation of Mathematica. We try to make it more connected to C++, and allow people to enjoy its feature conveniently in C++ programs. For example, parse a text input "sin(1/x)+2*y^2" and instantly get an `std::function `.
 
 *mathS=math+Science|math+Symbol*
 
-# Introduction
 
-## What's done
 
-* Basic definitions of `MathObject` 
-* Basic definitions of `NMathObject`
-* Documentations of above and basic ideas.
-* A previous half-finished C# project [MathiS](https://github.com/EasternJournalist/MathiS) , based on string matching and lambda expression, which has already successfully assembled functions and plot graphics, but less extensible.
-* Nothing else.
+## Features
+
+* Symbolic expression processing is under developing. We have already implemented `MathParser`. It converts text expressions to varied `MathObject`. Our next step is to implement symbolic derivative, 
+* **MathS** grammar is designed to state an expression clearly and without those ambiguous meanings usually in writing. Vector, matrix, any shape of tensors or general list are supported.  Functional operators and some advanced operators like $\nabla,\int,\sum,\prod$  are supported. Equations and inequations are supported in expression. 
+* `NMath` module offers better performance on numerical tasks. Numerical linear algebra will be strongly supported. It is under developing. We have already implemented `Assembler`. `MathObejct` can be converted to `NFunction` which takes the variables in the expression as parameters. This would support those cases like plotting, numerical integrating  when massive computing is needed. 
+* We are planning to make it possible to convert `MathObject` to LaTex format string.
+* As an C++ library, you can enjoy its features in C++ freely. `NFunction` has nothing different from `std::function`. 
+
+
+
+## A powerful calculator in 9 line
+
+The follow program with **mathS** is a calculator that supports various and vector and matrix. 
+
+```c++
+#include <iostream>
+#include <MathParser.h>
+#include <LBAssembler.h>
+
+using namespace mathS;
+
+int main() {    
+	std::string str;
+    Assembler assembler;
+    
+ 	std::cin >> str;
+    auto mobj = Parser(str).Parse();			// Get MathObject
+        
+    if (mobj->GetType() == MathObject::ERROR) 	// Check sytanx
+        std::cout << mobj->GetString() << std::endl;
+
+    std::vector<std::string> params = {};		// No variables in the expression in a calculator program.
+
+    auto f = assembler.Assemble(mobj, params);	// Get NFunction
+    std::cout << "Answer = " << f({})->GetString() << std::endl;
+    
+    return 0;
+}
+```
+
+Sample input and output
+
+```
+E^3+9.1*(3-2.1)
+Answer = 28.275537
+
+floor(1.34+3)
+Answer = 4.000000
+
+{3,6,9}/3
+Answer = {1.000000,2.000000,3.000000}
+
+{3.1,3.2,{6,2,1}}*{1.1,2.2,{3.1,3.2,4.3}}
+Answer = {3.410000,7.040000,{18.600000,6.400000,4.300000}}
+
+sin({1,PI/6,PI/2})
+Answer = {0.841471,0.500000,1.000000}
+```
 
 ## What's to be done
 
@@ -61,9 +112,9 @@ This is our timeline.
   This calculator supports vector, matrix and list.
   Input examples:
   
-  Log[7.2]
+  log(7.2)
   4*(3+1)/5+8^0.5
-  Dot[{1,3,2},{7,6,5}]
+  dot[{1,3,2},{7,6,5}]
   MatrixInverse[{{1,3,4},{2,5,6},{0,-1,3}}]
   Average[{1,2,3,4,6}]
   */
@@ -92,6 +143,14 @@ This is our timeline.
     (This is cool but maybe not practical. We are not supposed to repeat useless work, which has been done by others perfectly.)
 
     * **MLlib**: Simple implementation of machine learning algorithms
+
+
+
+## Documentation
+
+TODO.
+
+
 
 # Development
 

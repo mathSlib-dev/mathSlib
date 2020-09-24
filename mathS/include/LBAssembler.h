@@ -17,8 +17,11 @@ namespace mathS
 	{
 
 	public:
+		Assembler() { InitializeSTDLIB(); }
+		// 根据表达式expr，组装一个以expr中的出现的变量为参数的函数。参数的顺序是param_str所给出的。
+		// 如 expr = sin(u)*v, params={u, v}，那么返回的函数就是f(x1,x2)=sin(x1)*x2.
+		NMath::NFunction Assemble(Ptr<MathObject> expr, std::vector<std::string>& params);
 
-	
 	private:
 		
 		// 考虑到将来可能要在一个脚本运行时组装函数，也许，不是从function_table, constant_table中来查找，
@@ -28,11 +31,8 @@ namespace mathS
 		// 函数表。组装时需要的标准函数直接根据函数名称从函数表里取
 		std::map<std::string, NMath::NFunction> function_table;
 		// 常量表。组装时遇到常量符号，会从常量表里取。
-		std::map<std::string, NMath::NMathObject> constant_table;
+		std::map<std::string, NMath::NFunction> constant_table;
 
-		// 根据表达式expr，组装一个以expr中的出现的变量为参数的函数。参数的顺序是param_str所给出的。
-		// 如 expr = sin(u)*v, params={u, v}，那么返回的函数就是f(x1,x2)=sin(x1)*x2.
-		NMath::NFunction Assemble(Ptr<MathObject> expr, const std::vector<std::string>& params);
-		
+		void InitializeSTDLIB();
 	};
 }

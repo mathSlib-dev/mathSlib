@@ -4,6 +4,9 @@
 
 using namespace mathS;
 
+#define ERROR_CHECK(x) if (x->GetType() == MathObject::ERROR) return x
+#define EMPTY_CHECK(x) if (x->GetType() == MathObject::EMPTY) return New<ErrorObject>("Parse: Syntax Error. Should not be Empty.")
+
 // 解析表达式
 Ptr<MathObject> Parser::Parse() {
 
@@ -17,6 +20,7 @@ Ptr<MathObject> Parser::Parse() {
     
     int i;
     auto obj = parseObject(tokens, 0, i);
+    ERROR_CHECK(obj);
     if (i < tokens.size()) {
         return New<ErrorObject>("Parse: Syntax Error. Unexpected Symbol " + tokens[i].text);
     }
@@ -53,7 +57,7 @@ short Parser::level(const std::string &c) {
     return 0;
 }
 
-#define ERROR_CHECK(x) if (x->GetType() == MathObject::ERROR) return x
+
 Ptr<MathObject> mathS::Parser::parseObject(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
@@ -76,8 +80,9 @@ Ptr<MathObject> mathS::Parser::parseAtom(const std::vector<Token>& tokens, const
     else if (tokens[i].type == Token::OPERATOR) {
         // 如果是操作符，那么必须是(_OBJECT)或{_OBJECT}
         if (tokens[i].text == "(") {
-            obj = parseObject(tokens, start + 1, i);
+            obj = parseObject(tokens, i + 1, i);
             ERROR_CHECK(obj);
+            EMPTY_CHECK(obj);
             if (i < tokens.size() && tokens[i].text == ")") {
                 i++;
                 return obj;
@@ -89,8 +94,6 @@ Ptr<MathObject> mathS::Parser::parseAtom(const std::vector<Token>& tokens, const
         else if(tokens[i].text == "{")
         {
             auto lst = parseList_forced(tokens, start + 1, i);
-            if (lst->GetType() == MathObject::EMPTY)
-                return New<ErrorObject>("Parser: Unmatched brace {");
             ERROR_CHECK(lst);
 
             Ptr<Vector> vobj = New<Vector>();
@@ -114,6 +117,7 @@ Ptr<MathObject> mathS::Parser::parseFunction(const std::vector<Token>& tokens, c
 
     auto f = parseAtom(tokens, start, i);
     ERROR_CHECK(f);
+    EMPTY_CHECK(f);
     if (i >= tokens.size()) 
         return f;
     
@@ -188,6 +192,7 @@ Ptr<MathObject> mathS::Parser::parseLocate(const std::vector<Token>& tokens, con
     i = start;
     auto obj = parseFunction(tokens, start, i);
     ERROR_CHECK(obj);
+    EMPTY_CHECK(obj);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_LOCATE) {
         return obj;
     }
@@ -214,12 +219,14 @@ Ptr<MathObject> mathS::Parser::parsePower(const std::vector<Token>& tokens, cons
     i = start;
     auto b = parseLocate(tokens, start, i);
     ERROR_CHECK(b);
+    EMPTY_CHECK(b);
     // 是否是指数形式
     if (!(i < tokens.size() && tokens[i].text == "^")) {
         return b;
     }
     auto e = parsePower(tokens, i + 1, i);
     ERROR_CHECK(e);
+    EMPTY_CHECK(e);
     // parsePower 和 parseAtom 一定不会返回 Empty
     Ptr<Power> pw = New<Power>();
     pw->base = b;
@@ -232,6 +239,7 @@ Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const
     i = start;
     auto fct = parsePower(tokens, start, i);
     ERROR_CHECK(fct);
+    EMPTY_CHECK(fct);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM) {
         // 如果项中只有一个factor，那么就直接返回这个factor，而不必再套一层item
         return fct;
@@ -244,6 +252,7 @@ Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const
             // 增加乘因子
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
+            EMPTY_CHECK(t);
             itm->push_back(t);
             if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM)
                 return itm;
@@ -252,6 +261,7 @@ Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const
             // 增加除因子
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
+            EMPTY_CHECK(t);
             itm->push_back(New<Inverse>(t));
             if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM)
                 return itm;
@@ -275,6 +285,7 @@ Ptr<MathObject> mathS::Parser::parsePolynomial(const std::vector<Token>& tokens,
     if (tokens[i].text != "+" && tokens[i].text != "-") {
         itm = parseItem(tokens, i, i);
         ERROR_CHECK(itm);
+        EMPTY_CHECK(itm);
         poly->push_back(itm);
     }
     while (true) {
@@ -289,12 +300,14 @@ Ptr<MathObject> mathS::Parser::parsePolynomial(const std::vector<Token>& tokens,
             // 增加正项
             auto t = parseItem(tokens, i + 1, i);
             ERROR_CHECK(t);
+            EMPTY_CHECK(t);
             poly->push_back(t);
         }
         else if (tokens[i].text == "-") {
             // 增加负项
             auto t = parseItem(tokens, i + 1, i);
             ERROR_CHECK(t);
+            EMPTY_CHECK(t);
             poly->push_back(New<Opposite>(t));
         }
         else {
@@ -309,6 +322,7 @@ Ptr<MathObject> mathS::Parser::parseMap(const std::vector<Token>& tokens, const 
     i = start;
     auto a = parsePolynomial(tokens, i, i);
     ERROR_CHECK(a);
+    EMPTY_CHECK(a);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_MAP)
         return a;
     if (tokens[i].text != "->")
@@ -316,7 +330,7 @@ Ptr<MathObject> mathS::Parser::parseMap(const std::vector<Token>& tokens, const 
     
     auto b = parsePolynomial(tokens, i + 1, i);
     ERROR_CHECK(b);
-
+    EMPTY_CHECK(b);
     Ptr<Map> mp = New<Map>(a, b);
     return mp;
 }
@@ -326,6 +340,7 @@ Ptr<MathObject> mathS::Parser::parseCompare(const std::vector<Token>& tokens, co
     i = start;
     auto a = parseMap(tokens, i, i);
     ERROR_CHECK(a);
+    EMPTY_CHECK(a);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_COMPARE)
         return a;
     if (level(tokens[i].text) != MathObject::LEVEL_COMPARE) {
@@ -334,7 +349,7 @@ Ptr<MathObject> mathS::Parser::parseCompare(const std::vector<Token>& tokens, co
     std::string op = tokens[i].text;
     auto b = parseMap(tokens, i + 1, i);
     ERROR_CHECK(b);
-
+    EMPTY_CHECK(b);
     Ptr<Compare> cmp = New<Compare>(a, op, b);
     return cmp;
 }
@@ -344,6 +359,7 @@ Ptr<MathObject> mathS::Parser::parseList(const std::vector<Token>& tokens, const
     i = start;
     auto obj = parseCompare(tokens, start, i);
     ERROR_CHECK(obj);
+    EMPTY_CHECK(obj);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_LIST) {
         // 如果项中只有一个obj，那么就直接返回这个obj，而不必再套一层List
         return obj;
@@ -355,7 +371,7 @@ Ptr<MathObject> mathS::Parser::parseList(const std::vector<Token>& tokens, const
         if (tokens[i].text == ",") {
             auto t = parseCompare(tokens, i + 1, i);
             ERROR_CHECK(t);
-
+            EMPTY_CHECK(t);
             lst->push_back(t);
             if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_LIST)
                 return lst;
@@ -371,6 +387,7 @@ Ptr<MathObject> mathS::Parser::parseList_forced(const std::vector<Token>& tokens
     i = start;
     auto obj = parseCompare(tokens, start, i);
     ERROR_CHECK(obj);
+    EMPTY_CHECK(obj);
 
     Ptr<ListObject> lst = New<ListObject>();
     lst->push_back(obj);
@@ -379,9 +396,8 @@ Ptr<MathObject> mathS::Parser::parseList_forced(const std::vector<Token>& tokens
             return lst;
         if (tokens[i].text == ",") {
             auto t = parseCompare(tokens, i + 1, i);
-            if (t->GetType() == MathObject::ERROR) {
-                return t;
-            }
+            ERROR_CHECK(t);
+            EMPTY_CHECK(t);
             lst->push_back(t);
         }
         else {
