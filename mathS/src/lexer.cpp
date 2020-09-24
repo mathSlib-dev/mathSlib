@@ -20,10 +20,8 @@ void mathS::Lexer::get(mathS::Token& token) {
                 token.text += content[index++];
         }
         if (c == '-' && index < content.length()) {
-            if (content[index] == '>') {
-                token.text += '>';
-                index++;
-            }
+            if (content[index] == '>')
+				token.text += content[index++];
         }
         break;
     case Token::NUMORSYMB:

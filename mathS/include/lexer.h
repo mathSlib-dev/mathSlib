@@ -23,7 +23,7 @@ namespace mathS {
         void get(Token&);
     private:
         Token::TYPE checkType(char);
-        const std::string& content;
+        const std::string content;
         int index = 0;
     };
 }
