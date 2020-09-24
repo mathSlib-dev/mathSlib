@@ -9,6 +9,11 @@ std::string mathS::NMath::NAtom::GetString() const
 	return std::to_string(value);
 }
 
+Ptr<NMathObject> mathS::NMath::NAtom::DeepCopy() const
+{
+	return New<NAtom>(value);
+}
+
 Ptr<NMathObject> mathS::NMath::NList::PartLocate(const std::vector<int>& loc) const
 {
 	if (loc.size() == 0)
@@ -47,6 +52,16 @@ std::string mathS::NMath::NList::GetString() const
 	return ret;
 }
 
+Ptr<NMathObject> mathS::NMath::NList::DeepCopy() const
+{
+	Ptr<NList> ret = New<NList>();
+	ret->components.reserve(components.size());
+	for (auto& it : components) {
+		ret->components.push_back(it->DeepCopy());
+	}
+	return Dynamic_cast<NMathObject, NList>(ret);
+}
+
 
 
 Ptr<NMathObject> mathS::NMath::PartLocate(Ptr<NMathObject> obj, const int loc)
@@ -58,6 +73,26 @@ Ptr<NMathObject> mathS::NMath::PartLocate(Ptr<NMathObject> obj, const int loc)
 			return pl->components[loc];
 		else
 			return New<NMathError>("PartLocate: Part " + std::to_string(loc) + " of " + obj->GetString() + " is out of range.");
+	}
+}
+
+Ptr<NMathObject> mathS::NMath::Concatenate(Ptr<NMathObject> a, Ptr<NMathObject> b)
+{
+	if (a->GetType() == NMathObject::LIST && b->GetType() == NMathObject::LIST) {
+		Ptr<NList> ret = New<NList>();
+		auto alst = Dynamic_cast<NList, NMathObject>(a);
+		auto blst = Dynamic_cast<NList, NMathObject>(b);
+		ret->components.reserve(alst->components.size() + blst->components.size());
+		for (auto& it : alst->components) {
+			ret->components.push_back(it->DeepCopy());
+		}
+		for (auto& it : blst->components) {
+			ret->components.push_back(it->DeepCopy());
+		}
+		return Dynamic_cast<NMathObject, NList>(ret);
+	}
+	else {
+		return New<NMathError>("NMath: Cannot concatenate " + a->GetString() + " and " + b->GetString());
 	}
 }
 
@@ -98,4 +133,9 @@ Ptr<NMathObject> mathS::NMath::PartLocate(Ptr<NMathObject> obj, const std::vecto
 		}
 	}
 	return p;
+}
+
+Ptr<NMathObject> mathS::NMath::NMathError::DeepCopy() const
+{
+	return New<NMathError>(info);
 }

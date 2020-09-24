@@ -42,8 +42,7 @@ namespace mathS
 		Ptr<MathObject> parsePolynomial(const std::vector<Token>& tokens, const int start, int& i);
 		Ptr<MathObject> parseMap(const std::vector<Token>& tokens, const int start, int& i);
 		Ptr<MathObject> parseCompare(const std::vector<Token>& tokens, const int start, int& i);
-		Ptr<MathObject> parseList(const std::vector<Token>& tokens, const int start, int& i);
-		Ptr<MathObject> parseList_forced(const std::vector<Token>& tokens, const int start, int& i);
+		std::vector<Ptr<MathObject>> parseList(const std::vector<Token>& tokens, const int start, int& i);
 
 	};
 }

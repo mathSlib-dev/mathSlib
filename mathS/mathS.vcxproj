@@ -150,19 +150,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ExtendedCMath.cpp" />
     <ClCompile Include="src\LBAssembler.cpp" />
     <ClCompile Include="src\lexer.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\MathObject.cpp" />
     <ClCompile Include="src\NFunction.cpp" />
+    <ClCompile Include="src\NFunctionalOperator.cpp" />
     <ClCompile Include="src\NMathObject.cpp" />
     <ClCompile Include="src\MathParser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ExtendedCMath.h" />
     <ClInclude Include="include\LBAssembler.h" />
     <ClInclude Include="include\lexer.h" />
     <ClInclude Include="include\MathObject.h" />
     <ClInclude Include="include\NFunction.h" />
+    <ClInclude Include="include\NFunctionalOperator.h" />
     <ClInclude Include="include\NMathObject.h" />
     <ClInclude Include="include\MathParser.h" />
     <ClInclude Include="include\Ptr.h" />

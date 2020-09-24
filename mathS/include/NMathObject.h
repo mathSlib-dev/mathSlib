@@ -42,9 +42,11 @@ namespace mathS
 			virtual bool IsAtom()const = 0;
 			virtual Type GetType() const = 0;
 			virtual int Size()const = 0;
+			virtual NValueType GetValue() const = 0;
 
 			virtual bool IsError() const = 0;
-			virtual std::string GetString()const = 0;
+			virtual std::string GetString() const = 0;
+			virtual Ptr<NMathObject> DeepCopy() const  = 0;
 		};
 
 		// Atom type of numeric math object.
@@ -60,20 +62,26 @@ namespace mathS
 			bool IsAtom() const { return true; }
 			bool IsError() const { return false; }
 			int Size() const { return 1; }
+			NValueType GetValue() const { return value; }
 
 			std::string GetString() const;
+			Ptr<NMathObject> DeepCopy() const;
 		};
 
 		// General list of numeric math object.
 		class NList : public NMathObject
 		{
 		public:
+			// Æ¥Åä
+			/*
+			f(_x)
+			f(1,2)
+			_x -> 1,2
+			*/
 			std::vector<Ptr<NMathObject>> components;
 
 			NList() {};
-			NList(std::initializer_list<Ptr<NMathObject>> _init_list) : components{ _init_list }
-			{
-			}
+			NList(std::initializer_list<Ptr<NMathObject>> _init_list) : components{ _init_list }{}
 			NList(std::initializer_list<NValueType> _init_list)
 			{
 				for (auto it : _init_list)
@@ -85,9 +93,11 @@ namespace mathS
 			bool IsAtom() const { return false; }
 			bool IsError() const { return false; }
 			int Size() const { return components.size(); };
+			NValueType GetValue() const { return components.empty()?0.:components[0]->GetValue(); }
 
 			Ptr<NMathObject> PartLocate(const std::vector<int>& loc)const;
 			std::string GetString() const;
+			Ptr<NMathObject> DeepCopy() const;
 		};
 
 		// Error type object, which represents an error occurred during calculation.
@@ -103,8 +113,10 @@ namespace mathS
 			bool IsError() const { return true; };
 			Type GetType() const { return Type::ERROR; };
 			int Size()const { return 0; };
+			NValueType GetValue() const { return NAN; }
 
 			std::string GetString() const { return info; };
+			Ptr<NMathObject> DeepCopy() const;
 		};
 		/*
 		class NMatrix : public NMathObject
@@ -190,7 +202,7 @@ namespace mathS
 		// Locate a part of obj. 
 		Ptr<NMathObject> PartLocate(Ptr<NMathObject> obj, const int loc);
 
-
+		Ptr<NMathObject> Concatenate(Ptr<NMathObject> a, Ptr<NMathObject> b);
 	}
 
 	/*

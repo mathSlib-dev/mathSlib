@@ -78,7 +78,8 @@ namespace mathS
 			// SENTENCE_LIST
 			
 			// Level 12: _A,_B,_C,...,_Z
-			LIST,
+			// LIST,
+			// ListObject is deprecated now!
 
 			// Level -1: 
 			ERROR
@@ -112,6 +113,7 @@ namespace mathS
 		virtual Ptr<MathObject> DeepCopy() const = 0;
 	};
 
+	/*
 	// list type math object. 
 	// Elements are separated by comma ",".
 	class ListObject : public MathObject
@@ -130,6 +132,9 @@ namespace mathS
 
 		void push_back(Ptr<MathObject> const obj) { components.push_back(obj); }
 	};
+	*/
+	std::string ListGetString(const std::vector<Ptr<MathObject>>& lst);
+	std::vector<Ptr<MathObject>> ListDeepCopy(const std::vector<Ptr<MathObject>>& lst);
 
 	class Atom : public MathObject
 	{
@@ -165,7 +170,7 @@ namespace mathS
 		Vector() {}
 		~Vector() {}
 	public:
-		Ptr<ListObject> list ;
+		std::vector<Ptr<MathObject>> components;
 
 		Type GetType() const { return Type::VECTOR; };
 		int Level() const { return LEVEL_VECTOR; };
@@ -182,7 +187,7 @@ namespace mathS
 		~Function() {}
 	public:
 		Ptr<MathObject> function ;
-		Ptr<MathObject> parameter ;
+		std::vector<Ptr<MathObject>> parameter ;
 
 		Type GetType() const { return Type::FUNCTION; };
 		int Level() const { return LEVEL_FUNCTION; };
@@ -199,8 +204,8 @@ namespace mathS
 	public:
 		Ptr<MathObject> function ;
 		std::vector<Ptr<Atom>> variables;
-		Ptr<MathObject> fparameter;
-		Ptr<MathObject> parameter;
+		std::vector<Ptr<MathObject>> fparameter;
+		std::vector<Ptr<MathObject>> parameter;
 
 		Type GetType() const { return Type::FUNCOPERATOR; };
 		int Level() const { return LEVEL_FUNCTION; };
@@ -217,7 +222,7 @@ namespace mathS
 		~Locate() {};
 	public:
 		Ptr<MathObject> object;
-		Ptr<MathObject> location;
+		std::vector<Ptr<MathObject>> location;
 
 		Type GetType() const { return Type::LOCATE; };
 		int Level() const { return LEVEL_LOCATE; };

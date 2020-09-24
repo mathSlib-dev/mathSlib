@@ -36,6 +36,12 @@
     <ClCompile Include="src\NFunction.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\NFunctionalOperator.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ExtendedCMath.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MathObject.h">
@@ -60,6 +66,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\Ptr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NFunctionalOperator.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ExtendedCMath.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

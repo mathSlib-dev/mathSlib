@@ -3,6 +3,7 @@
 #include<MathObject.h>
 #include<NMathObject.h>
 #include<NFunction.h>
+#include<NFunctionalOperator.h>
 #include<map>
 /*
 	In this file, we introduce methods that use lambda expression to
@@ -32,6 +33,8 @@ namespace mathS
 		std::map<std::string, NMath::NFunction> function_table;
 		// 常量表。组装时遇到常量符号，会从常量表里取。
 		std::map<std::string, NMath::NFunction> constant_table;
+		
+		std::map<std::string, NMath::NFuncOperator> fop_table;
 
 		void InitializeSTDLIB();
 	};

@@ -8,36 +8,41 @@ namespace mathS
 {
 	namespace NMath
 	{
-		typedef std::function<Ptr<NMathObject>(Ptr<NMathObject>)> NFunction;
+		using NParamsList = std::vector<Ptr<NMathObject>>;
+		using NFunction = std::function<Ptr<NMathObject>(const NParamsList&)>;
 
 		// NFunction的Error类型.
 		NFunction NFunctionError(const std::string info);
 		// NFunction的Atom类型。直接返回值 v 的函数。
 		NFunction NFunctionAtom(const NValueType v);
 		
-		Ptr<NMathObject> Power(Ptr<NMathObject> base, Ptr<NMathObject> exponent);
+		
 		// Declare a shape wise NMathFunction with name o f FUNCNAME
-#define DECLARE_SHAPE_WISE_NMATHUNC_OP(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> a, Ptr<NMathObject> b);
+
+#define DECLARE_NMATHUNC(FUNCNAME) Ptr<NMathObject> FUNCNAME(const NParamsList& params)
 
 		// + - * /
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Plus)
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Subtract)
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Multiply)
-		DECLARE_SHAPE_WISE_NMATHUNC_OP(Divide)
+		
+		DECLARE_NMATHUNC(Plus);
+		DECLARE_NMATHUNC(Subtract);
+		DECLARE_NMATHUNC(Multiply);
+		DECLARE_NMATHUNC(Divide);
+		DECLARE_NMATHUNC(Less);
+		DECLARE_NMATHUNC(Greater);
+		DECLARE_NMATHUNC(Lesseq);
+		DECLARE_NMATHUNC(Greatereq);
+		DECLARE_NMATHUNC(Power);
 
-		// Basic NMath Functions
+		DECLARE_NMATHUNC(Sin);
+		DECLARE_NMATHUNC(Cos);
+		DECLARE_NMATHUNC(Tan);
+		DECLARE_NMATHUNC(ASin);
+		DECLARE_NMATHUNC(ACos);
+		DECLARE_NMATHUNC(ATan);
+		DECLARE_NMATHUNC(Log);
+		DECLARE_NMATHUNC(Exp);
+		DECLARE_NMATHUNC(Floor);
 
-#define DECLARE_SHAPE_WISE_NMATHUNC_MONO(FUNCNAME) Ptr<NMathObject> FUNCNAME(Ptr<NMathObject> a);
-
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Sin)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Cos)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Tan)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(ArcSin)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(ArcCos)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(ArcTan)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Log)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Exp)
-		DECLARE_SHAPE_WISE_NMATHUNC_MONO(Floor)
 
 	}
 }
