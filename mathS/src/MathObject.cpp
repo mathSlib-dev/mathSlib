@@ -180,6 +180,7 @@ std::string mathS::Compare::GetString() const
 mathS::Ptr<MathObject> mathS::Compare::DeepCopy() const
 {
 	Ptr<Compare> ret = New<Compare>();
+	ret->op = op;
 	ret->left = left->DeepCopy();
 	ret->right = right->DeepCopy();
 	return ret;
