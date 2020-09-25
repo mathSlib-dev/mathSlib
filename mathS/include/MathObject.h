@@ -390,24 +390,6 @@ namespace mathS
 	};
 	
 	*/
-
-
-
-
-	// Math Function Type : MathObject -> MathObject
-	typedef std::function<Ptr<MathObject>(Ptr<MathObject>)> MathFunction;
-	
-	class Rule
-	{
-	public:
-		Ptr<MathObject> fromForm;
-		Ptr<MathObject> toForm;
-		
-		static void Apply()
-		{
-
-		}
-	};
 	
 	
 }

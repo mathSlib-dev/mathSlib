@@ -23,7 +23,7 @@ int main() {
             continue;
         }
         // 计算器程序不需要变量参数，空的参数表
-        std::vector<std::string> params = {};
+        std::vector<std::string> params = {"x"};
         // 组装
         auto f = assembler.Assemble(mobj, params);
         // 输出结果

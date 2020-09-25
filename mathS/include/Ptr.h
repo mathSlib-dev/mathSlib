@@ -8,8 +8,5 @@ namespace mathS {
 
 #define New std::make_shared
 	// 强制内存转换，基类与派生类之间相互转换
-	template<class T1, class T2>
-    Ptr<T1> Dynamic_cast(Ptr<T2> _Arg) {
-        return std::dynamic_pointer_cast<T1, T2>(_Arg);
-    } 
+#define Dynamic_cast std::dynamic_pointer_cast
 }
