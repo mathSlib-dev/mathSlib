@@ -60,8 +60,8 @@
     <ClCompile Include="src\MathObject.cpp">
       <Filter>源文件\Symbolic</Filter>
     </ClCompile>
-    <ClCompile Include="include\Rule.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\Rule.cpp">
+      <Filter>源文件\Symbolic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
