@@ -235,6 +235,7 @@ namespace mathS
 		// eg. a^5, x^y, y^p^q (this is equivalent to y^(p^q))
 	public:
 		Power() {}
+		Power(const Ptr<MathObject>& base, const Ptr<MathObject>& exponent) :base{ base }, exponent{ exponent }{};
 		~Power() {}
 	public:
 		Ptr<MathObject> base;
@@ -252,7 +253,7 @@ namespace mathS
 		// eg. /y   /(x+y*z)
 	public:
 		Inverse() {}
-        Inverse(Ptr<MathObject> const c) : component(c) {}
+        Inverse(const Ptr<MathObject>& c) : component(c) {}
 		~Inverse() {}
 	public:
 		Ptr<MathObject> component;
@@ -285,7 +286,7 @@ namespace mathS
 	{
 	public:
 		Opposite() {};
-		Opposite(Ptr<MathObject> const component) :component{ component } {};
+		Opposite(const Ptr<MathObject>& component) :component{ component } {};
 		~Opposite() {}
 		// -x, -y*z, -{1,2}*u/p
 	public:
@@ -320,7 +321,7 @@ namespace mathS
 		// eg. attr -> 1
 	public:
 		Map() {}
-		Map(Ptr<MathObject> const a, Ptr<MathObject> const b) :key{ a }, value{ b }{};
+		Map(const Ptr<MathObject>& a, const Ptr<MathObject>& b) :key{ a }, value{ b }{};
 		~Map() {}
 	public:
 		Ptr<MathObject> key;
@@ -338,7 +339,7 @@ namespace mathS
 		// eg. a==b, u<v,
 	public:
 		Compare() {}
-		Compare(Ptr<MathObject> const a, const std::string op, Ptr<MathObject> const b) :left{ a }, op{ op }, right{ b }{};
+		Compare(const Ptr<MathObject>& a, const std::string op, const Ptr<MathObject>& b) :left{ a }, op{ op }, right{ b }{};
 		~Compare() {}
 	public:
 		std::string op;
