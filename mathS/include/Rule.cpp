@@ -165,6 +165,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		Ptr<Inverse> inv_obj = Dynamic_cast<Inverse>(obj);
 		if (!DoMatch(inv_pattern->component, inv_obj->component, table))
 			return false;
+		break;
 	}
 	case MathObject::ITEM: {
 		if (obj->GetType() != MathObject::ITEM)		// 确认类型
@@ -185,6 +186,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		Ptr<Opposite> oppo_obj = Dynamic_cast<Opposite>(obj);
 		if (!DoMatch(oppo_pattern->component, oppo_obj->component, table))
 			return false;
+		break;
 	}
 	case MathObject::POLYNOMIAL: {
 		if (obj->GetType() != MathObject::POLYNOMIAL)		// 确认类型
@@ -404,6 +406,7 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		Ptr<Inverse> inv_obj = Dynamic_cast<Inverse>(b);
 		if (!FullCompare(inv_a->component, inv_obj->component))
 			return false;
+		break;
 	}
 	case MathObject::ITEM: {
 		if (b->GetType() != MathObject::ITEM)		// 确认类型
@@ -424,6 +427,7 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		Ptr<Opposite> oppo_obj = Dynamic_cast<Opposite>(b);
 		if (!FullCompare(oppo_a->component, oppo_obj->component))
 			return false;
+		break;
 	}
 	case MathObject::POLYNOMIAL: {
 		if (b->GetType() != MathObject::POLYNOMIAL)		// 确认类型
