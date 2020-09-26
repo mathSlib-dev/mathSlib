@@ -197,7 +197,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		if (poly_pattern->items.size() != poly_obj->items.size())
 			return false;
 		for (int i = 0; i < poly_pattern->items.size(); i++)
-			if (!DoMatch(poly_pattern->items[i], poly_pattern->items[i], table)) return false;
+			if (!DoMatch(poly_pattern->items[i], poly_obj->items[i], table)) return false;
 		break;
 	}
 	case MathObject::MAP: {
@@ -433,12 +433,12 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		if (b->GetType() != MathObject::POLYNOMIAL)		// 确认类型
 			return false;
 		Ptr<Polynomial> poly_a = Dynamic_cast<Polynomial>(a);
-		Ptr<Polynomial> poly_obj = Dynamic_cast<Polynomial>(b);
+		Ptr<Polynomial> poly_b = Dynamic_cast<Polynomial>(b);
 		// 分别比较子表达式
-		if (poly_a->items.size() != poly_obj->items.size())
+		if (poly_a->items.size() != poly_b->items.size())
 			return false;
 		for (int i = 0; i < poly_a->items.size(); i++)
-			if (!FullCompare(poly_a->items[i], poly_a->items[i])) return false;
+			if (!FullCompare(poly_a->items[i], poly_b->items[i])) return false;
 		break;
 	}
 	case MathObject::MAP: {
