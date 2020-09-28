@@ -28,8 +28,19 @@ namespace mathS {
 	/// <param name="obj"></param>
 	/// <param name="table"></param>
 	/// <returns></returns>
-	bool DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table);
+	bool DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table, std::list<std::string>& table_list);
 	
+	/// <summary>
+	/// 宽松匹配，这是为了Polynomial和Item设置的。因为它们有交换律、结合律，可以只匹配一部分。
+	/// 残余项作为 __RESIDUAL__
+	/// </summary>
+	/// <param name="pattern"></param>
+	/// <param name="obj"></param>
+	/// <param name="table"></param>
+	/// <param name="table_list">内容与table相同，是为了匹配尝试失败时，恢复table的内容</param>
+	/// <returns></returns>
+	bool DoMatchRes(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table, std::list<std::string>& table_list);
+
 	/// <summary>
 	/// 替换。对于给定的table，返回将pattern中对应地替换的结果（是拷贝，不影响pattern）
 	/// </summary>

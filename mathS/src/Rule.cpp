@@ -6,7 +6,8 @@ Match mathS::MakeMatch(Ptr<MathObject> pattern)
 {
 	return [pattern](Ptr<MathObject> obj) {
 		std::map<std::string, Ptr<MathObject>> table;
-		return DoMatch(pattern, obj, table);
+		std::list<std::string> table_list;
+		return DoMatchRes(pattern, obj, table, table_list);
 	};
 }
 
@@ -14,14 +15,15 @@ Rule mathS::MakeRule(Ptr<MathObject> src_pattern, Ptr<MathObject> tar_pattern)
 {
 	return [src_pattern, tar_pattern](Ptr<MathObject> obj, Ptr<MathObject>& rst) {
 		std::map<std::string, Ptr<MathObject>> table;
-		if (!DoMatch(src_pattern, obj, table))
+		std::list<std::string> table_list;
+		if (!DoMatchRes(src_pattern, obj, table, table_list))
 			return false;
 		rst = DoReplace(tar_pattern, table);
 		return true;
 	};
 }
 
-bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table)
+bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table, std::list<std::string>& table_list)
 {
 	// 通配符匹配表
 	MathObject::Type mtype = pattern->GetType();
@@ -35,6 +37,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			auto it = table.find(atom_pattern->str);
 			if (it == table.end()) {
 				table.insert(std::make_pair(atom_pattern->str, obj));
+				table_list.push_back(atom_pattern->str);
 			}
 			else {
 				if (!FullCompare(it->second, obj))
@@ -51,6 +54,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				if (atom_obj->AtomType() != MathObject::VARIABLE)
 					return false;
 				table.insert(std::make_pair(atom_pattern->str, obj));
+				table_list.push_back(atom_pattern->str);
 			}
 			else {
 				if (it->second->GetString() != atom_obj->str)
@@ -67,6 +71,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				if (atom_obj->AtomType() != MathObject::NUMBER)
 					return false;
 				table.insert(std::make_pair(atom_pattern->str, obj));
+				table_list.push_back(atom_pattern->str);
 			}
 			else {
 				if (it->second->GetString() != atom_obj->str)
@@ -83,6 +88,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				if (atom_obj->AtomType() != MathObject::STRING)
 					return false;
 				table.insert(std::make_pair(atom_pattern->str, obj));
+				table_list.push_back(atom_pattern->str);
 			}
 			else {
 				if (it->second->GetString() != atom_obj->str)
@@ -110,7 +116,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		if (vec_pattern->components.size() != vec_obj->components.size())
 			return false;
 		for(int i = 0; i<vec_pattern->components.size();i++)
-			if (!DoMatch(vec_pattern->components[i], vec_obj->components[i], table)) return false;
+			if (!DoMatch(vec_pattern->components[i], vec_obj->components[i], table, table_list)) return false;
 		break;
 	}
 	case MathObject::FUNCTION: {
@@ -122,10 +128,10 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		// 分别比较子表达式
 		if (func_pattern->parameter.size() != func_obj->parameter.size())
 			return false;
-		if (!DoMatch(func_pattern->function, func_obj->function, table))
+		if (!DoMatch(func_pattern->function, func_obj->function, table, table_list))
 			return false;
 		for (int i = 0; i < func_pattern->parameter.size(); i++) {
-			if (!DoMatch(func_pattern->parameter[i], func_obj->parameter[i], table))
+			if (!DoMatch(func_pattern->parameter[i], func_obj->parameter[i], table, table_list))
 				return false;
 		}
 		break;
@@ -137,14 +143,14 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		Ptr<FunctionalOperator> fop_obj = Dynamic_cast<FunctionalOperator>(obj);
 		if (fop_pattern->parameter.size() != fop_obj->parameter.size() || fop_pattern->variables.size() != fop_obj->variables.size() || fop_pattern->fparameter.size() != fop_obj->fparameter.size())
 			return false;
-		if (!DoMatch(fop_pattern->function, fop_obj->function, table)) 
+		if (!DoMatch(fop_pattern->function, fop_obj->function, table, table_list)) 
 			return false;
 		for (int i = 0; i < fop_pattern->variables.size(); i++) 
-			if (!DoMatch(fop_pattern->variables[i], fop_obj->variables[i], table)) return false;
+			if (!DoMatch(fop_pattern->variables[i], fop_obj->variables[i], table, table_list)) return false;
 		for (int i = 0; i < fop_pattern->fparameter.size(); i++) 
-			if (!DoMatch(fop_pattern->fparameter[i], fop_obj->fparameter[i], table)) return false;
+			if (!DoMatch(fop_pattern->fparameter[i], fop_obj->fparameter[i], table, table_list)) return false;
 		for (int i = 0; i < fop_pattern->parameter.size(); i++) 
-			if (!DoMatch(fop_pattern->parameter[i], fop_obj->parameter[i], table)) return false;
+			if (!DoMatch(fop_pattern->parameter[i], fop_obj->parameter[i], table, table_list)) return false;
 		break;
 	}
 	case  MathObject::POWER: {
@@ -152,9 +158,9 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		Ptr<Power> pow_pattern = Dynamic_cast<Power>(pattern);
 		Ptr<Power> pow_obj = Dynamic_cast<Power>(obj);
-		if (!DoMatch(pow_pattern->base, pow_obj->base, table))
+		if (!DoMatch(pow_pattern->base, pow_obj->base, table, table_list))
 			return false;
-		if (!DoMatch(pow_pattern->exponent, pow_obj->exponent, table))
+		if (!DoMatch(pow_pattern->exponent, pow_obj->exponent, table, table_list))
 			return false;
 		break;
 	}
@@ -163,7 +169,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		Ptr<Inverse> inv_pattern = Dynamic_cast<Inverse>(pattern);
 		Ptr<Inverse> inv_obj = Dynamic_cast<Inverse>(obj);
-		if (!DoMatch(inv_pattern->component, inv_obj->component, table))
+		if (!DoMatch(inv_pattern->component, inv_obj->component, table, table_list))
 			return false;
 		break;
 	}
@@ -172,11 +178,34 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		Ptr<Item> itm_pattern = Dynamic_cast<Item>(pattern);
 		Ptr<Item> itm_obj = Dynamic_cast<Item>(obj);
-		// 分别比较子表达式
-		if (itm_pattern->factors.size() != itm_obj->factors.size())
+		if (itm_pattern->factors.size() != itm_obj->factors.size())	// 判断长短
 			return false;
-		for (int i = 0; i < itm_pattern->factors.size(); i++)
-			if (!DoMatch(itm_pattern->factors[i], itm_obj->factors[i], table)) return false;
+		auto& pattern_factors = itm_pattern->factors;
+		auto& obj_factors = itm_obj->factors;
+
+		std::vector<bool> md(obj_factors.size(), false);	// 是否已经配过
+		int table_size;
+		for (int i = 0; i < pattern_factors.size(); i++) {
+			bool flag = false;
+			// 记录当前table大小，以便匹配失败时恢复
+			table_size = table_list.size();
+			for (int j = 0; j < obj_factors.size(); j++) {
+				if (md[j]) continue;	// 不匹配已经被匹配占用的项
+				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list)) {
+					// 匹配尝试成功
+					flag = true;
+					md[j] = true;
+					break;
+				}
+				// 本次匹配尝试失败，清除尝试中错误的匹配表
+				while(table.size() > table_size) {
+					table.erase(table_list.back());
+					table_list.pop_back();
+				}
+			}
+			if (!flag)
+				return false;
+		}
 		break;
 	}
 	case MathObject::OPPOSITE: {
@@ -184,7 +213,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		Ptr<Opposite> oppo_pattern = Dynamic_cast<Opposite>(pattern);
 		Ptr<Opposite> oppo_obj = Dynamic_cast<Opposite>(obj);
-		if (!DoMatch(oppo_pattern->component, oppo_obj->component, table))
+		if (!DoMatch(oppo_pattern->component, oppo_obj->component, table, table_list))
 			return false;
 		break;
 	}
@@ -193,11 +222,32 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		Ptr<Polynomial> poly_pattern = Dynamic_cast<Polynomial>(pattern);
 		Ptr<Polynomial> poly_obj = Dynamic_cast<Polynomial>(obj);
-		// 分别比较子表达式
-		if (poly_pattern->items.size() != poly_obj->items.size())
+		if (poly_pattern->items.size() != poly_obj->items.size())	// 判断长短
 			return false;
-		for (int i = 0; i < poly_pattern->items.size(); i++)
-			if (!DoMatch(poly_pattern->items[i], poly_obj->items[i], table)) return false;
+		auto& pattern_items = poly_pattern->items;
+		auto& obj_items = poly_obj->items;
+		std::vector<bool> md(obj_items.size(), false);	// 是否已经配过
+		int table_size;
+		for (int i = 0; i < pattern_items.size(); i++) {
+			bool flag = false;
+			// 记录当前table大小，以便匹配失败时恢复
+			table_size = table_list.size();
+			for (int j = 0; j < obj_items.size(); j++) {
+				if (md[j]) continue;	// 不匹配已经匹配过的项
+				if (DoMatch(pattern_items[i], obj_items[j], table, table_list)) {
+					flag = true;
+					md[j] = true;
+					break;
+				}
+				// 本次匹配尝试失败，清除尝试中错误的匹配表
+				while (table.size() > table_size) {
+					table.erase(table_list.back());
+					table_list.pop_back();
+				}
+			}
+			if (!flag)
+				return false;
+		}
 		break;
 	}
 	case MathObject::MAP: {
@@ -205,9 +255,9 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		Ptr<Map> map_pattern = Dynamic_cast<Map>(pattern);
 		Ptr<Map> map_obj = Dynamic_cast<Map>(obj);
-		if (!DoMatch(map_pattern->key, map_obj->key, table))
+		if (!DoMatch(map_pattern->key, map_obj->key, table, table_list))
 			return false;
-		if (!DoMatch(map_pattern->value, map_obj->value, table))
+		if (!DoMatch(map_pattern->value, map_obj->value, table, table_list))
 			return false;
 		break;
 	}
@@ -218,9 +268,9 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		Ptr<Compare> cmp_obj = Dynamic_cast<Compare>(obj);
 		if (cmp_pattern->op != cmp_obj->op)
 			return false;
-		if (!DoMatch(cmp_pattern->left, cmp_obj->left, table))
+		if (!DoMatch(cmp_pattern->left, cmp_obj->left, table, table_list))
 			return false;
-		if (!DoMatch(cmp_pattern->right, cmp_obj->right, table))
+		if (!DoMatch(cmp_pattern->right, cmp_obj->right, table, table_list))
 			return false;
 		break;
 	}
@@ -229,6 +279,93 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		break;
 	}
 	return true;
+}
+
+bool mathS::DoMatchRes(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table, std::list<std::string>& table_list)
+{
+	switch (pattern->GetType()) {
+	case MathObject::ITEM: {
+		if (obj->GetType() != MathObject::ITEM)		// 确认类型
+			return false;
+		Ptr<Item> itm_pattern = Dynamic_cast<Item>(pattern);
+		Ptr<Item> itm_obj = Dynamic_cast<Item>(obj);
+		if (itm_pattern->factors.size() > itm_obj->factors.size())	// 判断长短
+			return false;
+		auto& pattern_factors = itm_pattern->factors;
+		auto& obj_factors = itm_obj->factors;
+
+		std::vector<bool> md(obj_factors.size(), false);	// 是否已经配过
+		int table_size;
+		for (int i = 0; i < pattern_factors.size(); i++) {
+			bool flag = false;
+			table_size = table_list.size(); // 记录当前 table 大小，以便恢复
+			for (int j = 0; j < obj_factors.size(); j++) {
+				if (md[j]) continue;	// 不匹配已经匹配过的项
+				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list)) { 
+					flag = true;
+					md[j] = true;
+					break;
+				}
+				// 本次匹配尝试失败，清除尝试中错误的匹配表
+				while (table.size() > table_size) {
+					table.erase(table_list.back());
+					table_list.pop_back();
+				}
+			}
+			if (!flag) // 应该删去目前为止失败的匹配 TODO
+				return false;
+		}
+		Ptr<Item> itm_residual = New<Item>();
+		for (int j = 0; j < obj_factors.size(); j++) {
+			if (!md[j])
+				itm_residual->factors.push_back(obj_factors[j]);
+		}
+		table["__RESIDUAL__"] = itm_residual;
+		return true;
+	}
+	case MathObject::POLYNOMIAL: {
+		if (obj->GetType() != MathObject::POLYNOMIAL)		// 确认类型
+			return false;
+		Ptr<Polynomial> poly_pattern = Dynamic_cast<Polynomial>(pattern);
+		Ptr<Polynomial> poly_obj = Dynamic_cast<Polynomial>(obj);
+		if (poly_pattern->items.size() > poly_obj->items.size())	// 判断长短
+			return false;
+		auto& pattern_items = poly_pattern->items;
+		auto& obj_items = poly_obj->items;
+
+		std::vector<bool> md(obj_items.size(), false);	// 是否已经配过
+		int table_size;
+		for (int i = 0; i < pattern_items.size(); i++) {
+			bool flag = false;
+			table_size = table_list.size(); // 记录当前 table 大小，以便恢复
+			for (int j = 0; j < obj_items.size(); j++) {
+				if (md[j]) continue;	// 不匹配已经匹配过的项
+				if (DoMatch(pattern_items[i], obj_items[j], table, table_list)) {
+					flag = true;
+					md[j] = true;
+					break;
+				}
+				// 本次匹配尝试失败，清除尝试中错误的匹配表
+				while (table.size() > table_size) {
+					table.erase(table_list.back());
+					table_list.pop_back();
+				}
+			}
+			if (!flag)
+				return false;
+		}
+		Ptr<Polynomial> poly_residual = New<Polynomial>();
+		for (int j = 0; j < obj_items.size(); j++) {
+			if(!md[j])
+				poly_residual->items.push_back(obj_items[j]);
+		}
+		table["__RESIDUAL__"] = poly_residual;
+		return true;
+	}
+	default:
+		// 其它情况，与普通DoMatch方法相同
+		return DoMatch(pattern, obj, table, table_list);
+	}
 }
 
 Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, Ptr<MathObject>>& table)
@@ -296,7 +433,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		itm_ret->factors.reserve(itm_pattern->factors.size());
 		// 对子表达式应用替换，返回拷贝
 		for (int i = 0; i < itm_pattern->factors.size(); i++)
-			itm_ret->factors.push_back(DoReplace(itm_pattern->factors[i], table));
+			itm_ret->push_back(DoReplace(itm_pattern->factors[i], table));
 		return itm_ret;
 	}
 	case MathObject::OPPOSITE: {
@@ -309,7 +446,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		poly_ret->items.reserve(poly_pattern->items.size());
 		// 对子表达式应用替换，返回拷贝
 		for (int i = 0; i < poly_pattern->items.size(); i++)
-			poly_ret->items.push_back(DoReplace(poly_pattern->items[i], table));
+			poly_ret->push_back(DoReplace(poly_pattern->items[i], table));
 		return poly_ret;
 	}
 	case MathObject::MAP: {
@@ -413,11 +550,25 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 			return false;
 		Ptr<Item> itm_a = Dynamic_cast<Item>(a);
 		Ptr<Item> itm_b = Dynamic_cast<Item>(b);
-		// 分别比较子表达式
-		if (itm_a->factors.size() != itm_b->factors.size())
+		if (itm_a->factors.size() != itm_b->factors.size())	// 判断长短
 			return false;
-		for (int i = 0; i < itm_a->factors.size(); i++)
-			if (!FullCompare(itm_a->factors[i], itm_b->factors[i])) return false;
+		auto& a_factors = itm_a->factors;
+		auto& b_factors = itm_b->factors;
+
+		std::vector<bool> md(b_factors.size(), false);	// 是否已经配过
+		for (int i = 0; i < a_factors.size(); i++) {
+			bool flag = false;
+			for (int j = 0; j < b_factors.size(); j++) {
+				if (md[j]) continue;	// 不匹配已经匹配过的项
+				if (FullCompare(a_factors[i], b_factors[j])) {
+					flag = true;
+					md[j] = true;
+					break;
+				}
+			}
+			if (!flag)
+				return false;
+		}
 		break;
 	}
 	case MathObject::OPPOSITE: {
@@ -434,11 +585,24 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 			return false;
 		Ptr<Polynomial> poly_a = Dynamic_cast<Polynomial>(a);
 		Ptr<Polynomial> poly_b = Dynamic_cast<Polynomial>(b);
-		// 分别比较子表达式
-		if (poly_a->items.size() != poly_b->items.size())
+		if (poly_a->items.size() != poly_b->items.size())	// 判断长短
 			return false;
-		for (int i = 0; i < poly_a->items.size(); i++)
-			if (!FullCompare(poly_a->items[i], poly_b->items[i])) return false;
+		auto& a_items = poly_a->items;
+		auto& b_items = poly_b->items;
+		std::vector<bool> md(b_items.size(), false);	// 是否已经配过
+		for (int i = 0; i < a_items.size(); i++) {
+			bool flag = false;
+			for (int j = 0; j < b_items.size(); j++) {
+				if (md[j]) continue;	// 不匹配已经匹配过的项
+				if (FullCompare(a_items[i], b_items[j])) {
+					flag = true;
+					md[j] = true;
+					break;
+				}
+			}
+			if (!flag)
+				return false;
+		}
 		break;
 	}
 	case MathObject::MAP: {

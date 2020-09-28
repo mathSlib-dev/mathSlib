@@ -270,7 +270,7 @@ namespace mathS
 	public:
 		Item() {}
 		~Item() {}
-        void push_back(Ptr<MathObject> const f) { factors.push_back(f); }
+		void push_back(Ptr<MathObject> const f);
 		// eg. x1*x2   x/y
 	public:
 		std::vector<Ptr<MathObject>> factors;
@@ -313,7 +313,7 @@ namespace mathS
 
 		Ptr<MathObject> DeepCopy() const;
 
-		void push_back(Ptr<MathObject> const itm) { items.push_back(itm); };
+		void push_back(Ptr<MathObject> const itm);
 	};
 
 	class Map : public MathObject
