@@ -107,6 +107,7 @@ namespace mathS
 
 		virtual Type GetType() const = 0;
 		virtual std::string GetString() const = 0;
+		virtual std::string GetLaTeXString() const = 0;
 		virtual int Level() const = 0;
 
 
@@ -134,16 +135,17 @@ namespace mathS
 	};
 	*/
 	std::string ListGetString(const std::vector<Ptr<MathObject>>& lst);
+	std::string ListGetLaTeXString(const std::vector<Ptr<MathObject>>& lst);
 	std::vector<Ptr<MathObject>> ListDeepCopy(const std::vector<Ptr<MathObject>>& lst);
 
 	class Atom : public MathObject
 	{
-		// 2020-7-3 ¼Ü¹¹µ÷Õû. Ô­ÏÈµÄNumber, Variable, String±»È«²¿µ±×öÁËAtom.
-		// Atom.str ±íÊ¾ÆäÄÚÈİ£º
-		// Èç¹ûÊÇÒ»¸önumber,ÄÇÃ´str¾ÍÊÇÒ»¸öÊı×Ö¶ÔÓ¦µÄ×Ö·û´®£»Èç¹ûÊÇÒ»¸övariable£¬¾ÍÊÇÒÔ×ÖÄ¸¿ªÍ·µÄ×Ö·û´®£¨»òÌØÊâĞŞÊÎ·û£©£»Èç¹ûÊÇstring£¬ÄÇÒ»¶¨ÊÇ""°üÀ¨µÄ×Ö·û´®.
-		// Õâ¸öµ÷ÕûµÄÀíÓÉÊÇ£ºNumber, Variable, String±¾À´¾ÍÊÇÖ»ÓÃstd::stringÀ´´æ´¢µÄ£¬ÆäLevel(),GetString(),DeepCopy()µÈ·½·¨Ò»Ä£Ò»Ñù
-		//					²¢ÇÒÔÚÒ»°ãµÄ±í´ïÊ½±äĞÎÖĞ£¬²»±Ø¶ÔÕâÈıÕß×÷Çø·Ö¡£Ö»ĞèÒªÔÚ»¯¼ò¡¢ÇóÖµµÈÉæ¼°µ½Æä¾ßÌåÄÚÈİÊ±£¬ĞèÒªÇø·Ö¡£
-		//					Òò´Ë²ÉÓÃAtomÍ³Ò»±íÊ¾£¬Óï·¨·ÖÎöÆ÷»á¸ü¼òµ¥¡£¶øÉæ¼°µ½ÆäÄÚÈİÊ±£¬ÔÙ×÷Ê¶±ğAtomÊÇÊı×Ö¡¢±äÁ¿»¹ÊÇ×Ö·û´®.
+		// 2020-7-3 æ¶æ„è°ƒæ•´. åŸå…ˆçš„Number, Variable, Stringè¢«å…¨éƒ¨å½“åšäº†Atom.
+		// Atom.str è¡¨ç¤ºå…¶å†…å®¹ï¼š
+		// å¦‚æœæ˜¯ä¸€ä¸ªnumber,é‚£ä¹ˆstrå°±æ˜¯ä¸€ä¸ªæ•°å­—å¯¹åº”çš„å­—ç¬¦ä¸²ï¼›å¦‚æœæ˜¯ä¸€ä¸ªvariableï¼Œå°±æ˜¯ä»¥å­—æ¯å¼€å¤´çš„å­—ç¬¦ä¸²ï¼ˆæˆ–ç‰¹æ®Šä¿®é¥°ç¬¦ï¼‰ï¼›å¦‚æœæ˜¯stringï¼Œé‚£ä¸€å®šæ˜¯""åŒ…æ‹¬çš„å­—ç¬¦ä¸².
+		// è¿™ä¸ªè°ƒæ•´çš„ç†ç”±æ˜¯ï¼šNumber, Variable, Stringæœ¬æ¥å°±æ˜¯åªç”¨std::stringæ¥å­˜å‚¨çš„ï¼Œå…¶Level(),GetString(),DeepCopy()ç­‰æ–¹æ³•ä¸€æ¨¡ä¸€æ ·
+		//					å¹¶ä¸”åœ¨ä¸€èˆ¬çš„è¡¨è¾¾å¼å˜å½¢ä¸­ï¼Œä¸å¿…å¯¹è¿™ä¸‰è€…ä½œåŒºåˆ†ã€‚åªéœ€è¦åœ¨åŒ–ç®€ã€æ±‚å€¼ç­‰æ¶‰åŠåˆ°å…¶å…·ä½“å†…å®¹æ—¶ï¼Œéœ€è¦åŒºåˆ†ã€‚
+		//					å› æ­¤é‡‡ç”¨Atomç»Ÿä¸€è¡¨ç¤ºï¼Œè¯­æ³•åˆ†æå™¨ä¼šæ›´ç®€å•ã€‚è€Œæ¶‰åŠåˆ°å…¶å†…å®¹æ—¶ï¼Œå†ä½œè¯†åˆ«Atomæ˜¯æ•°å­—ã€å˜é‡è¿˜æ˜¯å­—ç¬¦ä¸².
 	public:
 		std::string str;
 
@@ -154,12 +156,12 @@ namespace mathS
 		Type GetType() const { return Type::ATOM; };
 
 		Type AtomType() const;
-		// ·µ»ØÊıÖµ. ÔİÊ±Ö»Ö§³Ödouble. Èç¹ûÒÔºóÖ§³ÖÁË¸´Êı£¬ÔòĞèÒªĞŞ¸Ä´Ë´¦.
+		// è¿”å›æ•°å€¼. æš‚æ—¶åªæ”¯æŒdouble. å¦‚æœä»¥åæ”¯æŒäº†å¤æ•°ï¼Œåˆ™éœ€è¦ä¿®æ”¹æ­¤å¤„.
 		double NumberValue() const;
 
 		int Level() const { return LEVEL_ATOM; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -175,7 +177,7 @@ namespace mathS
 		Type GetType() const { return Type::VECTOR; };
 		int Level() const { return LEVEL_VECTOR; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -192,7 +194,7 @@ namespace mathS
 		Type GetType() const { return Type::FUNCTION; };
 		int Level() const { return LEVEL_FUNCTION; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 	
@@ -210,7 +212,7 @@ namespace mathS
 		Type GetType() const { return Type::FUNCOPERATOR; };
 		int Level() const { return LEVEL_FUNCTION; };
 		std::string GetString() const;
-		
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -227,7 +229,7 @@ namespace mathS
 		Type GetType() const { return Type::LOCATE; };
 		int Level() const { return LEVEL_LOCATE; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 	class Power : public MathObject
@@ -244,7 +246,7 @@ namespace mathS
 		Type GetType() const { return Type::POWER; };
 		int Level() const { return LEVEL_POWER; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -261,7 +263,7 @@ namespace mathS
 		Type GetType() const { return Type::INVERSE; };
 		int Level() const { return LEVEL_INVERSE; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -278,7 +280,7 @@ namespace mathS
 		Type GetType() const { return Type::ITEM; };
 		int Level() const { return LEVEL_ITEM; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -295,7 +297,7 @@ namespace mathS
 		Type GetType() const { return Type::OPPOSITE; };
 		int Level() const { return LEVEL_OPPOSITE; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 	class Polynomial : public MathObject
@@ -310,7 +312,7 @@ namespace mathS
 		Type GetType() const { return Type::POLYNOMIAL; };
 		int Level() const { return LEVEL_POLYNOMIAL; };
 		std::string GetString() const;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 
 		void push_back(Ptr<MathObject> const itm);
@@ -330,7 +332,7 @@ namespace mathS
 		Type GetType() const { return Type::MAP; };
 		int Level() const { return LEVEL_MAP; };
 		std::string GetString() const ;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -349,7 +351,7 @@ namespace mathS
 		Type GetType() const { return Type::COMPARE; };
 		int Level() const { return LEVEL_COMPARE; };
 		std::string GetString() const ;
-
+		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -365,7 +367,7 @@ namespace mathS
 		Type GetType() const { return Type::ERROR; };
 		int Level() const { return LEVEL_ERROR; };
 		std::string GetString() const { return info; };
-
+		std::string GetLaTeXString() const { return info; };
 		Ptr<MathObject> DeepCopy() const;
 	};
 
@@ -380,7 +382,7 @@ namespace mathS
 		Type GetType() const { return Type::EMPTY; };
 		int Level() const { return LEVEL_EMPTY; };
 		std::string GetString() const { return std::string(); };
-
+		std::string GetLaTeXString() const { return std::string(); };
 		Ptr<MathObject> DeepCopy() const;
 	};
 	/*

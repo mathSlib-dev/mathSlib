@@ -16,21 +16,21 @@ namespace mathS
 	{
 
     public:
-	    // ´Ó×Ö·û´®³õÊ¼»¯
+	    // ä»å­—ç¬¦ä¸²åˆå§‹åŒ–
 	    Parser(const std::string& c) : lexer(c) { }
 
-		// »ñµÃ½âÎöµÄ MathObject ·ûºÅ±í´ïÊ½¶ÔÏó
+		// è·å¾—è§£æçš„ MathObject ç¬¦å·è¡¨è¾¾å¼å¯¹è±¡
 	    Ptr<MathObject> Parse();
     private:
 		Lexer lexer;
 
 	    short level(const std::string& c);
 		/// <summary>
-		/// ´Ó start Î»ÖÃ¿ªÊ¼½âÎöÒ»¸ö¶ÔÏó£¬Ö±µ½µ½´ïÓÒÀ¨ºÅ»òÄ©Î². ÈôÃ»ÓĞ¶ÔÏóÔò·µ»Ø EmptyObject. Èô¼ì²âµ½Óï·¨´íÎóÔò·µ»ØErrorObject
+		/// ä» start ä½ç½®å¼€å§‹è§£æä¸€ä¸ªå¯¹è±¡ï¼Œç›´åˆ°åˆ°è¾¾å³æ‹¬å·æˆ–æœ«å°¾. è‹¥æ²¡æœ‰å¯¹è±¡åˆ™è¿”å› EmptyObject. è‹¥æ£€æµ‹åˆ°è¯­æ³•é”™è¯¯åˆ™è¿”å›ErrorObject
 		/// </summary>
 		/// <param name="tokens"></param>
 		/// <param name="start"></param>
-		/// <param name="i">ÒıÓÃ±äÁ¿£¬½âÎö½áÊøÊ±£¬iÔÚ±»½âÎöµÄ¶ÔÏó¶ÔÓ¦tokenµÄºóÒ»Î»Ë÷Òı(¼´Íùºó¼ÌĞø½âÎö¿ªÊ¼µÄÎ»ÖÃ)</param>
+		/// <param name="i">å¼•ç”¨å˜é‡ï¼Œè§£æç»“æŸæ—¶ï¼Œiåœ¨è¢«è§£æçš„å¯¹è±¡å¯¹åº”tokençš„åä¸€ä½ç´¢å¼•(å³å¾€åç»§ç»­è§£æå¼€å§‹çš„ä½ç½®)</param>
 		/// <returns></returns>
 		Ptr<MathObject> parseObject(const std::vector<Token>& tokens, const int start, int& i);
 

@@ -6,7 +6,7 @@
 namespace mathS {
 
 	// MathFunction : MathObject -> MathObject
-	// MathFunction ÊÇ¶ÔÊıÑ§¶ÔÏó£¬ÔËÓÃÒ»Ğ©¹æÔòÀ´µÃµ½½á¹ûµÄ
+	// MathFunction æ˜¯å¯¹æ•°å­¦å¯¹è±¡ï¼Œè¿ç”¨ä¸€äº›è§„åˆ™æ¥å¾—åˆ°ç»“æœçš„
 	using MathFunction = std::function<Ptr<MathObject>(std::vector<Ptr<MathObject>>)>;
 	
 }

@@ -8,7 +8,7 @@ using namespace mathS;
 #define ERROR_CHECK_LIST(x) if (x->GetType() == MathObject::ERROR) return {x}
 #define LIST_ERROR_CHECK(x) if (x.size()>0 && x[0]->GetType() == MathObject::ERROR) return x[0]
 
-// ½âÎö±í´ïÊ½
+// è§£æè¡¨è¾¾å¼
 Ptr<MathObject> Parser::Parse() {
 
     std::vector<Token> tokens;
@@ -76,7 +76,7 @@ Ptr<MathObject> mathS::Parser::parseAtom(const std::vector<Token>& tokens, const
         return obj;
     }
     else if (tokens[i].type == Token::OPERATOR) {
-        // Èç¹ûÊÇ²Ù×÷·û£¬ÄÇÃ´±ØĞëÊÇ(_OBJECT)»ò{_OBJECT}
+        // å¦‚æœæ˜¯æ“ä½œç¬¦ï¼Œé‚£ä¹ˆå¿…é¡»æ˜¯(_OBJECT)æˆ–{_OBJECT}
         if (tokens[i].text == "(") {
             obj = parseObject(tokens, i + 1, i);
             ERROR_CHECK(obj);
@@ -117,7 +117,7 @@ Ptr<MathObject> mathS::Parser::parseFunction(const std::vector<Token>& tokens, c
         return f;
     
     if (tokens[i].text == "(") {
-        // ( ) ±íÊ¾º¯Êı
+        // ( ) è¡¨ç¤ºå‡½æ•°
         auto p = parseList(tokens, i + 1, i);
         LIST_ERROR_CHECK(p);
         if (i < tokens.size() && tokens[i].text == ")") {
@@ -132,7 +132,7 @@ Ptr<MathObject> mathS::Parser::parseFunction(const std::vector<Token>& tokens, c
         }
     }
     else if (tokens[i].text == "<<") {
-        // << | >>( ) ±íÊ¾·ºº¯Ëã×Ó
+        // << | >>( ) è¡¨ç¤ºæ³›å‡½ç®—å­
         std::vector<Ptr<Atom>> vars;
         // variables
         while (true) {
@@ -171,7 +171,7 @@ Ptr<MathObject> mathS::Parser::parseFunction(const std::vector<Token>& tokens, c
         return fop;
     }
     else if (level(tokens[i].text) > MathObject::LEVEL_FUNCTION) {
-        // ºóÃæÒÑ¾­½Ø¶Ï£¬ËµÃ÷²¢²»ÊÇº¯ÊıĞÎÊ½£¬°Ñ f ·µ»Ø¼´¿É
+        // åé¢å·²ç»æˆªæ–­ï¼Œè¯´æ˜å¹¶ä¸æ˜¯å‡½æ•°å½¢å¼ï¼ŒæŠŠ f è¿”å›å³å¯
         return f;
     }
     else {
@@ -211,13 +211,13 @@ Ptr<MathObject> mathS::Parser::parsePower(const std::vector<Token>& tokens, cons
     i = start;
     auto b = parseLocate(tokens, start, i);
     ERROR_CHECK(b);
-    // ÊÇ·ñÊÇÖ¸ÊıĞÎÊ½
+    // æ˜¯å¦æ˜¯æŒ‡æ•°å½¢å¼
     if (!(i < tokens.size() && tokens[i].text == "^")) {
         return b;
     }
     auto e = parsePower(tokens, i + 1, i);
     ERROR_CHECK(e);
-    // parsePower ºÍ parseAtom Ò»¶¨²»»á·µ»Ø Empty
+    // parsePower å’Œ parseAtom ä¸€å®šä¸ä¼šè¿”å› Empty
     Ptr<Power> pw = New<Power>();
     pw->base = b;
     pw->exponent = e;
@@ -230,7 +230,7 @@ Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const
     auto fct = parsePower(tokens, start, i);
     ERROR_CHECK(fct);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM) {
-        // Èç¹ûÏîÖĞÖ»ÓĞÒ»¸öfactor£¬ÄÇÃ´¾ÍÖ±½Ó·µ»ØÕâ¸öfactor£¬¶ø²»±ØÔÙÌ×Ò»²ãitem
+        // å¦‚æœé¡¹ä¸­åªæœ‰ä¸€ä¸ªfactorï¼Œé‚£ä¹ˆå°±ç›´æ¥è¿”å›è¿™ä¸ªfactorï¼Œè€Œä¸å¿…å†å¥—ä¸€å±‚item
         return fct;
     }
 
@@ -238,7 +238,7 @@ Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const
     itm->push_back(fct);
     while (true) {
         if (tokens[i].text == "*") {
-            // Ôö¼Ó³ËÒò×Ó
+            // å¢åŠ ä¹˜å› å­
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
             itm->push_back(t);
@@ -246,7 +246,7 @@ Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const
                 return itm;
         }
         else if (tokens[i].text == "/") {
-            // Ôö¼Ó³ıÒò×Ó
+            // å¢åŠ é™¤å› å­
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
             itm->push_back(New<Inverse>(t));
@@ -276,26 +276,26 @@ Ptr<MathObject> mathS::Parser::parsePolynomial(const std::vector<Token>& tokens,
     }
     while (true) {
         if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_POLYNOMIAL) {
-            // ÈôÖ»ÓĞÒ»Ïî£¬¼ò»¯±í´ïÊ½
+            // è‹¥åªæœ‰ä¸€é¡¹ï¼Œç®€åŒ–è¡¨è¾¾å¼
             if (poly->items.size() > 1)
                 return poly;
             else 
                 return poly->items[0];
         }
         if (tokens[i].text == "+") {
-            // Ôö¼ÓÕıÏî
+            // å¢åŠ æ­£é¡¹
             auto t = parseItem(tokens, i + 1, i);
             ERROR_CHECK(t);
             poly->push_back(t);
         }
         else if (tokens[i].text == "-") {
-            // Ôö¼Ó¸ºÏî
+            // å¢åŠ è´Ÿé¡¹
             auto t = parseItem(tokens, i + 1, i);
             ERROR_CHECK(t);
             poly->push_back(New<Opposite>(t));
         }
         else {
-            // ¶àÏîÊ½Ã»ÓĞÖÕÖ¹£¬¶øÏÂÒ»¸ö×Ö·ûÎŞ·¨Ê¶±ğÓĞĞ§£¬±¨´í
+            // å¤šé¡¹å¼æ²¡æœ‰ç»ˆæ­¢ï¼Œè€Œä¸‹ä¸€ä¸ªå­—ç¬¦æ— æ³•è¯†åˆ«æœ‰æ•ˆï¼ŒæŠ¥é”™
             return New<ErrorObject>("Parse: Syntax Error. Unexpected Symbol " + tokens[i].text);
         }
     }

@@ -18,8 +18,8 @@ namespace mathS
 	|=>//NMatrix
 	|=>//NSparseMatrix
 
-	NList �� NAtom ���ɹ������ͨ����ļ̳�ʵ�֡�
-	��֮��Ե�������ʹ�� NNode���������Ļ����˷�һЩ�ռ䡣
+	NList 和 NAtom 构成广义表，通过类的继承实现。
+	与之相对的做法是使用 NNode，但这样的话会浪费一些空间。
 
 	*/
 
@@ -72,7 +72,7 @@ namespace mathS
 		class NList : public NMathObject
 		{
 		public:
-			// ƥ��
+			// 匹配
 			/*
 			f(_x)
 			f(1,2)

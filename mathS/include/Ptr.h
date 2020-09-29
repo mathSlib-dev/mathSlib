@@ -2,11 +2,11 @@
 #include <memory>
 
 namespace mathS {
-	// Ê¹ÓÃÖÇÄÜÖ¸Õë£¬·ÀÖ¹ÄÚ´æĞ¹Â©
+	// ä½¿ç”¨æ™ºèƒ½æŒ‡é’ˆï¼Œé˜²æ­¢å†…å­˜æ³„æ¼
 	template<class T>
 	using Ptr = std::shared_ptr<T>;  
 
 #define New std::make_shared
-	// Ç¿ÖÆÄÚ´æ×ª»»£¬»ùÀàÓëÅÉÉúÀàÖ®¼äÏà»¥×ª»»
+	// å¼ºåˆ¶å†…å­˜è½¬æ¢ï¼ŒåŸºç±»ä¸æ´¾ç”Ÿç±»ä¹‹é—´ç›¸äº’è½¬æ¢
 #define Dynamic_cast std::dynamic_pointer_cast
 }

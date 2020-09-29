@@ -1,7 +1,7 @@
 #pragma once
 #include <NMathObject.h>
 /*
-	NFunction.h ÖÐ£¬¶¨ÒåÁË³£ÓÃµÄNFunction. ³Æ×÷±ê×¼NFunction¿â.
+	NFunction.h ä¸­ï¼Œå®šä¹‰äº†å¸¸ç”¨çš„NFunction. ç§°ä½œæ ‡å‡†NFunctionåº“.
 */
 
 namespace mathS
@@ -11,9 +11,9 @@ namespace mathS
 		using NParamsList = std::vector<Ptr<NMathObject>>;
 		using NFunction = std::function<Ptr<NMathObject>(const NParamsList&)>;
 
-		// NFunctionµÄErrorÀàÐÍ.
+		// NFunctionçš„Errorç±»åž‹.
 		NFunction NFunctionError(const std::string info);
-		// NFunctionµÄAtomÀàÐÍ¡£Ö±½Ó·µ»ØÖµ v µÄº¯Êý¡£
+		// NFunctionçš„Atomç±»åž‹ã€‚ç›´æŽ¥è¿”å›žå€¼ v çš„å‡½æ•°ã€‚
 		NFunction NFunctionAtom(const NValueType v);
 		
 		

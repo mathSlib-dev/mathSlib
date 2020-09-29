@@ -4,6 +4,7 @@ using namespace mathS;
 
 Ptr<MathObject> mathS::Compute(const Ptr<Item>& input)
 {
-	// ÏÈ¿½±´Ò»·İ
+	// å…ˆæ‹·è´ä¸€ä»½
 	Ptr<Item> rst = Dynamic_cast<Item>(input->DeepCopy());
+	return Ptr<MathObject>();
 }

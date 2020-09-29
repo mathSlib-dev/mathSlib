@@ -25,12 +25,12 @@ Rule mathS::MakeRule(Ptr<MathObject> src_pattern, Ptr<MathObject> tar_pattern)
 
 bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table, std::list<std::string>& table_list)
 {
-	// Í¨Åä·ûÆ¥Åä±í
+	// é€šé…ç¬¦åŒ¹é…è¡¨
 	MathObject::Type mtype = pattern->GetType();
 	
 	switch (mtype) {
 	case MathObject::ATOM: {
-		// Èç¹ûÊÇAtom, ¿¼ÂÇÊÇÆ¥Åä±äÁ¿Ãû»¹ÊÇ
+		// å¦‚æœæ˜¯Atom, è€ƒè™‘æ˜¯åŒ¹é…å˜é‡åè¿˜æ˜¯
 		Ptr<Atom> atom_pattern = Dynamic_cast<Atom>(pattern);
 		switch (atom_pattern->str[0]) {
 		case '_': {
@@ -97,7 +97,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			break;
 		}
 		default: {
-			// ÊÇ±äÁ¿Ãû£¬ÒªÇóobj¶ÔÓ¦Ò²ÊÇÍêÈ«ÏàÍ¬µÄ±äÁ¿Ãû
+			// æ˜¯å˜é‡åï¼Œè¦æ±‚objå¯¹åº”ä¹Ÿæ˜¯å®Œå…¨ç›¸åŒçš„å˜é‡å
 			if (obj->GetType() != MathObject::ATOM)
 				return false;
 			if (atom_pattern->str != obj->GetString())
@@ -108,11 +108,11 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		break;
 	}
 	case MathObject::VECTOR: {
-		if (obj->GetType() != MathObject::VECTOR)		// È·ÈÏÀàĞÍ
+		if (obj->GetType() != MathObject::VECTOR)		// ç¡®è®¤ç±»å‹
 			return false;
 		Ptr<Vector> vec_pattern = Dynamic_cast<Vector>(pattern);
 		Ptr<Vector> vec_obj = Dynamic_cast<Vector>(obj);
-		// ·Ö±ğ±È½Ï×Ó±í´ïÊ½
+		// åˆ†åˆ«æ¯”è¾ƒå­è¡¨è¾¾å¼
 		if (vec_pattern->components.size() != vec_obj->components.size())
 			return false;
 		for(int i = 0; i<vec_pattern->components.size();i++)
@@ -120,12 +120,12 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		break;
 	}
 	case MathObject::FUNCTION: {
-		// Æ¥Åäº¯Êı
-		if (obj->GetType() != MathObject::FUNCTION)		// È·ÈÏÀàĞÍ
+		// åŒ¹é…å‡½æ•°
+		if (obj->GetType() != MathObject::FUNCTION)		// ç¡®è®¤ç±»å‹
 			return false;
 		Ptr<Function> func_pattern = Dynamic_cast<Function>(pattern);
 		Ptr<Function> func_obj = Dynamic_cast<Function>(obj);
-		// ·Ö±ğ±È½Ï×Ó±í´ïÊ½
+		// åˆ†åˆ«æ¯”è¾ƒå­è¡¨è¾¾å¼
 		if (func_pattern->parameter.size() != func_obj->parameter.size())
 			return false;
 		if (!DoMatch(func_pattern->function, func_obj->function, table, table_list))
@@ -174,12 +174,12 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		break;
 	}
 	case MathObject::ITEM: {
-		if (obj->GetType() != MathObject::ITEM)		// È·ÈÏÀàĞÍ
+		if (obj->GetType() != MathObject::ITEM)		// ç¡®è®¤ç±»å‹
 			return false;
 		auto& pattern_factors = Dynamic_cast<Item>(pattern)->factors;
 		auto& obj_factors = Dynamic_cast<Item>(obj)->factors;
 		
-		// ÅĞ¶ÏÊÇ·ñÓĞ²ĞÏî
+		// åˆ¤æ–­æ˜¯å¦æœ‰æ®‹é¡¹
 		std::string residual;
 		bool with_residual = false;
 		if (pattern_factors.back()->GetType() == MathObject::ATOM) {
@@ -188,25 +188,25 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				with_residual = true;
 			}
 		}
-		// ÒªÆ¥Åä pattern ÖĞÏîµÄ¸öÊı¡£Ã»ÓĞ²ĞÏî¾ÍÈ«²¿£¬ÓĞ²ĞÏî£¬²»Æ¥Åä²ĞÏî¡£
+		// è¦åŒ¹é… pattern ä¸­é¡¹çš„ä¸ªæ•°ã€‚æ²¡æœ‰æ®‹é¡¹å°±å…¨éƒ¨ï¼Œæœ‰æ®‹é¡¹ï¼Œä¸åŒ¹é…æ®‹é¡¹ã€‚
 		int matchsize = with_residual ? pattern_factors.size() - 1 : pattern_factors.size();
-		if (matchsize > obj_factors.size())	// ÅĞ¶Ï³¤¶Ì
+		if (matchsize > obj_factors.size())	// åˆ¤æ–­é•¿çŸ­
 			return false;
 
-		std::vector<bool> md(obj_factors.size(), false);	// ÊÇ·ñÒÑ¾­Åä¹ı
+		std::vector<bool> md(obj_factors.size(), false);	// æ˜¯å¦å·²ç»é…è¿‡
 		int table_size;
 		for (int i = 0; i < matchsize; i++) {
 			bool flag = false;
-			// ¼ÇÂ¼µ±Ç°table´óĞ¡£¬ÒÔ±ãÆ¥ÅäÊ§°ÜÊ±»Ö¸´
+			// è®°å½•å½“å‰tableå¤§å°ï¼Œä»¥ä¾¿åŒ¹é…å¤±è´¥æ—¶æ¢å¤
 			table_size = table_list.size();
 			for (int j = 0; j < obj_factors.size(); j++) {
-				if (md[j]) continue;	// ²»Æ¥ÅäÒÑ¾­±»Æ¥ÅäÕ¼ÓÃµÄÏî
+				if (md[j]) continue;	// ä¸åŒ¹é…å·²ç»è¢«åŒ¹é…å ç”¨çš„é¡¹
 				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list)) {
-					// Æ¥Åä³¢ÊÔ³É¹¦£¬Á¢¿ÌÕ¼ÓÃ£¨¿ÉÄÜ»áÓĞÎÊÌâ£©
+					// åŒ¹é…å°è¯•æˆåŠŸï¼Œç«‹åˆ»å ç”¨ï¼ˆå¯èƒ½ä¼šæœ‰é—®é¢˜ï¼‰
 					flag = true; md[j] = true;
 					break;
 				}
-				// ±¾´ÎÆ¥Åä³¢ÊÔÊ§°Ü£¬Çå³ı³¢ÊÔÖĞ´íÎóµÄÆ¥Åä±í
+				// æœ¬æ¬¡åŒ¹é…å°è¯•å¤±è´¥ï¼Œæ¸…é™¤å°è¯•ä¸­é”™è¯¯çš„åŒ¹é…è¡¨
 				while (table.size() > table_size) {
 					table.erase(table_list.back());
 					table_list.pop_back();
@@ -215,11 +215,11 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			if (!flag)
 				return false;
 		}
-		// ´¦Àí²ĞÏî
+		// å¤„ç†æ®‹é¡¹
 		if (with_residual) {
 			Ptr<MathObject> factors_residual ;
 			if (matchsize == obj_factors.size()) {
-				// residual ÈôÎª¿Õ£¬ÖÁÉÙ¸øÒ»¸ö1
+				// residual è‹¥ä¸ºç©ºï¼Œè‡³å°‘ç»™ä¸€ä¸ª1
 				factors_residual = New<Atom>("1");
 			}
 			else {
@@ -230,7 +230,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				}
 				factors_residual = item_res;
 			}
-			// ±È½ÏtableÖĞµÄÏî
+			// æ¯”è¾ƒtableä¸­çš„é¡¹
 			auto itres = table.find(residual);
 			if (itres == table.end()) {
 				table[residual] = factors_residual;
@@ -253,11 +253,11 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		break;
 	}
 	case MathObject::POLYNOMIAL: {
-		if (obj->GetType() != MathObject::POLYNOMIAL)		// È·ÈÏÀàĞÍ
+		if (obj->GetType() != MathObject::POLYNOMIAL)		// ç¡®è®¤ç±»å‹
 			return false;
 		auto& pattern_items = Dynamic_cast<Polynomial>(pattern)->items;
 		auto& obj_items = Dynamic_cast<Polynomial>(obj)->items;
-		// ÅĞ¶ÏÊÇ·ñÓĞ²ĞÏî
+		// åˆ¤æ–­æ˜¯å¦æœ‰æ®‹é¡¹
 		std::string residual;
 		bool with_residual = false;
 		if (pattern_items.back()->GetType() == MathObject::ATOM) {
@@ -266,25 +266,25 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				with_residual = true;
 			}
 		}
-		// ÒªÆ¥Åä pattern ÖĞÏîµÄ¸öÊı¡£Ã»ÓĞ²ĞÏî¾ÍÈ«²¿£¬ÓĞ²ĞÏî£¬²»Æ¥Åä²ĞÏî¡£
+		// è¦åŒ¹é… pattern ä¸­é¡¹çš„ä¸ªæ•°ã€‚æ²¡æœ‰æ®‹é¡¹å°±å…¨éƒ¨ï¼Œæœ‰æ®‹é¡¹ï¼Œä¸åŒ¹é…æ®‹é¡¹ã€‚
 		int matchsize = with_residual ? pattern_items.size() - 1 : pattern_items.size();
-		if (matchsize > obj_items.size())	// ÅĞ¶Ï³¤¶Ì
+		if (matchsize > obj_items.size())	// åˆ¤æ–­é•¿çŸ­
 			return false;
 
-		std::vector<bool> md(obj_items.size(), false);	// ÊÇ·ñÒÑ¾­Åä¹ı
+		std::vector<bool> md(obj_items.size(), false);	// æ˜¯å¦å·²ç»é…è¿‡
 		int table_size;
 		for (int i = 0; i < matchsize; i++) {
 			bool flag = false;
-			// ¼ÇÂ¼µ±Ç°table´óĞ¡£¬ÒÔ±ãÆ¥ÅäÊ§°ÜÊ±»Ö¸´
+			// è®°å½•å½“å‰tableå¤§å°ï¼Œä»¥ä¾¿åŒ¹é…å¤±è´¥æ—¶æ¢å¤
 			table_size = table_list.size();
 			for (int j = 0; j < obj_items.size(); j++) {
-				if (md[j]) continue;	// ²»Æ¥ÅäÒÑ¾­Æ¥Åä¹ıµÄÏî
+				if (md[j]) continue;	// ä¸åŒ¹é…å·²ç»åŒ¹é…è¿‡çš„é¡¹
 				if (DoMatch(pattern_items[i], obj_items[j], table, table_list)) {
 					flag = true;
 					md[j] = true;
 					break;
 				}
-				// ±¾´ÎÆ¥Åä³¢ÊÔÊ§°Ü£¬Çå³ı³¢ÊÔÖĞ´íÎóµÄÆ¥Åä±í
+				// æœ¬æ¬¡åŒ¹é…å°è¯•å¤±è´¥ï¼Œæ¸…é™¤å°è¯•ä¸­é”™è¯¯çš„åŒ¹é…è¡¨
 				while (table.size() > table_size) {
 					table.erase(table_list.back());
 					table_list.pop_back();
@@ -293,11 +293,11 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			if (!flag)
 				return false;
 		}
-		// ´¦Àí²ĞÏî
+		// å¤„ç†æ®‹é¡¹
 		if (with_residual) {
 			Ptr<MathObject> items_residual;
 			if (matchsize == obj_items.size()) {
-				// items_residualÈôÎª¿Õ£¬ÔòÖÁÉÙ¸øÒ»¸ö0
+				// items_residualè‹¥ä¸ºç©ºï¼Œåˆ™è‡³å°‘ç»™ä¸€ä¸ª0
 				items_residual = New<Atom>("0");
 			}
 			else {
@@ -308,7 +308,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				}
 				items_residual = poly_res;
 			}
-			// ±È½ÏtableÖĞµÄÏî
+			// æ¯”è¾ƒtableä¸­çš„é¡¹
 			auto itres = table.find(residual);
 			if (itres == table.end()) {
 				table[residual] = items_residual;
@@ -356,7 +356,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 {
 	switch (pattern->GetType()) {
 	case MathObject::ATOM: {
-		// Èç¹ûÊÇAtom, ¿¼ÂÇÌæ»»£¨²»¼ì²éÊÇÍ¨Åä·ûµÈ£¬Ö±½ÓÔÚtableÀï²éÕÒ£¬Ö»ÒªÕÒµ½¾ÍÌæ»»£©
+		// å¦‚æœæ˜¯Atom, è€ƒè™‘æ›¿æ¢ï¼ˆä¸æ£€æŸ¥æ˜¯é€šé…ç¬¦ç­‰ï¼Œç›´æ¥åœ¨tableé‡ŒæŸ¥æ‰¾ï¼Œåªè¦æ‰¾åˆ°å°±æ›¿æ¢ï¼‰
 		Ptr<Atom> atom_pattern = Dynamic_cast<Atom>(pattern);
 		auto it = table.find(atom_pattern->str);
 		if (it == table.end())
@@ -368,7 +368,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		Ptr<Vector> vec_pattern = Dynamic_cast<Vector>(pattern);
 		Ptr<Vector> vec_ret = New<Vector>();
 		vec_ret->components.reserve(vec_pattern->components.size());
-		// ¶Ô×Ó±í´ïÊ½Ó¦ÓÃÌæ»»£¬·µ»Ø¿½±´
+		// å¯¹å­è¡¨è¾¾å¼åº”ç”¨æ›¿æ¢ï¼Œè¿”å›æ‹·è´
 		for (int i = 0; i < vec_pattern->components.size(); i++)
 			vec_ret->components.push_back(DoReplace(vec_pattern->components[i], table));
 		return vec_ret;
@@ -378,7 +378,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		Ptr<Function> func_ret = New<Function>();
 		func_ret->function = DoReplace(func_pattern->function, table);
 		func_ret->parameter.reserve(func_pattern->parameter.size());
-		// ¶Ô×Ó±í´ïÊ½Ó¦ÓÃÌæ»»£¬·µ»Ø¿½±´
+		// å¯¹å­è¡¨è¾¾å¼åº”ç”¨æ›¿æ¢ï¼Œè¿”å›æ‹·è´
 		for (int i = 0; i < func_pattern->parameter.size(); i++) 
 			func_ret->parameter.push_back(DoReplace(func_pattern->parameter[i], table));
 		return func_ret;
@@ -390,7 +390,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		fop_ret->variables.reserve(fop_pattern->variables.size());
 		fop_ret->fparameter.reserve(fop_pattern->fparameter.size());
 		fop_ret->parameter.reserve(fop_pattern->parameter.size());
-		// ¶Ô×Ó±í´ïÊ½Ó¦ÓÃÌæ»»£¬·µ»Ø¿½±´
+		// å¯¹å­è¡¨è¾¾å¼åº”ç”¨æ›¿æ¢ï¼Œè¿”å›æ‹·è´
 		for (int i = 0; i < fop_pattern->variables.size(); i++) {
 			auto var = DoReplace(fop_pattern->variables[i], table);
 			if (var->GetType() != MathObject::ATOM)
@@ -415,7 +415,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		Ptr<Item> itm_pattern = Dynamic_cast<Item>(pattern);
 		Ptr<Item> itm_ret = New<Item>();
 		itm_ret->factors.reserve(itm_pattern->factors.size());
-		// ¶Ô×Ó±í´ïÊ½Ó¦ÓÃÌæ»»£¬·µ»Ø¿½±´
+		// å¯¹å­è¡¨è¾¾å¼åº”ç”¨æ›¿æ¢ï¼Œè¿”å›æ‹·è´
 		for (int i = 0; i < itm_pattern->factors.size(); i++)
 			itm_ret->push_back(DoReplace(itm_pattern->factors[i], table));
 		return itm_ret;
@@ -428,7 +428,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		Ptr<Polynomial> poly_pattern = Dynamic_cast<Polynomial>(pattern);
 		Ptr<Polynomial> poly_ret = New<Polynomial>();
 		poly_ret->items.reserve(poly_pattern->items.size());
-		// ¶Ô×Ó±í´ïÊ½Ó¦ÓÃÌæ»»£¬·µ»Ø¿½±´
+		// å¯¹å­è¡¨è¾¾å¼åº”ç”¨æ›¿æ¢ï¼Œè¿”å›æ‹·è´
 		for (int i = 0; i < poly_pattern->items.size(); i++)
 			poly_ret->push_back(DoReplace(poly_pattern->items[i], table));
 		return poly_ret;
@@ -448,14 +448,14 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 
 bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 {
-	// Í¨Åä·ûÆ¥Åä±í
+	// é€šé…ç¬¦åŒ¹é…è¡¨
 	MathObject::Type mtype = a->GetType();
 	if (b->GetType() != mtype)
 		return false;
 
 	switch (mtype) {
 	case MathObject::ATOM: {
-		// Èç¹ûÊÇAtom, ¿¼ÂÇÊÇÆ¥Åä±äÁ¿Ãû»¹ÊÇ
+		// å¦‚æœæ˜¯Atom, è€ƒè™‘æ˜¯åŒ¹é…å˜é‡åè¿˜æ˜¯
 		if (b->GetType() != MathObject::ATOM)
 			return false;
 		Ptr<Atom> atom_a = Dynamic_cast<Atom>(a);
@@ -464,11 +464,11 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		break;
 	}
 	case MathObject::VECTOR: {
-		if (b->GetType() != MathObject::VECTOR)		// È·ÈÏÀàĞÍ
+		if (b->GetType() != MathObject::VECTOR)		// ç¡®è®¤ç±»å‹
 			return false;
 		Ptr<Vector> vec_a = Dynamic_cast<Vector>(a);
 		Ptr<Vector> vec_obj = Dynamic_cast<Vector>(b);
-		// ·Ö±ğ±È½Ï×Ó±í´ïÊ½
+		// åˆ†åˆ«æ¯”è¾ƒå­è¡¨è¾¾å¼
 		if (vec_a->components.size() != vec_obj->components.size())
 			return false;
 		for (int i = 0; i < vec_a->components.size(); i++)
@@ -476,12 +476,12 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		break;
 	}
 	case MathObject::FUNCTION: {
-		// Æ¥Åäº¯Êı
-		if (b->GetType() != MathObject::FUNCTION)		// È·ÈÏÀàĞÍ
+		// åŒ¹é…å‡½æ•°
+		if (b->GetType() != MathObject::FUNCTION)		// ç¡®è®¤ç±»å‹
 			return false;
 		Ptr<Function> func_a = Dynamic_cast<Function>(a);
 		Ptr<Function> func_obj = Dynamic_cast<Function>(b);
-		// ·Ö±ğ±È½Ï×Ó±í´ïÊ½
+		// åˆ†åˆ«æ¯”è¾ƒå­è¡¨è¾¾å¼
 		if (func_a->parameter.size() != func_obj->parameter.size())
 			return false;
 		if (!FullCompare(func_a->function, func_obj->function))
@@ -530,20 +530,20 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		break;
 	}
 	case MathObject::ITEM: {
-		if (b->GetType() != MathObject::ITEM)		// È·ÈÏÀàĞÍ
+		if (b->GetType() != MathObject::ITEM)		// ç¡®è®¤ç±»å‹
 			return false;
 		Ptr<Item> itm_a = Dynamic_cast<Item>(a);
 		Ptr<Item> itm_b = Dynamic_cast<Item>(b);
-		if (itm_a->factors.size() != itm_b->factors.size())	// ÅĞ¶Ï³¤¶Ì
+		if (itm_a->factors.size() != itm_b->factors.size())	// åˆ¤æ–­é•¿çŸ­
 			return false;
 		auto& a_factors = itm_a->factors;
 		auto& b_factors = itm_b->factors;
 
-		std::vector<bool> md(b_factors.size(), false);	// ÊÇ·ñÒÑ¾­Åä¹ı
+		std::vector<bool> md(b_factors.size(), false);	// æ˜¯å¦å·²ç»é…è¿‡
 		for (int i = 0; i < a_factors.size(); i++) {
 			bool flag = false;
 			for (int j = 0; j < b_factors.size(); j++) {
-				if (md[j]) continue;	// ²»Æ¥ÅäÒÑ¾­Æ¥Åä¹ıµÄÏî
+				if (md[j]) continue;	// ä¸åŒ¹é…å·²ç»åŒ¹é…è¿‡çš„é¡¹
 				if (FullCompare(a_factors[i], b_factors[j])) {
 					flag = true;
 					md[j] = true;
@@ -565,19 +565,19 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		break;
 	}
 	case MathObject::POLYNOMIAL: {
-		if (b->GetType() != MathObject::POLYNOMIAL)		// È·ÈÏÀàĞÍ
+		if (b->GetType() != MathObject::POLYNOMIAL)		// ç¡®è®¤ç±»å‹
 			return false;
 		Ptr<Polynomial> poly_a = Dynamic_cast<Polynomial>(a);
 		Ptr<Polynomial> poly_b = Dynamic_cast<Polynomial>(b);
-		if (poly_a->items.size() != poly_b->items.size())	// ÅĞ¶Ï³¤¶Ì
+		if (poly_a->items.size() != poly_b->items.size())	// åˆ¤æ–­é•¿çŸ­
 			return false;
 		auto& a_items = poly_a->items;
 		auto& b_items = poly_b->items;
-		std::vector<bool> md(b_items.size(), false);	// ÊÇ·ñÒÑ¾­Åä¹ı
+		std::vector<bool> md(b_items.size(), false);	// æ˜¯å¦å·²ç»é…è¿‡
 		for (int i = 0; i < a_items.size(); i++) {
 			bool flag = false;
 			for (int j = 0; j < b_items.size(); j++) {
-				if (md[j]) continue;	// ²»Æ¥ÅäÒÑ¾­Æ¥Åä¹ıµÄÏî
+				if (md[j]) continue;	// ä¸åŒ¹é…å·²ç»åŒ¹é…è¿‡çš„é¡¹
 				if (FullCompare(a_items[i], b_items[j])) {
 					flag = true;
 					md[j] = true;

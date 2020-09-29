@@ -3,17 +3,17 @@
 #include <Rule.h>
 
 /*
-	Ê¹ÓÃÄ³Ð©²ßÂÔÔËÓÃÒ»ÏµÁÐRule²¢·µ»ØÒ»¸öMathObject£¬ÎÒÃÇ°ÑÕâ³ÆÎªCompute¡£ComputeµÄ²ÎÊýºÍ·µ»ØÀàÐÍÓëRuleÏàÍ¬£¬µ«×÷ÓÃ²»Ò»Ñù
+	ä½¿ç”¨æŸäº›ç­–ç•¥è¿ç”¨ä¸€ç³»åˆ—Ruleå¹¶è¿”å›žä¸€ä¸ªMathObjectï¼Œæˆ‘ä»¬æŠŠè¿™ç§°ä¸ºComputeã€‚Computeçš„å‚æ•°å’Œè¿”å›žç±»åž‹ä¸ŽRuleç›¸åŒï¼Œä½†ä½œç”¨ä¸ä¸€æ ·
 	
-	¶ÔÓÚÃ¿ÖÖMathObject£¬¶¼ÓÐÄ¬ÈÏµÄCompute²Ù×÷
+	å¯¹äºŽæ¯ç§MathObjectï¼Œéƒ½æœ‰é»˜è®¤çš„Computeæ“ä½œ
 	
-	Power£º(a*b)^e=a^e*b^eÕ¹¿ª£¬(a^e1)^e2=a^(e1*e2)£¬³£Êý×Ô¶¯¼ÆËã£¬¶àÏîÊ½³£ÕûÊýÃÝÕ¹¿ª£¬»¯¼ò
-	Item: Vec·ÖÅäÂÊÕ¹¿ª(a+b)*c=a*c+b*c£¬»¯¼ò£ºµ¹ÊýÏàÏûa/a=1£¬³£Êý×Ô¶¯¼ÆËã
-	Polynomial£º³£Êý×Ô¶¯¼ÆËã£¬ºÏ²¢Í¬ÀàÏî
+	Powerï¼š(a*b)^e=a^e*b^eå±•å¼€ï¼Œ(a^e1)^e2=a^(e1*e2)ï¼Œå¸¸æ•°è‡ªåŠ¨è®¡ç®—ï¼Œå¤šé¡¹å¼å¸¸æ•´æ•°å¹‚å±•å¼€ï¼ŒåŒ–ç®€
+	Item: Vecåˆ†é…çŽ‡å±•å¼€(a+b)*c=a*c+b*cï¼ŒåŒ–ç®€ï¼šå€’æ•°ç›¸æ¶ˆa/a=1ï¼Œå¸¸æ•°è‡ªåŠ¨è®¡ç®—
+	Polynomialï¼šå¸¸æ•°è‡ªåŠ¨è®¡ç®—ï¼Œåˆå¹¶åŒç±»é¡¹
 	
-	Function FunctionalOperator¸ù¾Ýº¯ÊýÃû³ÆµÄ²»Í¬£¬×ö²»Í¬µÄ¼ÆËã¡£Î´ÖªµÄº¯Êý²»×ö¼ÆËã¡£
+	Function FunctionalOperatoræ ¹æ®å‡½æ•°åç§°çš„ä¸åŒï¼Œåšä¸åŒçš„è®¡ç®—ã€‚æœªçŸ¥çš„å‡½æ•°ä¸åšè®¡ç®—ã€‚
 
-	Compare ×ö¼òµ¥µÄ»¯¼ò´¦Àí£¬Èç¹ûÈ«ÊÇ³£Êý£¬Ö±½ÓËã³ö½á¹û
+	Compare åšç®€å•çš„åŒ–ç®€å¤„ç†ï¼Œå¦‚æžœå…¨æ˜¯å¸¸æ•°ï¼Œç›´æŽ¥ç®—å‡ºç»“æžœ
 
 
 
@@ -22,7 +22,7 @@
 namespace mathS{
 
 	/// <summary>
-	/// ×Ü Compute£¬ ÔÚÕâÀï·ÖÀàÐÍ
+	/// æ€» Computeï¼Œ åœ¨è¿™é‡Œåˆ†ç±»åž‹
 	/// </summary>
 	/// <param name="input"></param>
 	/// <returns></returns>

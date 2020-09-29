@@ -48,7 +48,7 @@ void mathS::Lexer::get(mathS::Token& token) {
 }
 
 mathS::Token::TYPE mathS::Lexer::checkType(char c) {
-    // ÅÐ¶Ï×Ö·ûÀàÐÍ
+    // åˆ¤æ–­å­—ç¬¦ç±»åž‹
     if ((c >= '0' && c <= '9'||c=='.')
         ||(c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') 
         || c == '_'|| c == '@' || c == '#' || c == '$') 

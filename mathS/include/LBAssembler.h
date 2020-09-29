@@ -19,19 +19,19 @@ namespace mathS
 
 	public:
 		Assembler() { InitializeSTDLIB(); }
-		// ¸ù¾Ý±í´ïÊ½expr£¬×é×°Ò»¸öÒÔexprÖÐµÄ³öÏÖµÄ±äÁ¿Îª²ÎÊýµÄº¯Êý¡£²ÎÊýµÄË³ÐòÊÇparam_strËù¸ø³öµÄ¡£
-		// Èç expr = sin(u)*v, params={u, v}£¬ÄÇÃ´·µ»ØµÄº¯Êý¾ÍÊÇf(x1,x2)=sin(x1)*x2.
+		// æ ¹æ®è¡¨è¾¾å¼exprï¼Œç»„è£…ä¸€ä¸ªä»¥exprä¸­çš„å‡ºçŽ°çš„å˜é‡ä¸ºå‚æ•°çš„å‡½æ•°ã€‚å‚æ•°çš„é¡ºåºæ˜¯param_stræ‰€ç»™å‡ºçš„ã€‚
+		// å¦‚ expr = sin(u)*v, params={u, v}ï¼Œé‚£ä¹ˆè¿”å›žçš„å‡½æ•°å°±æ˜¯f(x1,x2)=sin(x1)*x2.
 		NMath::NFunction Assemble(Ptr<MathObject> expr, std::vector<std::string>& params);
 
 	private:
 		
-		// ¿¼ÂÇµ½½«À´¿ÉÄÜÒªÔÚÒ»¸ö½Å±¾ÔËÐÐÊ±×é×°º¯Êý£¬Ò²Ðí£¬²»ÊÇ´Ófunction_table, constant_tableÖÐÀ´²éÕÒ£¬
-		// ¶øÊÇ´ÓÔËÐÐÊ±µÄ»·¾³ÖÐ²éÕÒËùÐèÒªµÄº¯Êý¡¢³£Á¿¡¢±äÁ¿µÈ£¬»á¸üºÏÊÊ£¬ÒòÎªÔËÐÐ½Å±¾Ê±£¬ÓÃ»§¿ÉÄÜ×Ô¶¨ÒåÁËµÄÊýÖµº¯Êý¡£
-		// µ«ÊÇÓÉÓÚÕâÑùµÄ½Å±¾Ö´ÐÐÆ÷»¹Ã»ÓÐ´î½¨ÆðÀ´£¬ ¾ÍÏÈÔÚAssemblerÀï´æ´¢function_tableºÍconstant_table¡£
+		// è€ƒè™‘åˆ°å°†æ¥å¯èƒ½è¦åœ¨ä¸€ä¸ªè„šæœ¬è¿è¡Œæ—¶ç»„è£…å‡½æ•°ï¼Œä¹Ÿè®¸ï¼Œä¸æ˜¯ä»Žfunction_table, constant_tableä¸­æ¥æŸ¥æ‰¾ï¼Œ
+		// è€Œæ˜¯ä»Žè¿è¡Œæ—¶çš„çŽ¯å¢ƒä¸­æŸ¥æ‰¾æ‰€éœ€è¦çš„å‡½æ•°ã€å¸¸é‡ã€å˜é‡ç­‰ï¼Œä¼šæ›´åˆé€‚ï¼Œå› ä¸ºè¿è¡Œè„šæœ¬æ—¶ï¼Œç”¨æˆ·å¯èƒ½è‡ªå®šä¹‰äº†çš„æ•°å€¼å‡½æ•°ã€‚
+		// ä½†æ˜¯ç”±äºŽè¿™æ ·çš„è„šæœ¬æ‰§è¡Œå™¨è¿˜æ²¡æœ‰æ­å»ºèµ·æ¥ï¼Œ å°±å…ˆåœ¨Assembleré‡Œå­˜å‚¨function_tableå’Œconstant_tableã€‚
 
-		// º¯Êý±í¡£×é×°Ê±ÐèÒªµÄ±ê×¼º¯ÊýÖ±½Ó¸ù¾Ýº¯ÊýÃû³Æ´Óº¯Êý±íÀïÈ¡
+		// å‡½æ•°è¡¨ã€‚ç»„è£…æ—¶éœ€è¦çš„æ ‡å‡†å‡½æ•°ç›´æŽ¥æ ¹æ®å‡½æ•°åç§°ä»Žå‡½æ•°è¡¨é‡Œå–
 		std::map<std::string, NMath::NFunction> function_table;
-		// ³£Á¿±í¡£×é×°Ê±Óöµ½³£Á¿·ûºÅ£¬»á´Ó³£Á¿±íÀïÈ¡¡£
+		// å¸¸é‡è¡¨ã€‚ç»„è£…æ—¶é‡åˆ°å¸¸é‡ç¬¦å·ï¼Œä¼šä»Žå¸¸é‡è¡¨é‡Œå–ã€‚
 		std::map<std::string, NMath::NFunction> constant_table;
 		
 		std::map<std::string, NMath::NFuncOperator> fop_table;

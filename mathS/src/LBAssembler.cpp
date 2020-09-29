@@ -30,10 +30,10 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 		Ptr<Atom> atomexpr = Dynamic_cast<Atom, MathObject>(expr);
 		switch (atomexpr->AtomType())
 		{
-		case MathObject::NUMBER: // Number Ö±½Ó·µ»ØÖµ
+		case MathObject::NUMBER: // Number ç›´æ¥è¿”å›å€¼
 			return NFunctionAtom(atomexpr->NumberValue());
 			break;
-		case MathObject::VARIABLE:{	// Variable ¶ÔÓ¦²ÎÊıÁĞ±í
+		case MathObject::VARIABLE:{	// Variable å¯¹åº”å‚æ•°åˆ—è¡¨
 			int i = 0;
 			auto it_c = constant_table.find(atomexpr->str);
 			if (it_c != constant_table.end())
@@ -49,7 +49,7 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 			};
 		}
 			break;
-		case MathObject::STRING:	// String ²»Ö§³Ö
+		case MathObject::STRING:	// String ä¸æ”¯æŒ
 			return NMath::NFunctionError("Assemble: Cannot convert String type object to NMathObject.");
 			break;
 		default:
@@ -59,14 +59,14 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 		break;
 	}
 		
-	case MathObject::FUNCTION: {	// º¯Êı×é×°
+	case MathObject::FUNCTION: {	// å‡½æ•°ç»„è£…
 		Ptr<Function> funcexpr = Dynamic_cast<Function, MathObject>(expr);
 		auto it_ffunc = function_table.find(funcexpr->function->GetString());
 		if (it_ffunc == function_table.end()) 
 			return NFunctionError("Assemble: No such function as " + funcexpr->function->GetString());
 
 		NFunction ffunc = it_ffunc->second;
-		std::vector<NFunction> fpara;	// funcexpr->parameter ¶ÔÓÚ±äÁ¿µÄº¯Êı
+		std::vector<NFunction> fpara;	// funcexpr->parameter å¯¹äºå˜é‡çš„å‡½æ•°
 		for (auto& it : funcexpr->parameter) 
 			fpara.push_back(Assemble(it, paramsstr));
 		
@@ -84,32 +84,32 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 		auto itfop = fop_table.find(fopexpr->function->GetString());
 		if (itfop == fop_table.end())
 			return NFunctionError("Assemble: No such functional operator as " + fopexpr->function->GetString());
-		// ÄÚ²¿±äÁ¿ÓëÍâ²¿±äÁ¿Ãû³Æ³åÍ»¼ì²é
+		// å†…éƒ¨å˜é‡ä¸å¤–éƒ¨å˜é‡åç§°å†²çªæ£€æŸ¥
 		// TODO
 		// 
 		NFuncOperator nfop = itfop->second;
-		std::vector<std::string> paramsstr2(paramsstr);	// params2 ÊÇ params & variabl
+		std::vector<std::string> paramsstr2(paramsstr);	// params2 æ˜¯ params & variabl
 		for (auto it : fopexpr->variables) 
 			paramsstr2.push_back(it->GetString());
 
-		std::vector<NFunction> ffparas;					// fparameter¶ÔÓÚ±äÁ¿ºÍÄÚ²¿±äÁ¿µÄº¯Êı
+		std::vector<NFunction> ffparas;					// fparameterå¯¹äºå˜é‡å’Œå†…éƒ¨å˜é‡çš„å‡½æ•°
 		ffparas.reserve(fopexpr->fparameter.size());
 		for (auto& it : fopexpr->fparameter)
 			ffparas.push_back(Assemble(it, paramsstr2));
 
-		std::vector<NFunction> fparas;					// parameter¶ÔÓÚ±äÁ¿µÄº¯Êı
+		std::vector<NFunction> fparas;					// parameterå¯¹äºå˜é‡çš„å‡½æ•°
 		fparas.reserve(fopexpr->parameter.size());
 		for (auto& it : fopexpr->parameter)
 			fparas.push_back(Assemble(it, paramsstr));
 
 		return [nfop, ffparas, fparas](const NParamsList& params) {
-			// ffparas ÊÇ¶Ô Íâ²¿±äÁ¿parametersºÍÄÚ²¿variablesµÄº¯Êı
-			// fs ÊÇ ¸ø¶¨ÁËparameterÊ±£¬ ffparas¶ÔvariablesµÄº¯Êı
+			// ffparas æ˜¯å¯¹ å¤–éƒ¨å˜é‡parameterså’Œå†…éƒ¨variablesçš„å‡½æ•°
+			// fs æ˜¯ ç»™å®šäº†parameteræ—¶ï¼Œ ffparaså¯¹variablesçš„å‡½æ•°
 			NFuncParamsList fs;
 			fs.reserve(ffparas.size());
 			for(auto& it:ffparas)
 				fs.push_back([it, params](const NParamsList& vars){
-					// ½« params ºÍ vars ºÏ²¢³ÉffparasµÄ²ÎÊı
+					// å°† params å’Œ vars åˆå¹¶æˆffparasçš„å‚æ•°
 					NParamsList paramsvars;
 					paramsvars.reserve(params.size() + vars.size());
 					paramsvars.insert(paramsvars.begin(), params.begin(), params.end());
@@ -119,7 +119,7 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 			NParamsList args;
 			args.reserve(fparas.size());
 			for (auto& it : fparas) args.push_back(it(params));
-			return nfop(fs, args);						// µ÷ÓÃ fop 
+			return nfop(fs, args);						// è°ƒç”¨ fop 
 		};
 		break;
 	}

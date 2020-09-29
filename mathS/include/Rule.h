@@ -1,6 +1,7 @@
 #pragma once
 #include <MathObject.h>
 #include <map>
+#include <list>
 
 namespace mathS {
 
@@ -8,13 +9,13 @@ namespace mathS {
 	using Match = std::function<bool(Ptr<MathObject>)>;
 
 	/// <summary>
-	/// ¶ÔÓÚ¸ø¶¨µÄPattern£¬Éú³ÉÒ»¸öÆ¥Åä
+	/// å¯¹äºç»™å®šçš„Patternï¼Œç”Ÿæˆä¸€ä¸ªåŒ¹é…
 	/// </summary>
 	/// <param name="pattern"></param>
 	/// <returns></returns>
 	Match MakeMatch(Ptr<MathObject> pattern);
 	/// <summary>
-	/// ¶ÔÓÚ¸ø¶¨µÄsource pattern, target pattern£¬Éú³ÉÒ»¸öÆ¥Åä-Ìæ»»¹æÔò
+	/// å¯¹äºç»™å®šçš„source pattern, target patternï¼Œç”Ÿæˆä¸€ä¸ªåŒ¹é…-æ›¿æ¢è§„åˆ™
 	/// </summary>
 	/// <param name="src_pattern"></param>
 	/// <param name="tar_pattern"></param>
@@ -22,7 +23,7 @@ namespace mathS {
 	Rule MakeRule(Ptr<MathObject> src_pattern, Ptr<MathObject> tar_pattern);
 
 	/// <summary>
-	/// Æ¥Åä¡£¶Ô¸ø¶¨µÄpatternºÍobjµÄĞÎÊ½£¬²¢·µ»ØÆ¥Åä±í
+	/// åŒ¹é…ã€‚å¯¹ç»™å®šçš„patternå’Œobjçš„å½¢å¼ï¼Œå¹¶è¿”å›åŒ¹é…è¡¨
 	/// </summary>
 	/// <param name="pattern"></param>
 	/// <param name="obj"></param>
@@ -31,7 +32,7 @@ namespace mathS {
 	bool DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table, std::list<std::string>& table_list);
 	
 	/// <summary>
-	/// Ìæ»»¡£¶ÔÓÚ¸ø¶¨µÄtable£¬·µ»Ø½«patternÖĞ¶ÔÓ¦µØÌæ»»µÄ½á¹û£¨ÊÇ¿½±´£¬²»Ó°Ïìpattern£©
+	/// æ›¿æ¢ã€‚å¯¹äºç»™å®šçš„tableï¼Œè¿”å›å°†patternä¸­å¯¹åº”åœ°æ›¿æ¢çš„ç»“æœï¼ˆæ˜¯æ‹·è´ï¼Œä¸å½±å“patternï¼‰
 	/// </summary>
 	/// <param name="pattern"></param>
 	/// <param name="table"></param>
@@ -39,7 +40,7 @@ namespace mathS {
 	Ptr<MathObject> DoReplace(Ptr<MathObject> pattern, std::map<std::string, Ptr<MathObject>>& table);
 
 	/// <summary>
-	/// È«Æ¥Åä£¬µ±Á½¸öÁ½¸ö±í´ïÊ½ÍêÈ«ÏàÍ¬·µ»Øtrue¡£(ÎªÊ²Ã´²»±È½ÏGetString()£¿ÒòÎªGetString()Ò»¶¨»á±éÀúÕû¸ö±í´ïÊ½£¬Ğ§ÂÊºÜµÍ¡£)
+	/// å…¨åŒ¹é…ï¼Œå½“ä¸¤ä¸ªä¸¤ä¸ªè¡¨è¾¾å¼å®Œå…¨ç›¸åŒè¿”å›trueã€‚(ä¸ºä»€ä¹ˆä¸æ¯”è¾ƒGetString()ï¼Ÿå› ä¸ºGetString()ä¸€å®šä¼šéå†æ•´ä¸ªè¡¨è¾¾å¼ï¼Œæ•ˆç‡å¾ˆä½ã€‚)
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="b"></param>
@@ -47,7 +48,7 @@ namespace mathS {
 	bool FullCompare(Ptr<MathObject> a, Ptr<MathObject> b);
 
 
-	// ¹æÔò¿â£¬ÔÚÕâÀï¿ÉÒÔĞ´°üÀ¨Ö±½ÓÉú³ÉµÄ¹æÔò£¬»òÊÇ±ØĞëÒª³ÌĞò½øĞĞµÄ¹æÔò
+	// è§„åˆ™åº“ï¼Œåœ¨è¿™é‡Œå¯ä»¥å†™åŒ…æ‹¬ç›´æ¥ç”Ÿæˆçš„è§„åˆ™ï¼Œæˆ–æ˜¯å¿…é¡»è¦ç¨‹åºè¿›è¡Œçš„è§„åˆ™
 	namespace RuleLib {
 		
 		
