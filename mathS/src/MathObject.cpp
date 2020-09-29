@@ -7,6 +7,11 @@ std::string mathS::Vector::GetString() const
 	return "{" + ListGetString(components) + "}";
 }
 
+std::string mathS::Vector::GetLaTeXString() const
+{
+	return "\\left\\{" + ListGetLaTeXString(components) + "\\right\\}";
+}
+
 Ptr<MathObject> mathS::Vector::DeepCopy() const
 {
 	Ptr<Vector> ret = New<Vector>();
@@ -21,6 +26,15 @@ std::string mathS::Function::GetString() const
 		return function->GetString() + "(" + ListGetString(parameter) + ")";
 	else
 		return "(" + function->GetString() + ")" + "(" + ListGetString(parameter) + ")";
+}
+
+std::string mathS::Function::GetLaTeXString() const
+{
+
+	if (function->Level() <= LEVEL_FUNCTION)
+		return function->GetLaTeXString() + "\\left(" + ListGetLaTeXString(parameter) + "\\right)";
+	else
+		return "\\left(" + function->GetLaTeXString() + "\\right)" + "\\left(" + ListGetLaTeXString(parameter) + "\\right)";
 }
 
 mathS::Ptr<MathObject> mathS::Function::DeepCopy() const
@@ -39,6 +53,14 @@ std::string mathS::Locate::GetString() const
 		return "(" + object->GetString() + ")" + "[" + ListGetString(location) + "]";
 }
 
+std::string mathS::Locate::GetLaTeXString() const
+{
+	if (object->Level() <= LEVEL_LOCATE)
+		return object->GetLaTeXString() + "\\left[" + ListGetLaTeXString(location) + "\\right]";
+	else
+		return "\\left(" + object->GetLaTeXString() + "\\right)" + "\\left[" + ListGetLaTeXString(location) + "\\right]";
+}
+
 mathS::Ptr<MathObject> mathS::Locate::DeepCopy() const
 {
 	Ptr<Locate> ret = New<Locate>();
@@ -52,6 +74,13 @@ std::string mathS::Power::GetString() const
 	return
 		(base->Level() < LEVEL_POWER ? base->GetString() : "(" + base->GetString() + ")") + "^" +
 		(exponent->Level() <= LEVEL_POWER ? exponent->GetString() : "(" + exponent->GetString() + ")");
+}
+
+std::string mathS::Power::GetLaTeXString() const
+{
+	return
+		(base->Level() < LEVEL_POWER ? base->GetLaTeXString() : "\\left(" + base->GetString() + "\\right)") + "^" +
+		("{" + exponent->GetLaTeXString() + "}");
 }
 
 mathS::Ptr<MathObject> mathS::Power::DeepCopy() const
@@ -68,6 +97,11 @@ std::string mathS::Inverse::GetString() const
 		return "/" + component->GetString();
 	else
 		return "/(" + component->GetString() + ")";
+}
+
+std::string mathS::Inverse::GetLaTeXString() const
+{
+	return component->GetLaTeXString();
 }
 
 mathS::Ptr<MathObject> mathS::Inverse::DeepCopy() const
@@ -102,6 +136,34 @@ std::string mathS::Item::GetString() const
 	return ret;
 }
 
+std::string mathS::Item::GetLaTeXString() const
+{
+	std::string ret;
+	std::string temp = "";
+	if (factors[0]->Level() < LEVEL_ITEM) {
+		if (factors[0]->GetType() == Type::INVERSE)
+			temp = "\\frac{1}{" + factors[0]->GetLaTeXString() + "}";
+		else
+			temp = factors[0]->GetLaTeXString();
+	}
+	else {
+		temp = "(" + factors[0]->GetLaTeXString() + ")";
+	}
+	for (int i = 1; i < factors.size(); i++) {
+		if (factors[i]->GetType() == Type::INVERSE)
+			temp = "\\frac{" + temp + "}{" + factors[i]->GetLaTeXString() + "}";
+		else {
+			ret += temp + "\\times ";
+			if (factors[i]->Level() < LEVEL_ITEM)
+				temp = factors[i]->GetLaTeXString();
+			else
+				temp = "(" + factors[i]->GetLaTeXString() + ")";
+		}
+	}
+	ret += temp;
+	return ret;
+}
+
 mathS::Ptr<MathObject> mathS::Item::DeepCopy() const
 {
 	Ptr<Item> ret = New<Item>();
@@ -117,6 +179,14 @@ std::string mathS::Opposite::GetString() const
 		return "-" + component->GetString();
 	else
 		return "-(" + component->GetString() + ")";
+}
+
+std::string mathS::Opposite::GetLaTeXString() const
+{
+	if (component->Level() < LEVEL_OPPOSITE)
+		return "-" + component->GetLaTeXString();
+	else
+		return "-\\left(" + component->GetLaTeXString() + "\\right)";
 }
 
 mathS::Ptr<MathObject> mathS::Opposite::DeepCopy() const
@@ -146,6 +216,26 @@ std::string mathS::Polynomial::GetString() const
 	return ret;
 }
 
+std::string mathS::Polynomial::GetLaTeXString() const
+{
+	std::string ret;
+
+	for (int i = 0; i < items.size(); i++)
+	{
+		if (items[i]->Level() < LEVEL_POLYNOMIAL)
+		{
+			if (items[i]->GetType() != Type::OPPOSITE && i != 0)
+				ret += "+";
+			ret += items[i]->GetLaTeXString();
+		}
+		else
+		{
+			ret += "+\\left(" + items[i]->GetLaTeXString() + "\\right)";
+		}
+	}
+	return ret;
+}
+
 mathS::Ptr<MathObject> mathS::Polynomial::DeepCopy() const
 {
 	Ptr<Polynomial> ret = New<Polynomial>();
@@ -162,6 +252,13 @@ std::string mathS::Map::GetString() const
 		(value->Level() < LEVEL_MAP ? value->GetString() : "(" + value->GetString() + ")");
 }
 
+std::string mathS::Map::GetLaTeXString() const
+{
+	return
+		(key->Level() < LEVEL_MAP ? key->GetLaTeXString() : "\\left(" + key->GetLaTeXString() + "\\right)") + "\\rightarrow " +
+		(value->Level() < LEVEL_MAP ? value->GetLaTeXString() : "\\left(" + value->GetLaTeXString() + "\\right)");
+}
+
 mathS::Ptr<MathObject> mathS::Map::DeepCopy() const
 {
 	Ptr<Map> ret = New<Map>();
@@ -175,6 +272,18 @@ std::string mathS::Compare::GetString() const
 	return
 		(left->Level() < LEVEL_COMPARE ? left->GetString() : "(" + left->GetString() + ")") + op +
 		(right->Level() < LEVEL_COMPARE ? right->GetString() : "(" + right->GetString() + ")");
+}
+
+std::string mathS::Compare::GetLaTeXString() const
+{
+	std::string opLaTeX=op;
+	if (op == ">=")
+		opLaTeX = "\\geqslant ";
+	if (op == "<=")
+		opLaTeX = "\\leqslant ";
+	return
+		(left->Level() < LEVEL_COMPARE ? left->GetLaTeXString() : "\\left(" + left->GetLaTeXString() + "\\right)") + opLaTeX +
+		(right->Level() < LEVEL_COMPARE ? right->GetLaTeXString() : "\\left(" + right->GetLaTeXString() + "\\right)");
 }
 
 mathS::Ptr<MathObject> mathS::Compare::DeepCopy() const
@@ -209,6 +318,21 @@ std::string mathS::Atom::GetString() const
 	return str;
 }
 
+std::string mathS::Atom::GetLaTeXString() const
+{
+	std::string LaTeXstr;
+	if (str == "PI")
+		return "{\\pi}";
+	if (str == "E")
+		return "\\mathrm{e}";
+	for (auto c : str) {
+		if (c == '_' || c == '$' || c == '#')
+			LaTeXstr += '\\';
+		LaTeXstr += c;
+	}
+	return LaTeXstr;
+}
+
 mathS::Ptr<MathObject> mathS::Atom::DeepCopy() const
 {
 	return New<Atom>(str);
@@ -239,6 +363,21 @@ std::string mathS::FunctionalOperator::GetString() const
 	return ret;
 }
 
+std::string mathS::FunctionalOperator::GetLaTeXString() const
+{
+	std::string ret;
+	if (function->Level() <= LEVEL_FUNCOPERATOR)
+		ret = function->GetLaTeXString() + "\\ll ";
+	else
+		ret = "\\left(" + function->GetLaTeXString() + "\\right)\\ll ";
+	if (!variables.empty())
+		ret += variables[0]->GetLaTeXString();
+	for (int i = 1; i < variables.size(); i++)
+		ret += "," + variables[i]->GetLaTeXString();
+	ret += "|" + ListGetLaTeXString(fparameter) + "\\gg\\left(" + ListGetLaTeXString(parameter) + "\\right)";
+	return ret;
+}
+
 mathS::Ptr<MathObject> mathS::FunctionalOperator::DeepCopy() const
 {
 	Ptr<FunctionalOperator> ret = New<FunctionalOperator>();
@@ -265,6 +404,23 @@ std::string mathS::ListGetString(const std::vector<Ptr<MathObject>>& lst)
 			ret += "," + lst[i]->GetString();
 		else
 			ret += ",(" + lst[i]->GetString() + ")";
+	return ret;
+}
+
+std::string mathS::ListGetLaTeXString(const std::vector<Ptr<MathObject>>& lst)
+{
+	std::string ret;
+	if (lst.size() == 0)
+		return "";
+	if (lst[0]->Level() < MathObject::LEVEL_LIST)
+		ret += lst[0]->GetLaTeXString();
+	else
+		ret += "\\left(" + lst[0]->GetLaTeXString() + "\\right)";
+	for (int i = 1; i < lst.size(); i++)
+		if (lst[i]->Level() < MathObject::LEVEL_LIST)
+			ret += "," + lst[i]->GetLaTeXString();
+		else
+			ret += ",\\left(" + lst[i]->GetLaTeXString() + "\\right)";
 	return ret;
 }
 
