@@ -63,6 +63,9 @@
     <ClCompile Include="src\Rule.cpp">
       <Filter>源文件\Symbolic</Filter>
     </ClCompile>
+    <ClCompile Include="src\Compute.cpp">
+      <Filter>源文件\Symbolic</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ExtendedCMath.h">
@@ -99,6 +102,9 @@
       <Filter>头文件\Symbolic</Filter>
     </ClInclude>
     <ClInclude Include="include\MathFunction.h">
+      <Filter>头文件\Symbolic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Compute.h">
       <Filter>头文件\Symbolic</Filter>
     </ClInclude>
   </ItemGroup>

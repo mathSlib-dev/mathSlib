@@ -7,7 +7,7 @@ Match mathS::MakeMatch(Ptr<MathObject> pattern)
 	return [pattern](Ptr<MathObject> obj) {
 		std::map<std::string, Ptr<MathObject>> table;
 		std::list<std::string> table_list;
-		return DoMatchRes(pattern, obj, table, table_list);
+		return DoMatch(pattern, obj, table, table_list);
 	};
 }
 
@@ -16,7 +16,7 @@ Rule mathS::MakeRule(Ptr<MathObject> src_pattern, Ptr<MathObject> tar_pattern)
 	return [src_pattern, tar_pattern](Ptr<MathObject> obj, Ptr<MathObject>& rst) {
 		std::map<std::string, Ptr<MathObject>> table;
 		std::list<std::string> table_list;
-		if (!DoMatchRes(src_pattern, obj, table, table_list))
+		if (!DoMatch(src_pattern, obj, table, table_list))
 			return false;
 		rst = DoReplace(tar_pattern, table);
 		return true;
@@ -176,35 +176,70 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 	case MathObject::ITEM: {
 		if (obj->GetType() != MathObject::ITEM)		// 确认类型
 			return false;
-		Ptr<Item> itm_pattern = Dynamic_cast<Item>(pattern);
-		Ptr<Item> itm_obj = Dynamic_cast<Item>(obj);
-		if (itm_pattern->factors.size() != itm_obj->factors.size())	// 判断长短
+		auto& pattern_factors = Dynamic_cast<Item>(pattern)->factors;
+		auto& obj_factors = Dynamic_cast<Item>(obj)->factors;
+		
+		// 判断是否有残项
+		std::string residual;
+		bool with_residual = false;
+		if (pattern_factors.back()->GetType() == MathObject::ATOM) {
+			 residual = pattern_factors.back()->GetString();
+			if (residual.size() > 2 && residual[0] == '_' && residual[residual.size() - 1] == '_') {
+				with_residual = true;
+			}
+		}
+		// 要匹配 pattern 中项的个数。没有残项就全部，有残项，不匹配残项。
+		int matchsize = with_residual ? pattern_factors.size() - 1 : pattern_factors.size();
+		if (matchsize > obj_factors.size())	// 判断长短
 			return false;
-		auto& pattern_factors = itm_pattern->factors;
-		auto& obj_factors = itm_obj->factors;
 
 		std::vector<bool> md(obj_factors.size(), false);	// 是否已经配过
 		int table_size;
-		for (int i = 0; i < pattern_factors.size(); i++) {
+		for (int i = 0; i < matchsize; i++) {
 			bool flag = false;
 			// 记录当前table大小，以便匹配失败时恢复
 			table_size = table_list.size();
 			for (int j = 0; j < obj_factors.size(); j++) {
 				if (md[j]) continue;	// 不匹配已经被匹配占用的项
 				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list)) {
-					// 匹配尝试成功
-					flag = true;
-					md[j] = true;
+					// 匹配尝试成功，立刻占用（可能会有问题）
+					flag = true; md[j] = true;
 					break;
 				}
 				// 本次匹配尝试失败，清除尝试中错误的匹配表
-				while(table.size() > table_size) {
+				while (table.size() > table_size) {
 					table.erase(table_list.back());
 					table_list.pop_back();
 				}
 			}
 			if (!flag)
 				return false;
+		}
+		// 处理残项
+		if (with_residual) {
+			Ptr<MathObject> factors_residual ;
+			if (matchsize == obj_factors.size()) {
+				// residual 若为空，至少给一个1
+				factors_residual = New<Atom>("1");
+			}
+			else {
+				Ptr<Item> item_res = New<Item>();
+				for (int j = 0; j < obj_factors.size(); j++) {
+					if (!md[j])
+						item_res->factors.push_back(obj_factors[j]);
+				}
+				factors_residual = item_res;
+			}
+			// 比较table中的项
+			auto itres = table.find(residual);
+			if (itres == table.end()) {
+				table[residual] = factors_residual;
+				table_list.push_back(residual);
+			}
+			else {
+				if (!FullCompare(itres->second, factors_residual))
+					return false;
+			}
 		}
 		break;
 	}
@@ -220,15 +255,25 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 	case MathObject::POLYNOMIAL: {
 		if (obj->GetType() != MathObject::POLYNOMIAL)		// 确认类型
 			return false;
-		Ptr<Polynomial> poly_pattern = Dynamic_cast<Polynomial>(pattern);
-		Ptr<Polynomial> poly_obj = Dynamic_cast<Polynomial>(obj);
-		if (poly_pattern->items.size() != poly_obj->items.size())	// 判断长短
+		auto& pattern_items = Dynamic_cast<Polynomial>(pattern)->items;
+		auto& obj_items = Dynamic_cast<Polynomial>(obj)->items;
+		// 判断是否有残项
+		std::string residual;
+		bool with_residual = false;
+		if (pattern_items.back()->GetType() == MathObject::ATOM) {
+			residual = pattern_items.back()->GetString();
+			if (residual.size() > 2 && residual[0] == '_' && residual[residual.size() - 1] == '_') {
+				with_residual = true;
+			}
+		}
+		// 要匹配 pattern 中项的个数。没有残项就全部，有残项，不匹配残项。
+		int matchsize = with_residual ? pattern_items.size() - 1 : pattern_items.size();
+		if (matchsize > obj_items.size())	// 判断长短
 			return false;
-		auto& pattern_items = poly_pattern->items;
-		auto& obj_items = poly_obj->items;
+
 		std::vector<bool> md(obj_items.size(), false);	// 是否已经配过
 		int table_size;
-		for (int i = 0; i < pattern_items.size(); i++) {
+		for (int i = 0; i < matchsize; i++) {
 			bool flag = false;
 			// 记录当前table大小，以便匹配失败时恢复
 			table_size = table_list.size();
@@ -247,6 +292,32 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			}
 			if (!flag)
 				return false;
+		}
+		// 处理残项
+		if (with_residual) {
+			Ptr<MathObject> items_residual;
+			if (matchsize == obj_items.size()) {
+				// items_residual若为空，则至少给一个0
+				items_residual = New<Atom>("0");
+			}
+			else {
+				Ptr<Polynomial> poly_res = New<Polynomial>();
+				for (int j = 0; j < obj_items.size(); j++) {
+					if (!md[j])
+						poly_res->items.push_back(obj_items[j]);
+				}
+				items_residual = poly_res;
+			}
+			// 比较table中的项
+			auto itres = table.find(residual);
+			if (itres == table.end()) {
+				table[residual] = items_residual;
+				table_list.push_back(residual);
+			}
+			else {
+				if(!FullCompare(itres->second, items_residual))
+					return false;
+			}
 		}
 		break;
 	}
@@ -279,93 +350,6 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		break;
 	}
 	return true;
-}
-
-bool mathS::DoMatchRes(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::string, Ptr<MathObject>>& table, std::list<std::string>& table_list)
-{
-	switch (pattern->GetType()) {
-	case MathObject::ITEM: {
-		if (obj->GetType() != MathObject::ITEM)		// 确认类型
-			return false;
-		Ptr<Item> itm_pattern = Dynamic_cast<Item>(pattern);
-		Ptr<Item> itm_obj = Dynamic_cast<Item>(obj);
-		if (itm_pattern->factors.size() > itm_obj->factors.size())	// 判断长短
-			return false;
-		auto& pattern_factors = itm_pattern->factors;
-		auto& obj_factors = itm_obj->factors;
-
-		std::vector<bool> md(obj_factors.size(), false);	// 是否已经配过
-		int table_size;
-		for (int i = 0; i < pattern_factors.size(); i++) {
-			bool flag = false;
-			table_size = table_list.size(); // 记录当前 table 大小，以便恢复
-			for (int j = 0; j < obj_factors.size(); j++) {
-				if (md[j]) continue;	// 不匹配已经匹配过的项
-				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list)) { 
-					flag = true;
-					md[j] = true;
-					break;
-				}
-				// 本次匹配尝试失败，清除尝试中错误的匹配表
-				while (table.size() > table_size) {
-					table.erase(table_list.back());
-					table_list.pop_back();
-				}
-			}
-			if (!flag) // 应该删去目前为止失败的匹配 TODO
-				return false;
-		}
-		Ptr<Item> itm_residual = New<Item>();
-		for (int j = 0; j < obj_factors.size(); j++) {
-			if (!md[j])
-				itm_residual->factors.push_back(obj_factors[j]);
-		}
-		table["__RESIDUAL__"] = itm_residual;
-		return true;
-	}
-	case MathObject::POLYNOMIAL: {
-		if (obj->GetType() != MathObject::POLYNOMIAL)		// 确认类型
-			return false;
-		Ptr<Polynomial> poly_pattern = Dynamic_cast<Polynomial>(pattern);
-		Ptr<Polynomial> poly_obj = Dynamic_cast<Polynomial>(obj);
-		if (poly_pattern->items.size() > poly_obj->items.size())	// 判断长短
-			return false;
-		auto& pattern_items = poly_pattern->items;
-		auto& obj_items = poly_obj->items;
-
-		std::vector<bool> md(obj_items.size(), false);	// 是否已经配过
-		int table_size;
-		for (int i = 0; i < pattern_items.size(); i++) {
-			bool flag = false;
-			table_size = table_list.size(); // 记录当前 table 大小，以便恢复
-			for (int j = 0; j < obj_items.size(); j++) {
-				if (md[j]) continue;	// 不匹配已经匹配过的项
-				if (DoMatch(pattern_items[i], obj_items[j], table, table_list)) {
-					flag = true;
-					md[j] = true;
-					break;
-				}
-				// 本次匹配尝试失败，清除尝试中错误的匹配表
-				while (table.size() > table_size) {
-					table.erase(table_list.back());
-					table_list.pop_back();
-				}
-			}
-			if (!flag)
-				return false;
-		}
-		Ptr<Polynomial> poly_residual = New<Polynomial>();
-		for (int j = 0; j < obj_items.size(); j++) {
-			if(!md[j])
-				poly_residual->items.push_back(obj_items[j]);
-		}
-		table["__RESIDUAL__"] = poly_residual;
-		return true;
-	}
-	default:
-		// 其它情况，与普通DoMatch方法相同
-		return DoMatch(pattern, obj, table, table_list);
-	}
 }
 
 Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, Ptr<MathObject>>& table)

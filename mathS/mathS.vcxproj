@@ -151,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Compute.cpp" />
     <ClCompile Include="src\ExtendedCMath.cpp" />
     <ClCompile Include="src\LBAssembler.cpp" />
     <ClCompile Include="src\lexer.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="src\Rule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Compute.h" />
     <ClInclude Include="include\ExtendedCMath.h" />
     <ClInclude Include="include\LBAssembler.h" />
     <ClInclude Include="include\lexer.h" />
