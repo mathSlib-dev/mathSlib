@@ -4,15 +4,37 @@
 #include <iostream>
 #include <MathParser.h>
 #include <LBAssembler.h>
+#include <Rule.h>
 
 using namespace mathS;
 
 int main() {
-    // 一个计算器
-
+    
+    // Rule模块测试
     std::string str;
     Assembler assembler;
-    
+    while (true) {
+        std::cout << "Source pattern: ";
+        std::cin >> str;
+        auto srcpattern = Parser(str).Parse();
+
+        std::cout << "Target pattern: ";
+        std::cin >> str;
+        auto tarpattern = Parser(str).Parse();
+
+        std::cout << "Object: ";
+        std::cin >> str;
+        auto obj = Parser(str).Parse();
+
+        auto rule = MakeRule(srcpattern, tarpattern);
+        Ptr<MathObject> rst;
+        if (rule(obj, rst))
+            std::cout << rst->GetString() << std::endl;
+        else
+            std::cout << "No" << std::endl;
+    }
+   
+    // 计算器程序；测试LBAssembler
     while (true) {
         std::cin >> str;
         auto mobj = Parser(str).Parse();
@@ -23,7 +45,7 @@ int main() {
             continue;
         }
         // 计算器程序不需要变量参数，空的参数表
-        std::vector<std::string> params = {};
+        std::vector<std::string> params = {"x"};
         // 组装
         auto f = assembler.Assemble(mobj, params);
         // 输出结果

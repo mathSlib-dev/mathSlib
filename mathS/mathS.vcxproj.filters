@@ -13,66 +13,99 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\Symbolic">
+      <UniqueIdentifier>{2c013a30-09d1-4c11-9c08-915cf581adaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Numeric">
+      <UniqueIdentifier>{01e54150-d1c0-4ce8-b208-944fc89c4f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\Utilities">
+      <UniqueIdentifier>{b07fe967-6cd8-433a-99bc-38f07d91d12e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Utilities">
+      <UniqueIdentifier>{75d3c6b5-8900-46a1-8031-44f0bb5f4e23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Numeric">
+      <UniqueIdentifier>{256ed6f5-8f2a-4904-8b77-86a0feddac30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Symbolic">
+      <UniqueIdentifier>{16d9803e-fd7a-4007-82bd-18d0f5a65749}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\NMathObject.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MathObject.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\LBAssembler.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="src\MathParser.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\ExtendedCMath.cpp">
+      <Filter>源文件\Utilities</Filter>
+    </ClCompile>
     <ClCompile Include="src\lexer.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MathParser.cpp">
+      <Filter>源文件\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LBAssembler.cpp">
+      <Filter>源文件\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="src\NFunction.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Numeric</Filter>
     </ClCompile>
     <ClCompile Include="src\NFunctionalOperator.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\Numeric</Filter>
     </ClCompile>
-    <ClCompile Include="src\ExtendedCMath.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="src\NMathObject.cpp">
+      <Filter>源文件\Numeric</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MathObject.cpp">
+      <Filter>源文件\Symbolic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rule.cpp">
+      <Filter>源文件\Symbolic</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Compute.cpp">
+      <Filter>源文件\Symbolic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\MathObject.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\NMathObject.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="include\ExtendedCMath.h">
+      <Filter>头文件\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="include\LBAssembler.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MathParser.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="include\lexer.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Utilities</Filter>
     </ClInclude>
-    <ClInclude Include="include\string-switch.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="include\MathParser.h">
+      <Filter>头文件\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MathObject.h">
+      <Filter>头文件\Symbolic</Filter>
     </ClInclude>
     <ClInclude Include="include\NFunction.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Ptr.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Numeric</Filter>
     </ClInclude>
     <ClInclude Include="include\NFunctionalOperator.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Numeric</Filter>
     </ClInclude>
-    <ClInclude Include="include\ExtendedCMath.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="include\NMathObject.h">
+      <Filter>头文件\Numeric</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Ptr.h">
+      <Filter>头文件\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\string-switch.h">
+      <Filter>头文件\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Rule.h">
+      <Filter>头文件\Symbolic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MathFunction.h">
+      <Filter>头文件\Symbolic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Compute.h">
+      <Filter>头文件\Symbolic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

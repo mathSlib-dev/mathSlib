@@ -83,6 +83,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -150,6 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Compute.cpp" />
     <ClCompile Include="src\ExtendedCMath.cpp" />
     <ClCompile Include="src\LBAssembler.cpp" />
     <ClCompile Include="src\lexer.cpp" />
@@ -159,17 +161,21 @@
     <ClCompile Include="src\NFunctionalOperator.cpp" />
     <ClCompile Include="src\NMathObject.cpp" />
     <ClCompile Include="src\MathParser.cpp" />
+    <ClCompile Include="src\Rule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Compute.h" />
     <ClInclude Include="include\ExtendedCMath.h" />
     <ClInclude Include="include\LBAssembler.h" />
     <ClInclude Include="include\lexer.h" />
+    <ClInclude Include="include\MathFunction.h" />
     <ClInclude Include="include\MathObject.h" />
     <ClInclude Include="include\NFunction.h" />
     <ClInclude Include="include\NFunctionalOperator.h" />
     <ClInclude Include="include\NMathObject.h" />
     <ClInclude Include="include\MathParser.h" />
     <ClInclude Include="include\Ptr.h" />
+    <ClInclude Include="include\Rule.h" />
     <ClInclude Include="include\string-switch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

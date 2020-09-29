@@ -42,8 +42,10 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 				if (paramsstr[i] == atomexpr->str) break;
 			if (i >= paramsstr.size())
 				return NMath::NFunctionError("Assemble: Variable " + atomexpr->str + " is not specified as a parameter in its context");
-			return [i](const NParamsList& param) {
-				return param[i];
+			return [i](const NParamsList& params) {
+				if (i >= params.size())
+					return Dynamic_cast<NMathObject>(New<NMathError>("NFunction: Missing parameter."));
+				return params[i];
 			};
 		}
 			break;

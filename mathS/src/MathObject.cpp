@@ -111,6 +111,19 @@ mathS::Ptr<MathObject> mathS::Inverse::DeepCopy() const
 	return ret;
 }
 
+void mathS::Item::push_back(Ptr<MathObject> const f)
+{
+	if (f->GetType() == Type::ITEM) {
+		auto itm = Dynamic_cast<Item>(f);
+		for (auto& it : itm->factors) {
+			factors.push_back(it);
+		}
+	}
+	else {
+		factors.push_back(f);
+	}
+}
+
 std::string mathS::Item::GetString() const
 {
 	std::string ret;
@@ -243,6 +256,19 @@ mathS::Ptr<MathObject> mathS::Polynomial::DeepCopy() const
 	for (auto it : items)
 		ret->items.push_back(it->DeepCopy());
 	return ret;
+}
+
+void mathS::Polynomial::push_back(Ptr<MathObject> const f)
+{
+	if (f->GetType() == Type::POLYNOMIAL) {
+		auto poly = Dynamic_cast<Polynomial>(f);
+		for (auto& it : poly->items) {
+			items.push_back(it);
+		}
+	}
+	else {
+		items.push_back(f);
+	}
 }
 
 std::string mathS::Map::GetString() const
