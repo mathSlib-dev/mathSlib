@@ -51,8 +51,8 @@
 
 **[任务]**
 
-* 完成LBAssemble，从符号对象转为数值计算对象，并具有初步的数值计算功能。(wrc)
-* 建立在MathObject上的运算库，库将具有初步的符号计算功能：(lv, jky)
+* 完成LBAssemble，从符号对象转为数值计算对象，并具有初步的数值计算功能。
+* 建立在MathObject上的运算库，库将具有初步的符号计算功能：
   * 首先需要基本的匹配源模式->变换为目标模式的模块
   * 手动编写不能使用匹配变换的方法进行变形的规则
 
@@ -92,3 +92,25 @@
   * NFunction
   * NFunctionLibrary
   * NFuncOperatorLibrary
+
+## 2020-9-30
+
+**[工作]** 
+
+* 完成Match，Rule模块。
+
+* Match和Rule是做什么的？
+
+  * Match和Rule是用于符号表达式计算的基础模块，它们都是输入一个`Ptr<MathObject>`返回一个`bool`，表示是否匹配成功的函数。Match只会作匹配尝试，而Rule则会做匹配尝试后进行Rule应用的结果，并通过参数中的引用返回。所以Rule其实就是Match & Replace。（Match单独使用的情况应该很少，绝大多数是直接用Rule）
+
+* 如何定义Match和Rule？
+
+  * 1 给定含有特殊匹配符号修饰的变量的表达式， Source Pattern和Target Pattern，直接通过MakeMatch或MakeRule定义。（通过这种方式定义的Rule或Match必须在程序初始化时就MakeMatch或MakeRule完成。如果在其他地方用MakeRule或MakeMatch来定义，要用static关键字，避免每次调用到这个函数都会重新MakeMatch或MakeRule）
+
+    通配符的含义：\_xxx，表示匹配任意MathObject；@xxx表示匹配Atom变量名称；#xxx表示匹配Atom数字，$xxx表示匹配Atom字符串。在Item或Polynomial的*最后*一项，\_xxx\_表示匹配剩下所有的项。
+
+  * 2 手写`Ptr<MathOBject>(Ptr<MathObject>)`或`Ptr<MathObject>(Ptr<MathObject>, Ptr<MathObject>&)`型函数。因为不是所有的Match和Rule都是可以用一个Source pattern到Target Pattern就能表示的，有些如不定长的向量就不能表示。这时需要手写函数。
+
+* 程序可能要定义大量的Rule，将这些Rule定义在`RuleLib`命名空间下。
+
+* Match和Rule的定义和使用，可以参考程序中示例。在现在的`main.cpp`中，有对单个Rule应用的测试。
