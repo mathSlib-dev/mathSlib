@@ -19,7 +19,7 @@
 	如果对象还可能需要继续计算，则返回 true. 如果已经计算完成则返回 false.
 	Compute的引用参数返回涉及到input中的内容，一定是拷贝。即result和input是独立的，不用担心他们的子表达式之间有耦合。
 
-	Compute 的用法：
+	Compute 的常见用法：
 	计算obj,并直接把结果返回给obj，丢弃计算前的obj：Compute(obj, obj). 
 	对于一个对象obj完成全部计算（直至不再修改）：while(Compute(obj, obj));
 	全部完成计算，并判断是否修改while(Compute(obj))flag = true;
@@ -54,7 +54,9 @@ namespace mathS{
 	bool Compute(Ptr<FunctionalOperator> input, Ptr<MathObject>& result);
 	bool Compute(Ptr<Locate> input, Ptr<MathObject>& result);
 	bool Compute(Ptr<Power> input, Ptr<MathObject>& result);
+	bool Compute(Ptr<Inverse> input, Ptr<MathObject>& result);
 	bool Compute(Ptr<Item> input, Ptr<MathObject>& result);
+	bool Compute(Ptr<Opposite> input, Ptr<MathObject>& result);
 	bool Compute(Ptr<Polynomial> input, Ptr<MathObject>& result);
 	bool Compute(Ptr<Map>, Ptr<MathObject>& result);
 	bool Compute(Ptr<Compare> input, Ptr<MathObject>& result);

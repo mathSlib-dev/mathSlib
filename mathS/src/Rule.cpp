@@ -263,9 +263,12 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				Ptr<Item> item_res = New<Item>();
 				for (int j = 0; j < obj_factors.size(); j++) {
 					if (!md[j])
-						item_res->factors.push_back(obj_factors[j]);
+						item_res->push_back(obj_factors[j]);
 				}
-				factors_residual = item_res;
+				if (item_res->factors.size() == 1)
+					factors_residual = item_res->factors[0];
+				else
+					factors_residual = item_res;
 			}
 			// 比较table中的项
 			auto itres = table.find(residual);
@@ -378,9 +381,12 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				Ptr<Polynomial> poly_res = New<Polynomial>();
 				for (int j = 0; j < obj_items.size(); j++) {
 					if (!md[j])
-						poly_res->items.push_back(obj_items[j]);
+						poly_res->push_back(obj_items[j]);
 				}
-				items_residual = poly_res;
+				if (poly_res->items.size() == 1)
+					items_residual = poly_res->items[0];
+				else
+					items_residual = poly_res;
 			}
 			// 比较table中的项
 			auto itres = table.find(residual);

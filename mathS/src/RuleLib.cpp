@@ -16,7 +16,7 @@ bool mathS::RuleLib::VectorMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst)
 			auto v = Dynamic_cast<Vector>(obj_factors[i]);
 			// 检查形状
 			if (vec_idx.empty())
-				vecshape = vecs[i]->components.size();
+				vecshape = v->components.size();
 			else
 				if (v->components.size() != vecshape) return false;	// 形状不一致，不能乘开
 			vec_idx.push_back(i);
@@ -49,13 +49,13 @@ bool mathS::RuleLib::VectorMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst)
 bool mathS::RuleLib::ExpandDistributive(Ptr<MathObject> obj, Ptr<MathObject>& rst)
 {
 	// 找到第一个多项式
-	if (obj->GetType() != MathObject::POLYNOMIAL)
+	if (obj->GetType() != MathObject::ITEM)
 		return false;
 	auto& obj_factors = Dynamic_cast<Item>(obj)->factors;
 	if (obj_factors.size() <= 1)
 		return false;
 	int poly_idx = 0;
-	while (poly_idx < obj_factors.size() && obj_factors[poly_idx]->GetType() != MathObject::VECTOR)
+	while (poly_idx < obj_factors.size() && obj_factors[poly_idx]->GetType() != MathObject::POLYNOMIAL)
 		poly_idx++;
 	if (poly_idx >= obj_factors.size())
 		return false;
@@ -76,4 +76,61 @@ bool mathS::RuleLib::ExpandDistributive(Ptr<MathObject> obj, Ptr<MathObject>& rs
 	}
 	rst = poly_rst;
 	return true;
+}
+
+bool mathS::RuleLib::ExpandItemPower(Ptr<MathObject> obj, Ptr<MathObject>& rst)
+{
+	if (obj->GetType() != MathObject::POWER)
+		return false;
+	auto pow_obj = Dynamic_cast<Power>(obj);
+	if (pow_obj->base->GetType() != MathObject::ITEM)
+		return false;
+	auto itm_base = Dynamic_cast<Item>(pow_obj->base);
+	auto itm_rst = New<Item>();
+	for (auto it : itm_base->factors) {
+		itm_rst->push_back(New<Power>(it->DeepCopy(), pow_obj->exponent->DeepCopy()));
+	}
+	rst = itm_rst;
+	return true;
+}
+
+bool mathS::RuleLib::VectorPower(Ptr<MathObject> obj, Ptr<MathObject>& rst)
+{
+	if (obj->GetType() != MathObject::POWER)
+		return false;
+	auto pow_obj = Dynamic_cast<Power>(obj);
+	
+	if (pow_obj->base->GetType() == MathObject::VECTOR) {
+		auto vec_rst = New<Vector>();
+		auto& base_components = Dynamic_cast<Vector>(pow_obj->base)->components;
+		if (pow_obj->exponent->GetType() == MathObject::VECTOR) {
+			auto& exp_components = Dynamic_cast<Vector>(pow_obj->exponent)->components;
+			if (base_components.size() != exp_components.size())
+				return false;
+			vec_rst->components.reserve(base_components.size());
+			for (int i = 0; i < base_components.size(); i++) {
+				vec_rst->push_back(New<Power>(base_components[i]->DeepCopy(), exp_components[i]->DeepCopy()));
+			}
+		}
+		else {
+			for (int i = 0; i < base_components.size(); i++) {
+				vec_rst->push_back(New<Power>(base_components[i]->DeepCopy(), pow_obj->exponent->DeepCopy()));
+			}
+		}
+		rst = vec_rst;
+	}
+	else {
+		if (pow_obj->exponent->GetType() == MathObject::VECTOR) {
+			auto vec_rst = New<Vector>();
+			auto& exp_components = Dynamic_cast<Vector>(pow_obj->exponent)->components;
+			for (int i = 0; i < exp_components.size(); i++) {
+				vec_rst->push_back(New<Power>(pow_obj->base->DeepCopy(), exp_components[i]->DeepCopy()));
+			}
+			rst = vec_rst;
+		}
+		else {
+			return false;
+		}
+	}
+	
 }

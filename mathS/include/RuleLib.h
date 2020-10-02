@@ -13,16 +13,33 @@ namespace mathS {
 
 		// Item 同底数幂合并
 		static Rule Power_reduction_1 = MakeRule(Parse("_a/_a*_RES_"), Parse("_RES_"));
-		static Rule Power_reduction_2 = MakeRule(Parse("_a*_a*_RES_"), Parse("_a^2_RES_"));
+		static Rule Power_reduction_2 = MakeRule(Parse("_a*_a*_RES_"), Parse("_a^2*_RES_"));
 		static Rule Power_reduction_3 = MakeRule(Parse("_a^_e*_a*_RES_"), Parse("_RES_*_a^(_e+1)"));
 		static Rule Power_reduction_4 = MakeRule(Parse("_a^_e/_a^_*_RES_"), Parse("_RES_*_a^(_e-1)"));
 		static Rule Power_reduction_5 = MakeRule(Parse("_a^_e1*_a^_e2*_RES_"), Parse("_RES_*_a^(_e1+_e2)"));
 		static Rule Power_reduction_6 = MakeRule(Parse("_a^_e1/_a^_e2*_RES_"), Parse("_RES_*_a^(_e1-_e2)"));
+		// 去掉 1
+		static Rule Drop_ones = MakeRule(Parse("1*_RES_"), Parse("_RES_"));
 
 		// 常数项乘法计算
 		bool ConstantMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 		// 常数项分子分母约分
 		bool ConstantFractionReduction(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
+		static Rule Power_simplify = MakeRule(Parse("(_a^_e1)^_e2"), Parse("_a^(_e1*_e2)"));
+		
+		// (a*b)^e=a^e*b^e
+		bool ExpandItemPower(Ptr<MathObject> obj, Ptr<MathObject>& rst);
+		// {a,b}^{c,d}或{a,b}^c或a^{b,c}
+		bool VectorPower(Ptr<MathObject> obj, Ptr<MathObject>& rst);
+
+		static Rule Reduce_opposite_terms = MakeRule(Parse("_a-_a+_RES_"), Parse("_RES_"));
+		static Rule Combining_similar_terms = MakeRule(Parse("#a*_res_+#b*_res_+_RES_"), Parse("(#a+#b)*_res_+_RES_"));
+		static Rule Dropping_zeros = MakeRule(Parse("0+_RES_"), Parse("_RES_"));
+		
+		static Rule Double_negative = MakeRule(Parse("-(-_a)"), Parse("_a"));
+
+		static Rule Double_inverse_1 = MakeRule(Parse("/(/_a)"), Parse("_a"));
+		static Rule Double_inverse_2 = MakeRule(Parse("/(/_a*_RES_)"), Parse("_a/_RES_"));
 	};
 }

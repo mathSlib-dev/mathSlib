@@ -5,6 +5,7 @@
 #include <MathParser.h>
 #include <LBAssembler.h>
 #include <Rule.h>
+#include <Compute.h>
 
 using namespace mathS;
 
@@ -13,6 +14,12 @@ int main() {
     // Rule模块测试
     std::string str;
     Assembler assembler;
+    while (true) {
+        std::cin >> str;
+        auto obj = Parse(str);
+        while (Compute(obj, obj));
+        std::cout << obj->GetString() << std::endl;
+    }
     while (true) {
         std::cout << "Source pattern: ";
         std::cin >> str;
