@@ -176,6 +176,8 @@ namespace mathS
 
 		Type GetType() const { return Type::VECTOR; };
 		int Level() const { return LEVEL_VECTOR; };
+		void push_back(Ptr<MathObject> const f);
+
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;

@@ -162,6 +162,7 @@
     <ClCompile Include="src\NMathObject.cpp" />
     <ClCompile Include="src\MathParser.cpp" />
     <ClCompile Include="src\Rule.cpp" />
+    <ClCompile Include="src\RuleLib.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Compute.h" />
@@ -176,6 +177,7 @@
     <ClInclude Include="include\MathParser.h" />
     <ClInclude Include="include\Ptr.h" />
     <ClInclude Include="include\Rule.h" />
+    <ClInclude Include="include\RuleLib.h" />
     <ClInclude Include="include\string-switch.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
