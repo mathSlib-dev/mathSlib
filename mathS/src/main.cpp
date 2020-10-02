@@ -16,15 +16,15 @@ int main() {
     while (true) {
         std::cout << "Source pattern: ";
         std::cin >> str;
-        auto srcpattern = Parser(str).Parse();
+        auto srcpattern = Parse(str);
 
         std::cout << "Target pattern: ";
         std::cin >> str;
-        auto tarpattern = Parser(str).Parse();
+        auto tarpattern = Parse(str);
 
         std::cout << "Object: ";
         std::cin >> str;
-        auto obj = Parser(str).Parse();
+        auto obj = Parse(str);
 
         auto rule = MakeRule(srcpattern, tarpattern);
         Ptr<MathObject> rst;
@@ -37,7 +37,7 @@ int main() {
     // 计算器程序；测试LBAssembler
     while (true) {
         std::cin >> str;
-        auto mobj = Parser(str).Parse();
+        auto mobj = Parse(str);
 
         // 检查表达式是否合法，并输出错误信息
         if (mobj->GetType() == MathObject::ERROR) {
