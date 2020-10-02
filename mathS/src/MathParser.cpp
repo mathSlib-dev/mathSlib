@@ -227,31 +227,34 @@ Ptr<MathObject> mathS::parsePower(const std::vector<Token>& tokens, const int st
 Ptr<MathObject> mathS::parseItem(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
-    auto fct = parsePower(tokens, start, i);
-    ERROR_CHECK(fct);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM) {
-        // 如果项中只有一个factor，那么就直接返回这个factor，而不必再套一层item
-        return fct;
+        return New<ErrorObject>("Parse: Syntax Error. Incomplete expression.");
     }
-
     Ptr<Item> itm = New<Item>();
-    itm->push_back(fct);
+    if (tokens[i].text != "/") {
+        auto fct = parsePower(tokens, start, i);
+        ERROR_CHECK(fct);
+        itm->push_back(fct);
+    }
     while (true) {
+        if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM) {
+            // 若只有一项，简化表达式
+            if (itm->factors.size() > 1)
+                return itm;
+            else
+                return itm->factors[0];
+        }
         if (tokens[i].text == "*") {
             // 增加乘因子
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
             itm->push_back(t);
-            if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM)
-                return itm;
         }
         else if (tokens[i].text == "/") {
             // 增加除因子
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
             itm->push_back(New<Inverse>(t));
-            if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM)
-                return itm;
         }
         else {
             return New<ErrorObject>("Parse: Syntax Error. Unexpected Symbol " + tokens[i].text);
