@@ -114,3 +114,16 @@
 * 程序可能要定义大量的Rule，将这些Rule定义在`RuleLib`命名空间下。
 
 * Match和Rule的定义和使用，可以参考程序中示例。在现在的`main.cpp`中，有对单个Rule应用的测试。
+
+## 2020-10-2
+
+**[工作]**
+
+* 完备的Match。现在是基于CSP的前向检验求解的，不会漏匹配情况了。
+
+* Compute初步，后面继续开发Compute可以参考。现在main.cpp中可以测试Compute。
+
+**[任务]** 继续完善RuleLib：
+
+* 常数值计算的Rule，包括乘法
+* Function和FunctionalOperator计算的Rule
