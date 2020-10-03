@@ -39,7 +39,7 @@ Ptr<NMathObject> mathS::NMath::Sum(NFuncParamsList f, NParamsList i)
 			double end = v->components[1]->GetValue();
 			double step = v->components[2]->GetValue();
 			auto ret = f[0]({ New<NAtom>(start) });
-			for (double k = start + 1.0; k <= end; k += step) {
+			for (double k = start + step; k <= end; k += step) {
 				ret = Plus({ ret, f[0]({ New<NAtom>(k) }) });
 				if (ret->IsError()) return ret;
 			}

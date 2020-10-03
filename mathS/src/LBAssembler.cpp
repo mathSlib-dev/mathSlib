@@ -88,7 +88,7 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 		// TODO
 		// 
 		NFuncOperator nfop = itfop->second;
-		std::vector<std::string> paramsstr2(paramsstr);	// params2 是 params & variabl
+		std::vector<std::string> paramsstr2(paramsstr);	// params2 是 params & variables
 		for (auto it : fopexpr->variables) 
 			paramsstr2.push_back(it->GetString());
 
@@ -218,7 +218,7 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 			};
 		}
 		else {
-			return NFunctionError("Assemble: Unkown compare operator");
+			return NFunctionError("Assemble: Unknown compare operator");
 		}
 		break;
 	}
