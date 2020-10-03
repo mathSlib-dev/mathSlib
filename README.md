@@ -62,7 +62,7 @@ int main() {
     if (mobj->GetType() == MathObject::ERROR) 	// Check sytanx
         std::cout << mobj->GetString() << std::endl;
 
-    std::vector<std::string> params = {};		// No variables in the expression in a calculator program.
+    std::vector<std::string> params = {};	// No variables in the expression in a calculator program.
 
     auto f = assembler.Assemble(mobj, params);	// Get NFunction
     std::cout << "Answer = " << f({})->GetString() << std::endl;
