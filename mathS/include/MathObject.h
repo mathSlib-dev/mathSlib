@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include <unordered_map>
 #include <Ptr.h>
 
 namespace mathS
@@ -183,7 +184,7 @@ namespace mathS
 
 	class Function : public MathObject
 	{
-		// eg. f[x], Sin[u]
+		// eg. f(x), Sin(u)
 	public:
 		Function() {}
 		~Function() {}

@@ -30,11 +30,26 @@ std::string mathS::Function::GetString() const
 
 std::string mathS::Function::GetLaTeXString() const
 {
-
-	if (function->Level() <= LEVEL_FUNCTION)
-		return function->GetLaTeXString() + "\\left(" + ListGetLaTeXString(parameter) + "\\right)";
+	static std::unordered_map<std::string, std::string> str2LaTeXstr = {
+		{"Exp", "\\exp"}, {"Sin", "\\sin"}, {"Cos", "\\cos"}, {"Tan", "\\tan"}, 
+		{"Log", "\\log"}, {"Ln", "\\ln"}, {"Lg", "\\lg"}, {"Cot", "\\cot"}, {"Csc", "\\csc"},
+		{"Sec", "\\sec"}, {"ASin", "\arcsin"}, {"ACos", "\arccos"}, {"ATan", "\\arctan"}, 
+		{"Sgn", "\\sgn"}, {"Det", "\\det"}, {"Sqrt", "\\sqrt"}
+	};
+	std::string funName = function->GetLaTeXString();
+	if (function->Level() <= LEVEL_FUNCTION) {
+		if (str2LaTeXstr.find(funName) != str2LaTeXstr.end()) {
+			funName = str2LaTeXstr[funName];
+			if(funName=="\\sqrt" || (parameter.size()==1 && parameter[0]->Level() <= MathObject::LEVEL_POWER))
+				return funName + "{" + ListGetLaTeXString(parameter) + "}";
+			else
+				return funName + "{\\left(" + ListGetLaTeXString(parameter) + "\\right)}";
+		}
+		else
+			return funName + "\\left(" + ListGetLaTeXString(parameter) + "\\right)";
+	}
 	else
-		return "\\left(" + function->GetLaTeXString() + "\\right)" + "\\left(" + ListGetLaTeXString(parameter) + "\\right)";
+		return "\\left(" + funName + "\\right)" + "\\left(" + ListGetLaTeXString(parameter) + "\\right)";
 }
 
 mathS::Ptr<MathObject> mathS::Function::DeepCopy() const
@@ -153,24 +168,51 @@ std::string mathS::Item::GetLaTeXString() const
 {
 	std::string ret;
 	std::string temp = "";
+	int invflag = 0, braceflag = 0;
 	if (factors[0]->Level() < LEVEL_ITEM) {
-		if (factors[0]->GetType() == Type::INVERSE)
+		if (factors[0]->GetType() == Type::INVERSE) {
 			temp = "\\frac{1}{" + factors[0]->GetLaTeXString() + "}";
+			invflag = 1;
+		}
 		else
 			temp = factors[0]->GetLaTeXString();
 	}
 	else {
-		temp = "(" + factors[0]->GetLaTeXString() + ")";
+		temp = "\\left(" + factors[0]->GetLaTeXString() + "\\right)";
+		braceflag = 1;
 	}
 	for (int i = 1; i < factors.size(); i++) {
-		if (factors[i]->GetType() == Type::INVERSE)
+		if (factors[i]->GetType() == Type::INVERSE) {
 			temp = "\\frac{" + temp + "}{" + factors[i]->GetLaTeXString() + "}";
+			invflag = 1;
+		}
 		else {
-			ret += temp + "\\times ";
-			if (factors[i]->Level() < LEVEL_ITEM)
-				temp = factors[i]->GetLaTeXString();
-			else
-				temp = "(" + factors[i]->GetLaTeXString() + ")";
+			if (!invflag) {
+				if (factors[i]->Level() >= LEVEL_ITEM) {
+					temp += "\\left(" + factors[i]->GetLaTeXString() + "\\right)";
+					braceflag = 1;
+				}
+				else {
+					if (braceflag)
+						temp += factors[i]->GetLaTeXString();
+					else
+						temp += "\\," + factors[i]->GetLaTeXString();
+					braceflag = 0;
+				}
+			}
+			else {
+				ret += temp + "\\cdot";
+				temp = "";
+				invflag = 0;
+				if (factors[i]->Level() < LEVEL_ITEM) {
+					temp += factors[i]->GetLaTeXString();
+					braceflag = 0;
+				}
+				else {
+					temp += "\\left(" + factors[i]->GetLaTeXString() + "\\right)";
+					braceflag = 1;
+				}
+			}
 		}
 	}
 	ret += temp;
@@ -302,11 +344,11 @@ std::string mathS::Compare::GetString() const
 
 std::string mathS::Compare::GetLaTeXString() const
 {
-	std::string opLaTeX=op;
+	std::string opLaTeX = op;
 	if (op == ">=")
-		opLaTeX = "\\geqslant ";
+		opLaTeX = "\\ge ";
 	if (op == "<=")
-		opLaTeX = "\\leqslant ";
+		opLaTeX = "\\le ";
 	return
 		(left->Level() < LEVEL_COMPARE ? left->GetLaTeXString() : "\\left(" + left->GetLaTeXString() + "\\right)") + opLaTeX +
 		(right->Level() < LEVEL_COMPARE ? right->GetLaTeXString() : "\\left(" + right->GetLaTeXString() + "\\right)");
@@ -352,8 +394,10 @@ std::string mathS::Atom::GetLaTeXString() const
 	if (str == "E")
 		return "\\mathrm{e}";
 	for (auto c : str) {
-		if (c == '_' || c == '$' || c == '#')
-			LaTeXstr += '\\';
+		if (c == '_' || c == '$' || c == '#' || c == '&')
+			LaTeXstr += "\\";
+		if (c == '~')
+			LaTeXstr += "\\~{}";
 		LaTeXstr += c;
 	}
 	return LaTeXstr;
@@ -392,15 +436,21 @@ std::string mathS::FunctionalOperator::GetString() const
 std::string mathS::FunctionalOperator::GetLaTeXString() const
 {
 	std::string ret;
-	if (function->Level() <= LEVEL_FUNCOPERATOR)
-		ret = function->GetLaTeXString() + "\\ll ";
-	else
-		ret = "\\left(" + function->GetLaTeXString() + "\\right)\\ll ";
-	if (!variables.empty())
-		ret += variables[0]->GetLaTeXString();
-	for (int i = 1; i < variables.size(); i++)
-		ret += "," + variables[i]->GetLaTeXString();
-	ret += "|" + ListGetLaTeXString(fparameter) + "\\gg\\left(" + ListGetLaTeXString(parameter) + "\\right)";
+	if (function->GetString() == "Sum"){
+		for (int i = 0; i < variables.size(); i++) {
+			ret += "\\sum_{" + variables[i]->GetLaTeXString() + "}" +
+				"^{" + parameter[i]->GetLaTeXString() + "}";
+		}
+		if (fparameter.size() == 1)
+			if (fparameter[0]->Level() <= MathObject::LEVEL_POWER)
+				ret += fparameter[0]->GetLaTeXString();
+			else
+				ret += "\\left(" + fparameter[0]->GetLaTeXString() + "\\right)";
+		else
+			ret += "\\left\\{" + ListGetLaTeXString(fparameter) + "\\right\\}";
+		return ret;
+	}
+
 	return ret;
 }
 
