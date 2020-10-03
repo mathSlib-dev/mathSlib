@@ -76,10 +76,11 @@ bool mathS::Compute(Ptr<Power> input, Ptr<MathObject>& result) {
 	while (Compute(exponet, exponet));
 
 	result = New<Power>(base, exponet);
-	if (RuleLib::ExpandItemPower(result, result)) return true;
-	if (RuleLib::Power_simplify(result, result)) return true;
 	// 常数计算 TODO
 	// 多项式幂展开 TODO 
+	if (RuleLib::ExpandItemPower(result, result)) return true;
+	if (RuleLib::Power_simplify(result, result)) return true;
+	if (RuleLib::VectorPower(result, result)) return true;
 	return false;
 }
 

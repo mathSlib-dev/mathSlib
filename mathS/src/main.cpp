@@ -11,15 +11,18 @@ using namespace mathS;
 
 int main() {
     
-    // Rule模块测试
+    
     std::string str;
     Assembler assembler;
+   
+    // Compute测试
     while (true) {
         std::cin >> str;
         auto obj = Parse(str);
         while (Compute(obj, obj));
         std::cout << obj->GetString() << std::endl;
     }
+    // Rule模块测试
     while (true) {
         std::cout << "Source pattern: ";
         std::cin >> str;
@@ -40,7 +43,7 @@ int main() {
         else
             std::cout << "No" << std::endl;
     }
-   
+              
     // 计算器程序；测试LBAssembler
     while (true) {
         std::cin >> str;
