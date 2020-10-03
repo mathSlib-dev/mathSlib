@@ -2,6 +2,11 @@
 
 using namespace mathS;
 
+void mathS::Vector::push_back(Ptr<MathObject> const f)
+{
+	components.push_back(f);
+}
+
 std::string mathS::Vector::GetString() const
 {
 	return "{" + ListGetString(components) + "}";

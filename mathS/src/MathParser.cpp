@@ -9,8 +9,8 @@ using namespace mathS;
 #define LIST_ERROR_CHECK(x) if (x.size()>0 && x[0]->GetType() == MathObject::ERROR) return x[0]
 
 // 解析表达式
-Ptr<MathObject> Parser::Parse() {
-
+Ptr<MathObject> mathS::Parse(const std::string & c) {
+    Lexer lexer(c);
     std::vector<Token> tokens;
     Token tok;
     while (true) {
@@ -29,7 +29,7 @@ Ptr<MathObject> Parser::Parse() {
     return obj;
 }
 
-short Parser::level(const std::string &c) {
+short mathS::level(const std::string &c) {
     SWITCH(c.c_str()) {
         CASE(c, "(") return MathObject::LEVEL_FUNCTION;
         CASE(c, "<<") return MathObject::LEVEL_FUNCOPERATOR;
@@ -59,12 +59,12 @@ short Parser::level(const std::string &c) {
 }
 
 
-Ptr<MathObject> mathS::Parser::parseObject(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parseObject(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
     return parseCompare(tokens, i, i);
 }
-Ptr<MathObject> mathS::Parser::parseAtom(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parseAtom(const std::vector<Token>& tokens, const int start, int& i)
 {
     Ptr<MathObject> obj;
     i = start;
@@ -107,7 +107,7 @@ Ptr<MathObject> mathS::Parser::parseAtom(const std::vector<Token>& tokens, const
 }
 
 
-Ptr<MathObject> mathS::Parser::parseFunction(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parseFunction(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
 
@@ -180,7 +180,7 @@ Ptr<MathObject> mathS::Parser::parseFunction(const std::vector<Token>& tokens, c
 
 }
 
-Ptr<MathObject> mathS::Parser::parseLocate(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parseLocate(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
     auto obj = parseFunction(tokens, start, i);
@@ -206,7 +206,7 @@ Ptr<MathObject> mathS::Parser::parseLocate(const std::vector<Token>& tokens, con
        
 }
 
-Ptr<MathObject> mathS::Parser::parsePower(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parsePower(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
     auto b = parseLocate(tokens, start, i);
@@ -224,34 +224,37 @@ Ptr<MathObject> mathS::Parser::parsePower(const std::vector<Token>& tokens, cons
     return pw;
 }
 
-Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parseItem(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
-    auto fct = parsePower(tokens, start, i);
-    ERROR_CHECK(fct);
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM) {
-        // 如果项中只有一个factor，那么就直接返回这个factor，而不必再套一层item
-        return fct;
+        return New<ErrorObject>("Parse: Syntax Error. Incomplete expression.");
     }
-
     Ptr<Item> itm = New<Item>();
-    itm->push_back(fct);
+    if (tokens[i].text != "/") {
+        auto fct = parsePower(tokens, start, i);
+        ERROR_CHECK(fct);
+        itm->push_back(fct);
+    }
     while (true) {
+        if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM) {
+            // 若只有一项，简化表达式
+            if (itm->factors.size() > 1)
+                return itm;
+            else
+                return itm->factors[0];
+        }
         if (tokens[i].text == "*") {
             // 增加乘因子
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
             itm->push_back(t);
-            if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM)
-                return itm;
         }
         else if (tokens[i].text == "/") {
             // 增加除因子
             auto t = parsePower(tokens, i + 1, i);
             ERROR_CHECK(t);
             itm->push_back(New<Inverse>(t));
-            if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_ITEM)
-                return itm;
         }
         else {
             return New<ErrorObject>("Parse: Syntax Error. Unexpected Symbol " + tokens[i].text);
@@ -261,7 +264,7 @@ Ptr<MathObject> mathS::Parser::parseItem(const std::vector<Token>& tokens, const
     
 }
 
-Ptr<MathObject> mathS::Parser::parsePolynomial(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parsePolynomial(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_POLYNOMIAL) {
@@ -301,7 +304,7 @@ Ptr<MathObject> mathS::Parser::parsePolynomial(const std::vector<Token>& tokens,
     }
 }
 
-Ptr<MathObject> mathS::Parser::parseMap(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parseMap(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
     auto a = parsePolynomial(tokens, i, i);
@@ -317,7 +320,7 @@ Ptr<MathObject> mathS::Parser::parseMap(const std::vector<Token>& tokens, const 
     return mp;
 }
 
-Ptr<MathObject> mathS::Parser::parseCompare(const std::vector<Token>& tokens, const int start, int& i)
+Ptr<MathObject> mathS::parseCompare(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
     auto a = parseMap(tokens, i, i);
@@ -335,7 +338,7 @@ Ptr<MathObject> mathS::Parser::parseCompare(const std::vector<Token>& tokens, co
 }
 
 
-std::vector<Ptr<MathObject>> mathS::Parser::parseList(const std::vector<Token>& tokens, const int start, int& i)
+std::vector<Ptr<MathObject>> mathS::parseList(const std::vector<Token>& tokens, const int start, int& i)
 {
     i = start;
     if (i >= tokens.size() || level(tokens[i].text) > MathObject::LEVEL_LIST)
@@ -358,3 +361,4 @@ std::vector<Ptr<MathObject>> mathS::Parser::parseList(const std::vector<Token>& 
         }
     }
 }
+

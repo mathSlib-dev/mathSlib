@@ -88,9 +88,12 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 		// TODO
 		// 
 		NFuncOperator nfop = itfop->second;
-		std::vector<std::string> paramsstr2(paramsstr);	// params2 是 params & variables
-		for (auto it : fopexpr->variables) 
+
+		std::vector<std::string> paramsstr2;
+		paramsstr2.reserve(fopexpr->variables.size() + paramsstr.size());
+		for (auto it : fopexpr->variables)
 			paramsstr2.push_back(it->GetString());
+		paramsstr2.insert(paramsstr2.end(), paramsstr.begin(), paramsstr.end());	// params2 是   variable & params
 
 		std::vector<NFunction> ffparas;					// fparameter对于变量和内部变量的函数
 		ffparas.reserve(fopexpr->fparameter.size());
@@ -112,8 +115,8 @@ NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<st
 					// 将 params 和 vars 合并成ffparas的参数
 					NParamsList paramsvars;
 					paramsvars.reserve(params.size() + vars.size());
-					paramsvars.insert(paramsvars.begin(), params.begin(), params.end());
 					paramsvars.insert(paramsvars.end(), vars.begin(), vars.end());
+					paramsvars.insert(paramsvars.begin(), params.begin(), params.end());
 					return it(paramsvars);
 				});
 			NParamsList args;

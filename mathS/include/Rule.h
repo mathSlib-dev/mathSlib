@@ -2,9 +2,11 @@
 #include <MathObject.h>
 #include <map>
 #include <list>
+#include <MathParser.h>
 
 namespace mathS {
-
+	// Rule的第一个参数是输入obj，第二个引用是返回值。Rule引用不会改变输入obj指向的内容，引用返回的涉及到obj中对应内容都是拷贝。
+	// 如果返回false，说明匹配失败，引用参数不会改变
 	using Rule = std::function<bool(Ptr<MathObject>, Ptr<MathObject>&)>;
 	using Match = std::function<bool(Ptr<MathObject>)>;
 
@@ -41,6 +43,7 @@ namespace mathS {
 
 	/// <summary>
 	/// 全匹配，当两个两个表达式完全相同返回true。(为什么不比较GetString()？因为GetString()一定会遍历整个表达式，效率很低。)
+	/// 将来为了提高Compare效率，可以对MathObject维护高度属性
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="b"></param>
@@ -48,10 +51,5 @@ namespace mathS {
 	bool FullCompare(Ptr<MathObject> a, Ptr<MathObject> b);
 
 
-	// 规则库，在这里可以写包括直接生成的规则，或是必须要程序进行的规则
-	namespace RuleLib {
-		
-		
-		
-	};
+
 }

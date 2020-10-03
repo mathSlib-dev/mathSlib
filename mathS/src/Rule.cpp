@@ -193,27 +193,64 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		if (matchsize > obj_factors.size())	// 判断长短
 			return false;
 
-		std::vector<bool> md(obj_factors.size(), false);	// 是否已经配过
-		int table_size;
+		std::vector<bool> md(obj_factors.size(), false);	// 互斥约束
+		std::vector<std::list<int>> feasible; // 直接约束的可行集合
+		feasible.resize(matchsize);
+		int table_size = table_list.size();
+		// 先得到直接约束的可行集合
 		for (int i = 0; i < matchsize; i++) {
-			bool flag = false;
-			// 记录当前table大小，以便匹配失败时恢复
-			table_size = table_list.size();
 			for (int j = 0; j < obj_factors.size(); j++) {
-				if (md[j]) continue;	// 不匹配已经被匹配占用的项
-				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list)) {
-					// 匹配尝试成功，立刻占用（可能会有问题）
-					flag = true; md[j] = true;
-					break;
-				}
-				// 本次匹配尝试失败，清除尝试中错误的匹配表
+				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list))
+					feasible[i].push_back(j);
+				// 恢复匹配表
 				while (table.size() > table_size) {
 					table.erase(table_list.back());
 					table_list.pop_back();
 				}
 			}
-			if (!flag)
+			if (feasible[i].empty())
 				return false;
+		}
+		// 对互斥约束前向检验，枚举剩下的情况
+		std::vector<std::list<int>::iterator> it;
+		for (auto& jt : feasible)
+			it.push_back(jt.begin());
+		std::vector<int> table_sizes;
+		table_sizes.resize(matchsize);
+		table_sizes[0] = table_list.size();
+		for (int i = 0; i < matchsize;) {
+			// 恢复匹配表至 i 未匹配的状态
+			while (table_list.size() > table_sizes[i]) {
+				table.erase(table_list.back());
+				table_list.pop_back();
+			}
+			// 本层要赋值的变量 pattern_factor[i]， 值域为其可行的匹配 *it[i] : feasible[i]
+			while (it[i] != feasible[i].end()) {
+				// 必须满足互斥约束，且匹配成功，则选中，跳出选下一层。否则枚举本层的下一个
+				if ((!md[*it[i]]) && DoMatch(pattern_factors[i], obj_factors[*it[i]], table, table_list))
+					break;
+				it[i]++;
+				// 本次匹配尝试失败也要恢复匹配表
+				while (table_list.size() > table_sizes[i]) {
+					table.erase(table_list.back());
+					table_list.pop_back();
+				}
+			}
+			if (it[i] != feasible[i].end()) {
+				// 当前变量已经赋值，对下一个变量进行赋值
+				md[*it[i]] = true;
+				if (i == matchsize - 1) break;		// 已经全部赋值
+				table_sizes[i + 1] = table_list.size();	
+				i++;
+			}
+			else {
+				// 没有可选的，返回上一个变量
+				if (i == 0) return false;
+				it[i] = feasible[i].begin();
+				i--;
+				md[*it[i]] = false;
+				it[i]++;
+			}
 		}
 		// 处理残项
 		if (with_residual) {
@@ -226,9 +263,12 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				Ptr<Item> item_res = New<Item>();
 				for (int j = 0; j < obj_factors.size(); j++) {
 					if (!md[j])
-						item_res->factors.push_back(obj_factors[j]);
+						item_res->push_back(obj_factors[j]);
 				}
-				factors_residual = item_res;
+				if (item_res->factors.size() == 1)
+					factors_residual = item_res->factors[0];
+				else
+					factors_residual = item_res;
 			}
 			// 比较table中的项
 			auto itres = table.find(residual);
@@ -272,26 +312,63 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 
 		std::vector<bool> md(obj_items.size(), false);	// 是否已经配过
-		int table_size;
+		std::vector<std::list<int>> feasible; // 直接约束的可行集合
+		feasible.resize(matchsize);
+		int table_size = table_list.size();
+		// 先得到直接约束的可行集合
 		for (int i = 0; i < matchsize; i++) {
-			bool flag = false;
-			// 记录当前table大小，以便匹配失败时恢复
-			table_size = table_list.size();
 			for (int j = 0; j < obj_items.size(); j++) {
-				if (md[j]) continue;	// 不匹配已经匹配过的项
-				if (DoMatch(pattern_items[i], obj_items[j], table, table_list)) {
-					flag = true;
-					md[j] = true;
-					break;
-				}
-				// 本次匹配尝试失败，清除尝试中错误的匹配表
+				if (DoMatch(pattern_items[i], obj_items[j], table, table_list))
+					feasible[i].push_back(j);
+				// 恢复匹配表
 				while (table.size() > table_size) {
 					table.erase(table_list.back());
 					table_list.pop_back();
 				}
 			}
-			if (!flag)
+			if (feasible[i].empty())
 				return false;
+		}
+		// 对互斥约束前向检验，枚举剩下的情况
+		std::vector<std::list<int>::iterator> it;
+		for (auto& jt : feasible)
+			it.push_back(jt.begin());
+		std::vector<int> table_sizes;
+		table_sizes.resize(matchsize);
+		table_sizes[0] = table_list.size();
+		for (int i = 0; i < matchsize;) {
+			// 恢复匹配表至 i 未匹配的状态
+			while (table_list.size() > table_sizes[i]) {
+				table.erase(table_list.back());
+				table_list.pop_back();
+			}
+			while (it[i] != feasible[i].end()) {
+				// 必须满足互斥约束，并且能Match，则认为选中，跳出选下一层。否则尝试本层的下一个
+				if ((!md[*it[i]]) && DoMatch(pattern_items[i], obj_items[*it[i]], table, table_list)) 
+					break;
+				it[i]++;
+				// 本次匹配尝试失败也要恢复匹配表
+				while (table_list.size() > table_sizes[i]) {
+					table.erase(table_list.back());
+					table_list.pop_back();
+				}
+			}
+			if (it[i] != feasible[i].end()) {
+				// 赋值可行
+				md[*it[i]] = true;
+				// 全部赋值完毕，得到可行解
+				if (i == matchsize - 1) break;
+				table_sizes[i + 1] = table_list.size();
+				i++;
+			}
+			else {
+				// 没有可选的，返回上一个变量
+				if (i == 0) return false;
+				it[i] = feasible[i].begin();
+				i--;
+				md[*it[i]] = false;
+				it[i]++;
+			}
 		}
 		// 处理残项
 		if (with_residual) {
@@ -304,9 +381,12 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				Ptr<Polynomial> poly_res = New<Polynomial>();
 				for (int j = 0; j < obj_items.size(); j++) {
 					if (!md[j])
-						poly_res->items.push_back(obj_items[j]);
+						poly_res->push_back(obj_items[j]);
 				}
-				items_residual = poly_res;
+				if (poly_res->items.size() == 1)
+					items_residual = poly_res->items[0];
+				else
+					items_residual = poly_res;
 			}
 			// 比较table中的项
 			auto itres = table.find(residual);
@@ -346,6 +426,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		break;
 	}
 	default:
+		// 不支持的类型，放弃匹配，直接返回false
 		return false;
 		break;
 	}
@@ -619,3 +700,5 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 	}
 	return true;
 }
+
+
