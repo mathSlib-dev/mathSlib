@@ -23,27 +23,37 @@ We start from an imitation of Mathematica. We try to make it more connected to C
 
 * `NMath` module offers better performance on numerical tasks. Numerical linear algebra will be strongly supported. It is under developing. We have already implemented `Assembler`. `MathObejct` can be converted to `NFunction` which takes the variables in the expression as parameters. This would support those cases like plotting, numerical integrating  when massive computing is needed. 
 
-* Convert `MathObject` to LaTex format string.
+* Convert `MathObject` to **LaTex** format string.
 
+  ```C++
+  std::cout << Parse("4*Sin(x^2+PI/2)+Sum<<i|Cos(Log(i))>>({1,12})").GetLaTexString() << std::endl;
+  
+  /***Output******
+  \sum_{i}^{\left\{1,12\right\}}\cos{\log{i}}+4\,\sin{\left(x+\frac{PI}{2}\right)}
+  ***************/
+  ```
+
+  Rendered in markdown or LaTex:
+  
+  ![](http://latex.codecogs.com/svg.latex?4\,\sin{\left(x^{2}+\frac{\pi}{2}\right)}+\sum_{i}^{\left\{1,12\right\}}\cos{\log{i}})
+  
 * As an C++ library, you can enjoy its features in C++ freely.  We use lambda expression to convert  `MathObject` to `std::function` so that you can use it freely in your program.
 
   ```C++
   Assembler assembler;
   auto f = assembler.assemble(Parse("Sin(x^2)-y/2"),{"x","y"});
   std::cout << f({1.2, 1.3}) << std::endl;
-  /*
-  Output:
-  	0.3414583
-  */
+  
+  /******Output*******
+  0.3414583
+  *******************/
   ```
 
   
 
-
-
 ## A powerful calculator in 9 line
 
-The follow program with **mathS** is a calculator that supports various and vector and matrix. 
+The simplest application with **mathS** is a calculator. The follow program is a calculator that supports various operations, vector and matrix. 
 
 ```c++
 #include <iostream>
@@ -65,7 +75,7 @@ int main() {
     std::vector<std::string> params = {};	// No variables in the expression in a calculator program.
 
     auto f = assembler.Assemble(mobj, params);	// Get NFunction
-    std::cout << "Answer = " << f({})->GetString() << std::endl;
+    std::cout << " = " << f({})->GetString() << std::endl;
     
     return 0;
 }
@@ -75,20 +85,26 @@ Sample input and output
 
 ```
 E^3+9.1*(3-2.1)
-Answer = 28.275537
+ = 28.275537
 
 Floor(1.34+3)
-Answer = 4.000000
+ = 4.000000
 
 {3,6,9}/3
-Answer = {1.000000,2.000000,3.000000}
+ = {1.000000,2.000000,3.000000}
 
 {3.1,3.2,{6,2,1}}*{1.1,2.2,{3.1,3.2,4.3}}
-Answer = {3.410000,7.040000,{18.600000,6.400000,4.300000}}
+ = {3.410000,7.040000,{18.600000,6.400000,4.300000}}
 
 sin({1,PI/6,PI/2})
-Answer = {0.841471,0.500000,1.000000}
+ = {0.841471,0.500000,1.000000}
 ```
+
+## Build
+
+TODO.
+
+
 
 ## What's to be done
 
