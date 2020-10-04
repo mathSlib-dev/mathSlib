@@ -34,11 +34,9 @@ We start from an imitation of Mathematica. We try to make it more connected to C
   ```
 
   Rendered in markdown or LaTex:
-  $$
-  4\,\sin{\left(x^{2}+\frac{\pi}{2}\right)}+\sum_{i}^{\left\{1,12\right\}}\cos{\log{i}}
-  $$
   
-
+  ![](http://latex.codecogs.com/svg.latex?4\,\sin{\left(x^{2}+\frac{\pi}{2}\right)}+\sum_{i}^{\left\{1,12\right\}}\cos{\log{i}})
+  
 * As an C++ library, you can enjoy its features in C++ freely.  We use lambda expression to convert  `MathObject` to `std::function` so that you can use it freely in your program.
 
   ```C++
