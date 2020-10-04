@@ -23,7 +23,7 @@ We start from an imitation of Mathematica. We try to make it more connected to C
 
 * `NMath` module offers better performance on numerical tasks. Numerical linear algebra will be strongly supported. It is under developing. We have already implemented `Assembler`. `MathObejct` can be converted to `NFunction` which takes the variables in the expression as parameters. This would support those cases like plotting, numerical integrating  when massive computing is needed. 
 
-* Convert `MathObject` to $\LaTeX$ format string.
+* Convert `MathObject` to **LaTeX** format string.
 
   ```C++
   std::cout << Parse("4*Sin(x^2+Pi/2)+Sum<<i|Cos(Log(i)^2)>>({1,12})")->GetLaTeXString() << std::endl;
