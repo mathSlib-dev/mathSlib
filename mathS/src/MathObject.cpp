@@ -38,7 +38,7 @@ std::string mathS::Function::GetLaTeXString() const
 	static std::unordered_map<std::string, std::string> str2LaTeXstr = {
 		{"Exp", "\\exp"}, {"Sin", "\\sin"}, {"Cos", "\\cos"}, {"Tan", "\\tan"}, 
 		{"Log", "\\log"}, {"Ln", "\\ln"}, {"Lg", "\\lg"}, {"Cot", "\\cot"}, {"Csc", "\\csc"},
-		{"Sec", "\\sec"}, {"ASin", "\arcsin"}, {"ACos", "\arccos"}, {"ATan", "\\arctan"}, 
+		{"Sec", "\\sec"}, {"ASin", "\\arcsin"}, {"ACos", "\\arccos"}, {"ATan", "\\arctan"}, 
 		{"Sgn", "\\sgn"}, {"Det", "\\det"}, {"Sqrt", "\\sqrt"}
 	};
 	std::string funName = function->GetLaTeXString();
@@ -99,7 +99,7 @@ std::string mathS::Power::GetString() const
 std::string mathS::Power::GetLaTeXString() const
 {
 	return
-		(base->Level() < LEVEL_POWER ? base->GetLaTeXString() : "\\left(" + base->GetString() + "\\right)") + "^" +
+		(base->Level() < LEVEL_FUNCTION ? base->GetLaTeXString() : "\\left(" + base->GetLaTeXString() + "\\right)") + "^" +
 		("{" + exponent->GetLaTeXString() + "}");
 }
 
@@ -200,13 +200,17 @@ std::string mathS::Item::GetLaTeXString() const
 				else {
 					if (braceflag)
 						temp += factors[i]->GetLaTeXString();
-					else
-						temp += "\\," + factors[i]->GetLaTeXString();
+					else {
+						if (factors[i]->GetType()==Type::ATOM && Dynamic_cast<Atom>(factors[i])->AtomType()==Type::NUMBER)
+							temp += "\\times " + factors[i]->GetLaTeXString();
+						else
+							temp += "\\, " + factors[i]->GetLaTeXString();
+					}
 					braceflag = 0;
 				}
 			}
 			else {
-				ret += temp + "\\cdot";
+				ret += temp + "\\times ";
 				temp = "";
 				invflag = 0;
 				if (factors[i]->Level() < LEVEL_ITEM) {
@@ -394,7 +398,7 @@ std::string mathS::Atom::GetString() const
 std::string mathS::Atom::GetLaTeXString() const
 {
 	std::string LaTeXstr;
-	if (str == "PI")
+	if (str == "Pi")
 		return "{\\pi}";
 	if (str == "E")
 		return "\\mathrm{e}";
