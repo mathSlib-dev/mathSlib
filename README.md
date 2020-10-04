@@ -23,19 +23,19 @@ We start from an imitation of Mathematica. We try to make it more connected to C
 
 * `NMath` module offers better performance on numerical tasks. Numerical linear algebra will be strongly supported. It is under developing. We have already implemented `Assembler`. `MathObejct` can be converted to `NFunction` which takes the variables in the expression as parameters. This would support those cases like plotting, numerical integrating  when massive computing is needed. 
 
-* Convert `MathObject` to **LaTex** format string.
+* Convert `MathObject` to $\LaTeX$ format string.
 
   ```C++
-  std::cout << Parse("4*Sin(x^2+PI/2)+Sum<<i|Cos(Log(i))>>({1,12})").GetLaTexString() << std::endl;
+  std::cout << Parse("4*Sin(x^2+Pi/2)+Sum<<i|Cos(Log(i)^2)>>({1,12})")->GetLaTeXString() << std::endl;
   
   /***Output******
-  \sum_{i}^{\left\{1,12\right\}}\cos{\log{i}}+4\,\sin{\left(x+\frac{PI}{2}\right)}
+  4\,\sin{\left(x^{2}+\frac{{\pi}}{2}\right)}+\sum_{i}^{\left\{1,12\right\}}\cos{\left(\log{i}\right)^{2}}
   ***************/
   ```
 
-  Rendered in markdown or LaTex:
+  Rendered in markdown or LaTeX:
   
-  ![](http://latex.codecogs.com/svg.latex?4\,\sin{\left(x^{2}+\frac{\pi}{2}\right)}+\sum_{i}^{\left\{1,12\right\}}\cos{\log{i}})
+  ![](http://latex.codecogs.com/svg.latex?4\\,\\sin{\\left(x^{2}+\\frac{{\\pi}}{2}\\right)}+\\sum_{i}^{\\left\\{1,12\\right\\}}\\cos{\\left(\\log{i}\\right)^{2}})
   
 * As an C++ library, you can enjoy its features in C++ freely.  We use lambda expression to convert  `MathObject` to `std::function` so that you can use it freely in your program.
 
