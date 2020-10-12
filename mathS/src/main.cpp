@@ -16,6 +16,7 @@ int main() {
     Assembler assembler;
    
     // Compute测试
+    /*
     while (true) {
         std::cin >> str;
         auto obj = Parse(str);
@@ -44,8 +45,11 @@ int main() {
             std::cout << "No" << std::endl;
     }
               
+    */
+    
     // 计算器程序；测试LBAssembler
     while (true) {
+        std::cout << "Input expression:  ";
         std::cin >> str;
         auto mobj = Parse(str);
 
@@ -55,11 +59,11 @@ int main() {
             continue;
         }
         // 计算器程序不需要变量参数，空的参数表
-        std::vector<std::string> params = {"x"};
+        std::vector<std::string> params = {"LR"};
         // 组装
         auto f = assembler.Assemble(mobj, params);
         // 输出结果
-        std::cout << "Answer = " << f({})->GetString() << std::endl;
+        std::cout << " = " << f({New<NMath::NAtom>(13.14)})->GetString() << std::endl;
     }
     return 0;
 }

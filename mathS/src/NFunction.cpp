@@ -1,5 +1,7 @@
 #include<NFunction.h>
 #include<ExtendedCMath.h>
+#include <iostream>
+#include <ctime>
 
 using namespace mathS;
 using namespace mathS::NMath;
@@ -16,6 +18,91 @@ NFunction mathS::NMath::NFunctionAtom(const NValueType v)
 	return [v](const NParamsList&) {
 		return Dynamic_cast<NMathObject, NAtom>(New<NAtom>(v));
 	};
+}
+
+Ptr<NMathObject> mathS::NMath::Love(const NParamsList& params)
+{
+	if (params.size() == 1 && params[0]->IsAtom()) {
+		if (params[0]->GetValue() == 13.14) {
+			std::string str1 = "\
+\n\
+                ]]`   ,]`                                                                          \n\
+               =@/   .@@*                                                                          \n\
+              .@@*   /@^  /@@@@@*   @@@@@@@^  =@@@@@@@* =@@    /@^                                 \n\
+              /@@@@@@@/       /@^  =@@.  =@@ .@@^   @@^ =@@  .@@`                                  \n\
+             =@/   .@@. /@@@@@@/  ,@@.   /@^ /@^   ,@@  ,@@ ,@@.                                   \n\
+            .@@.   /@^ @@*  ,@@*  @@^  ,/@^ =@@.  ]@@.  .@@=@/                                     \n\
+            /@^   =@/  \@@@/\@@@.=@/\@@@[  .@@[@@@/`     @@@`                                      \n\
+                                ,@@.       /@^         ,/@/                                        \n\
+                                @@^       =@@       /@@/`                                          \n\
+                                                                                                   \n";
+			std::string str2 ="\
+                              /@@                         ,]]             .]].                     \n\
+               .@@@@@@@^      [[.               .@@`      @@`             /@^                      \n\
+               /@^   @@`  /@@@@^   .@@@^]@@@`.@@@@@@@@/  /@\/@@@`   ,/@@@/@@  .@@@@\`   @@^    @@` \n\
+              =@@@@@/[      =@@     .@@/` =@^  =@/      =@@`  @@^ ,@@`  =@@*      ,@@   @@^  ,@@`  \n\
+             .@@.   \@^    .@@`     /@^       .@@*     .@@`  ,@@ ,@@*   /@^  ]@@@@@@^   @@^ =@/    \n\
+             /@^   ,@@`    /@^     =@@        /@^      /@^   @@` =@^   =@/ ,@/   =@/    =@^/@^     \n\
+            =@@@@@@@/  @@@@@@@@/,@@@@@@^      \@@@@@` =@@   =@^  ,@@@@/@@* =@@@@@@@@/   =@@@`      \n\
+                                                                                        /@/        \n\
+                                                                                   .@@@@[   \n";
+			std::string str3 = "\
+                                     =O\\                                  \n\
+                                    =O \\                                 \n\
+                                   ,O   =O                                \n\
+                                   =o ***\\^                               \n\
+                                    \\***//                               \n\
+                                     /OOO^                                \n\
+                                    =OOOOO^                               \n\
+                                    =\\,**O^                               \n\
+                                    =/=OOO^                               \n\
+                                    =/=OOO^                               \n\
+                                  ]]/\\=OOO\]                              \n\
+                           ,/OO[[  ,/^=OOO^**[[OO\\`                       \n\
+                         /O`*]@@@@@@O^=OOO^@@@@@@\\/O\\                     \n\
+                       =O`=@@@@@@@@@@O/OOO`@@@@@@@@@@O`                   \n\
+                       O`/@@@@@@@@@@@@]]]]@@@@@@@@@@@@O                   \n\
+                       O=@OO@@@@@@@@@@@@@@@@@@@@@@@@O@O                   \n\
+                       =O\O@@OOO@@@@@@@@@@@@@@@OOO@@OO                    \n\
+                       =O=OOOOOO@@@@@@@@@@@@@@@@OOOO\\O                    \n\
+                       =OOO@@@@/\\OOoOO@@OOOOOO/`,]]]OO                    \n\
+                      ]OO=/OOO@@@@@@@\\`  ]@\\]]/@OOO` OO\\                  \n\
+                   ,O/ ,O/@@@],[oOOOOoOOOOoOOo[` ,/@/O \/O^               \n\
+                  // /@@@O/@@@@@@@@@@]]]]]/@@@@@@@@OO*/@@@OO              \n\
+                 //,@@@@@@\\[Oo/@@@@@@@@@@@@@@@@\\oO[ ]@@@@@@@O             \n\
+                 O*@@@@@@@@@@@]`[[\\OOOOOOOO/[[  ]@@@@@@@@@@@O^            \n\
+                =O=@@@O@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O@@O^            \n\
+                 \\OOO@@@OO@@@@@@@@@@@@@@@@@@@@@@@@@@@OO@@@@O/             \n\
+                  O^@O@@@@@@@@OOOO@@@@@@@@@@@OOOOO@@@@@@@O^O^             \n\
+                  O^@@/OOOOO@@@@@@@@@@@@@@@@@@@@@@@@OO@@O/,O^             \n\
+                  OO/@@@@@@@/OOOOOOO@@@@@@@O@@@@@O/` ]]  /OO^             \n\
+                  O^/OO@@@@@@@\\]]]]]/\\OOO/`,][[[`*/@@@@@O/ O^             \n\
+                  O^@@/\\OOO@@@@@@@@@@@@OO@@@@@@@@@@OOOO` /@/^             \n\
+                  \\^@@@@@\\][\\OOOOOOOOOOOOOOOOOOOO/[* ]@@@@@O              \n\
+                   O/@@@@@@@@@@@\\]]]]      ]]]]@@@@@@@@@@/O`              \n\
+                    ,O/@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@O[                \n\
+                       [Oo@@@@@@@@@@@@@@@@@@@@@@@@@\\O[                   \n\
+                            [[OOo/OOO@@@@OOOo/OO[[                        \n\
+";
+			clock_t start = clock();    //定义clock_t类型变量start，并赋值为当前系统的时间
+			while (clock() - start < 1000);  // 如果当前时间减去上一刻的系统时间小于延时的系统时间，则执行循环等待，否
+			std::cout << str1 << std::endl;
+			start = clock();    //定义clock_t类型变量start，并赋值为当前系统的时间
+			while (clock() - start < 1000);  // 如果当前时间减去上一刻的系统时间小于延时的系统时间，则执行循环等待，否
+			std::cout << str2 << std::endl;
+			while (clock() - start < 3000);
+			std::cout << str3 << std::endl;
+			while (clock() - start < 3000);
+			return New<NMathError>("");
+		}
+		else {
+			return New<NMathError>("No. ");
+		}
+		
+	}
+	else {
+		return New<NMathError>("Love: Must take 1 unique argument.");
+	}
 }
 
 

@@ -16,7 +16,7 @@ namespace mathS
 		// NFunction的Atom类型。直接返回值 v 的函数。
 		NFunction NFunctionAtom(const NValueType v);
 		
-		
+		Ptr<NMathObject> Love(const NParamsList& params);
 		// Declare a shape wise NMathFunction with name o f FUNCNAME
 
 #define DECLARE_NMATHUNC(FUNCNAME) Ptr<NMathObject> FUNCNAME(const NParamsList& params)

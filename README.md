@@ -29,7 +29,7 @@ We start from an imitation of Mathematica. We try to make it more connected to C
   std::cout << Parse("4*Sin(x^2+PI/2)+Sum<<i|Cos(Log(i))>>({1,12})").GetLaTexString() << std::endl;
   
   /***Output******
-  \sum_{i}^{\left\{1,12\right\}}\cos{\log{i}}+4\,\sin{\left(x+\frac{PI}{2}\right)}
+  4\,\sin{\left(x^{2}+\frac{\pi}{2}\right)}+\sum_{i}^{\left\{1,12\right\}}\cos{\log{i}}
   ***************/
   ```
 

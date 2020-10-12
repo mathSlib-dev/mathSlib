@@ -15,6 +15,9 @@ void mathS::Assembler::InitializeSTDLIB()
 	function_table["ATan"] = ATan;
 	function_table["Floor"] = Floor;
 
+	function_table["Love"] = Love;
+	function_table["love"] = Love;
+
 	constant_table["PI"] = NFunctionAtom(3.141592653589793);
 	constant_table["E"] = NFunctionAtom(2.7182818284590452);
 
