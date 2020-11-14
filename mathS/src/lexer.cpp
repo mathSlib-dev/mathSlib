@@ -16,7 +16,7 @@ void mathS::Lexer::get(mathS::Token& token) {
     switch (token.type){
     case Token::OPERATOR:
         if ((c == '=' || c == '<' || c == '>') && index < content.length()) {
-            if (content[index] == '=' || content[index] == c)
+            if (/*content[index] == '=' || */content[index] == c)
                 token.text += content[index++];
         }
         if (c == '-' && index < content.length()) {
@@ -28,7 +28,7 @@ void mathS::Lexer::get(mathS::Token& token) {
         while (index < content.length()) {
             if (checkType(content[index]) != Token::NUMORSYMB) break;
             token.text += content[index++];
-        } 
+        }
         break;
     case Token::STRING:
         while (index < content.length()) {
