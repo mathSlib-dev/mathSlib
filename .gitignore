@@ -356,3 +356,7 @@ MigrationBackup/
 *.o
 *.bin
 *.out
+
+/CMakeLists.txt
+/cmake-build-debug/
+/.idea

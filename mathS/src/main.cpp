@@ -60,6 +60,7 @@ int main() {
         auto f = assembler.Assemble(mobj, params);
         // 输出结果
         std::cout << "Answer = " << f({})->GetString() << std::endl;
+        std::cout << "Latex = " << mobj->GetLaTeXString() << std::endl;
     }
     return 0;
 }

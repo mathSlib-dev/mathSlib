@@ -445,20 +445,33 @@ std::string mathS::FunctionalOperator::GetString() const
 std::string mathS::FunctionalOperator::GetLaTeXString() const
 {
 	std::string ret;
-	if (function->GetString() == "Sum"){
-		for (int i = 0; i < variables.size(); i++) {
-			ret += "\\sum_{" + variables[i]->GetLaTeXString() + "}" +
-				"^{" + parameter[i]->GetLaTeXString() + "}";
-		}
-		if (fparameter.size() == 1)
-			if (fparameter[0]->Level() <= MathObject::LEVEL_POWER)
-				ret += fparameter[0]->GetLaTeXString();
-			else
-				ret += "\\left(" + fparameter[0]->GetLaTeXString() + "\\right)";
-		else
-			ret += "\\left\\{" + ListGetLaTeXString(fparameter) + "\\right\\}";
-		return ret;
-	}
+    if (function->GetString() == "Sum"){
+        for (int i = 0; i < variables.size(); i++) {
+            ret += "\\sum_{" + variables[i]->GetLaTeXString() + "}" +
+                   "^{" + parameter[i]->GetLaTeXString() + "}";
+        }
+        if (fparameter.size() == 1)
+            if (fparameter[0]->Level() <= MathObject::LEVEL_POWER)
+                ret += fparameter[0]->GetLaTeXString();
+            else
+                ret += "\\left(" + fparameter[0]->GetLaTeXString() + "\\right)";
+        else
+            ret += "\\left\\{" + ListGetLaTeXString(fparameter) + "\\right\\}";
+        return ret;
+    } else if (function->GetString() == "Product"){
+        for (int i = 0; i < variables.size(); i++) {
+            ret += "\\prod_{" + variables[i]->GetLaTeXString() + "}" +
+                   "^{" + parameter[i]->GetLaTeXString() + "}";
+        }
+        if (fparameter.size() == 1)
+            if (fparameter[0]->Level() <= MathObject::LEVEL_POWER)
+                ret += fparameter[0]->GetLaTeXString();
+            else
+                ret += "\\left(" + fparameter[0]->GetLaTeXString() + "\\right)";
+        else
+            ret += "\\left\\{" + ListGetLaTeXString(fparameter) + "\\right\\}";
+        return ret;
+    }
 
 	return ret;
 }
