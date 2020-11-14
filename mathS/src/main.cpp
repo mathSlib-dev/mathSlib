@@ -15,7 +15,7 @@ int main() {
     std::string str;
     Assembler assembler;
    
-    // Compute测试
+    /*// Compute测试
     while (true) {
         std::cin >> str;
         auto obj = Parse(str);
@@ -42,7 +42,7 @@ int main() {
             std::cout << rst->GetString() << std::endl;
         else
             std::cout << "No" << std::endl;
-    }
+    }*/
               
     // 计算器程序；测试LBAssembler
     while (true) {

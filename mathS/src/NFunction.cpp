@@ -20,7 +20,7 @@ NFunction mathS::NMath::NFunctionAtom(const NValueType v)
 
 
 
-// Define a shape wise NMathFunction with name o f FUNCNAME, based on operator OP
+// Define a shape wise NMathFunction with name of FUNCNAME, based on operator OP
 #define DEFINE_SHAPE_WISE_NMATHFUNC_OP(FUNCNAME, OP, FNAMESTRING) \
 		Ptr<NMathObject> mathS::NMath::FUNCNAME(const NParamsList& params){\
 			if (params.size() != 2)\
