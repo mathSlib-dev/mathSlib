@@ -12,5 +12,6 @@ namespace mathS {
 		
 		Ptr<NMathObject> Sum(NFuncParamsList f, NParamsList i);
 		Ptr<NMathObject> Product(NFuncParamsList f, NParamsList i);
+		Ptr<NMathObject> NDerivative(NFuncParamsList f, NParamsList i);
 	}
 }

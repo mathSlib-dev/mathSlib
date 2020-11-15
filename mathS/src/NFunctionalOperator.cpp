@@ -187,3 +187,20 @@ Ptr<NMathObject> mathS::NMath::Sum(NFuncParamsList f, NParamsList i)
 	}
     return ret;
 }
+
+Ptr<NMathObject> mathS::NMath::NDerivative(NFuncParamsList f, NParamsList i) {
+    if (f.size() != 1) return New<NMathError>("NMath::NDerivative: Expected 1 function");
+    if (i.size() != 1) return New<NMathError>("NMath::NDerivative: Expected 1 variable");
+    if (i[0]->GetType() != NMathObject::LIST) return New<NMathError>("NMath::NDerivative: More than 1 argument is not supported yet.");
+    auto param = Dynamic_cast<NList, NMathObject>(i[0]);// {x, [∆x]}
+    double x, delta_x = 0.0001f;
+    if (param->components.size() == 1) x = param->components[0]->GetValue();
+    else if (param->components.size() == 2) {
+        x = param->components[0]->GetValue();
+        delta_x = param->components[1]->GetValue();
+    } else return New<NMathError>("NMath::NDerivative: Please follow {x, [∆x]}");
+    NParamsList delta_f_param, f_param;
+    delta_f_param.push_back(New<NAtom>(x + delta_x));
+    f_param.push_back(New<NAtom>(x));
+    return Divide({ Subtract({ f[0](delta_f_param), f[0](f_param) }), New<NAtom>(delta_x) });
+}

@@ -471,8 +471,14 @@ std::string mathS::FunctionalOperator::GetLaTeXString() const
         else
             ret += "\\left\\{" + ListGetLaTeXString(fparameter) + "\\right\\}";
         return ret;
+    } else if (function->GetString() == "NDerivative"){
+        ret += R"(\frac{\mathrm{d}}{\mathrm{d})" + variables[0]->GetLaTeXString() + "}";
+        if (fparameter.size() == 1)
+            ret += "\\left(" + fparameter[0]->GetLaTeXString() + "\\right)";
+        else
+            ret += "\\left\\{" + ListGetLaTeXString(fparameter) + "\\right\\}";
+        return ret;
     }
-
 	return ret;
 }
 
