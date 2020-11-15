@@ -15,14 +15,14 @@ int main() {
     std::string str;
     Assembler assembler;
    
-    /*// Compute测试
+    // Evaluate测试
     while (true) {
         getline(std::cin, str);
         auto obj = Parse(str);
-        while (Compute(obj, obj));
+        while (Evaluate(obj, obj));
         std::cout << obj->GetString() << std::endl;
     }
-    // Rule模块测试
+    /*// Rule模块测试
     while (true) {
         std::cout << "Source pattern: ";
         getline(std::cin, str);
@@ -45,7 +45,7 @@ int main() {
     }*/
               
     // 计算器程序；测试LBAssembler
-    while (true) {
+    /*while (true) {
         getline(std::cin, str);
         auto mobj = Parse(str);
 
@@ -61,6 +61,6 @@ int main() {
         // 输出结果
         std::cout << "Answer = " << f({})->GetString() << std::endl;
         std::cout << "Latex = " << mobj->GetLaTeXString() << std::endl;
-    }
+    }*/
     return 0;
 }
