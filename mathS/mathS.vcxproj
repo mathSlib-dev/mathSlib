@@ -171,6 +171,7 @@
     <ClInclude Include="include\lexer.h" />
     <ClInclude Include="include\MathFunction.h" />
     <ClInclude Include="include\MathObject.h" />
+    <ClInclude Include="include\NAlgorithm.h" />
     <ClInclude Include="include\NFunction.h" />
     <ClInclude Include="include\NFunctionalOperator.h" />
     <ClInclude Include="include\NMathObject.h" />
