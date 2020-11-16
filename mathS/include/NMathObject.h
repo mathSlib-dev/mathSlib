@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 #include <Ptr.h>
+#include <cmath>
 
 namespace mathS
 {
@@ -63,6 +64,7 @@ namespace mathS
 			bool IsError() const { return false; }
 			int Size() const { return 1; }
 			NValueType GetValue() const { return value; }
+			void SetValue(NValueType v) { value = v; }
 
 			std::string GetString() const;
 			Ptr<NMathObject> DeepCopy() const;

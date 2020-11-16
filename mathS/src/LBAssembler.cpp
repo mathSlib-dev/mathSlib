@@ -19,6 +19,8 @@ void mathS::Assembler::InitializeSTDLIB()
 	constant_table["E"] = NFunctionAtom(2.7182818284590452);
 
 	fop_table["Sum"] = Sum;
+	fop_table["Product"] = Product;
+	fop_table["NDerivative"] = NDerivative;
 }
 
 NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<std::string>& paramsstr)

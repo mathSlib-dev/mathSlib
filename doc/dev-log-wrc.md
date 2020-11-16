@@ -85,7 +85,7 @@
 * Symbolic
   * MathObject
   * Rule=Match&Replace
-  * RuleLibrary：Grad，Derivative，Simplify，Integrate，Compute...
+  * RuleLibrary：Grad，Derivative，Simplify，Integrate，Evaluate...
 * LBAssembler：MathObject->NFunction
 * Numeric
   * NMathObject
@@ -121,7 +121,7 @@
 
 * 完备的Match。现在是基于CSP的前向检验求解的，不会漏匹配情况了。
 
-* Compute初步，后面继续开发Compute可以参考。现在main.cpp中可以测试Compute。
+* Evaluate初步，后面继续开发Evaluate可以参考。现在main.cpp中可以测试Evaluate。
 
 **[任务]** 继续完善RuleLib：
 
