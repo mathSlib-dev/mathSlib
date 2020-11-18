@@ -11,6 +11,36 @@ namespace mathS {
 		// 按乘法分配律对 Item 中第一个Polynomial加法展开
 		bool ExpandDistributive(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
+		// 计算常量四则运算
+        static Rule ConstantPlus = MakeRule(Parse("#a+#b+_RES_"), [](std::map<std::string, Ptr<MathObject>>& tab, bool& flg) {
+            Ptr<MathObject> res;
+            if (tab["_RES_"]->GetType() == MathObject::ATOM && Dynamic_cast<Atom>(tab["_RES_"])->NumberValue() == 0) {
+                if (Dynamic_cast<Atom>(tab["#a"])->NumberValue() == 0 || Dynamic_cast<Atom>(tab["#b"])->NumberValue() == 0) {
+                    flg = true;
+                    res = New<Atom>(std::to_string(Dynamic_cast<Atom>(tab["#a"])->NumberValue() + Dynamic_cast<Atom>(tab["#b"])->NumberValue()));
+                    return res;
+                }
+            }
+            res = New<Polynomial>();
+            Dynamic_cast<Polynomial>(res)->push_back(New<Atom>(std::to_string(Dynamic_cast<Atom>(tab["#a"])->NumberValue() + Dynamic_cast<Atom>(tab["#b"])->NumberValue())));
+            Dynamic_cast<Polynomial>(res)->push_back(tab["_RES_"]);
+            return res;
+        });
+        static Rule ConstantSubtract = MakeRule(Parse("#a-#b+_RES_"), [](std::map<std::string, Ptr<MathObject>>& tab, bool& flg) {
+            Ptr<MathObject> res;
+            if (tab["_RES_"]->GetType() == MathObject::ATOM && Dynamic_cast<Atom>(tab["_RES_"])->NumberValue() == 0) {
+                if (Dynamic_cast<Atom>(tab["#a"])->NumberValue() == 0 || Dynamic_cast<Atom>(tab["#b"])->NumberValue() == 0) {
+                    flg = true;
+                    res = New<Atom>(std::to_string(Dynamic_cast<Atom>(tab["#a"])->NumberValue() - Dynamic_cast<Atom>(tab["#b"])->NumberValue()));
+                    return res;
+                }
+            }
+            res = New<Polynomial>();
+            Dynamic_cast<Polynomial>(res)->push_back(New<Atom>(std::to_string(Dynamic_cast<Atom>(tab["#a"])->NumberValue() - Dynamic_cast<Atom>(tab["#b"])->NumberValue())));
+            Dynamic_cast<Polynomial>(res)->push_back(tab["_RES_"]);
+            return res;
+        });
+
 		// Item 同底数幂合并
 		static Rule Power_reduction_1 = MakeRule(Parse("_a/_a*_RES_"), Parse("_RES_"));
 		static Rule Power_reduction_2 = MakeRule(Parse("_a*_a*_RES_"), Parse("_a^2*_RES_"));

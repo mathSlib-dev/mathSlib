@@ -11,7 +11,7 @@ Match mathS::MakeMatch(Ptr<MathObject> pattern)
 	};
 }
 
-Rule mathS::MakeRule(Ptr<MathObject> src_pattern, Ptr<MathObject> tar_pattern)
+Rule mathS::MakeRule(const Ptr<MathObject>& src_pattern, Ptr<MathObject> tar_pattern)
 {
 	return [src_pattern, tar_pattern](Ptr<MathObject> obj, Ptr<MathObject>& rst) {
 		std::map<std::string, Ptr<MathObject>> table;
@@ -19,6 +19,19 @@ Rule mathS::MakeRule(Ptr<MathObject> src_pattern, Ptr<MathObject> tar_pattern)
 		if (!DoMatch(src_pattern, obj, table, table_list))
 			return false;
 		rst = DoReplace(tar_pattern, table);
+		return true;
+	};
+}
+Rule mathS::MakeRule(const Ptr<MathObject>& src_pattern, const std::function<Ptr<MathObject>(std::map<std::string, Ptr<MathObject>>&, bool&)>& do_replace)
+{
+	return [src_pattern, do_replace](Ptr<MathObject> obj, Ptr<MathObject>& rst) {
+		std::map<std::string, Ptr<MathObject>> table;
+		std::list<std::string> table_list;
+		if (!DoMatch(src_pattern, obj, table, table_list))
+			return false;
+		bool flag = false;
+		rst = do_replace(table, flag);
+		if (flag) return false;
 		return true;
 	};
 }

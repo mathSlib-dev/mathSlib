@@ -114,10 +114,12 @@ bool mathS::Evaluate(Ptr<Polynomial> input, Ptr<MathObject>& result) {
 	}
 	// 基本的消项、合并同类项处理
 	result = s;
+    while (RuleLib::ConstantPlus(result, result));
+    while (RuleLib::ConstantSubtract(result, result));
 	while (RuleLib::Reduce_opposite_terms(result, result));
 	//bool flag = false;
 	while (RuleLib::Combining_similar_terms(result, result));
 	//if(flag) return true;
-	while (RuleLib::Dropping_zeros(result, result));
+    while (RuleLib::Dropping_zeros(result, result));
 	return false;
 }

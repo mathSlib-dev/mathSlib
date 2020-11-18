@@ -22,7 +22,14 @@ namespace mathS {
 	/// <param name="src_pattern"></param>
 	/// <param name="tar_pattern"></param>
 	/// <returns></returns>
-	Rule MakeRule(Ptr<MathObject> src_pattern, Ptr<MathObject> tar_pattern);
+	Rule MakeRule(const Ptr<MathObject>& src_pattern, Ptr<MathObject> tar_pattern);
+	/// <summary>
+	/// 对于给定的source pattern, target function，生成一个匹配-替换规则
+	/// </summary>
+	/// <param name="src_pattern"></param>
+	/// <param name="do_replace"></param>
+	/// <returns></returns>
+	Rule MakeRule(const Ptr<MathObject>& src_pattern, const std::function<Ptr<MathObject>(std::map<std::string, Ptr<MathObject>>&, bool&)>&);// 这里回调的bool参数是用来应答是否拒绝应用此规则的flag，若为true则为拒绝，将不再调用
 
 	/// <summary>
 	/// 匹配。对给定的pattern和obj的形式，并返回匹配表
