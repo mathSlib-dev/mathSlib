@@ -113,5 +113,8 @@
     <ClInclude Include="include\RuleLib.h">
       <Filter>头文件\Symbolic</Filter>
     </ClInclude>
+    <ClInclude Include="include\NAlgorithm.h">
+      <Filter>头文件\Numeric</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
