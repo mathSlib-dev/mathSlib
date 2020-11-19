@@ -52,7 +52,7 @@ namespace mathS {
 		static Rule Drop_ones = MakeRule(Parse("1*_RES_"), Parse("_RES_"));
 
 		// 常数项乘法计算
-		bool ConstantMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst);
+//		bool ConstantMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 		// 常数项分子分母约分
 		bool ConstantFractionReduction(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
