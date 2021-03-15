@@ -128,7 +128,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		// 分别比较子表达式
 		if (vec_pattern->components.size() != vec_obj->components.size())
 			return false;
-		for(int i = 0; i<vec_pattern->components.size();i++)
+		for(ptrdiff_t i = 0; i<vec_pattern->components.size();i++)
 			if (!DoMatch(vec_pattern->components[i], vec_obj->components[i], table, table_list)) return false;
 		break;
 	}
@@ -143,7 +143,7 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		if (!DoMatch(func_pattern->function, func_obj->function, table, table_list))
 			return false;
-		for (int i = 0; i < func_pattern->parameter.size(); i++) {
+		for (ptrdiff_t i = 0; i < func_pattern->parameter.size(); i++) {
 			if (!DoMatch(func_pattern->parameter[i], func_obj->parameter[i], table, table_list))
 				return false;
 		}
@@ -158,11 +158,11 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			return false;
 		if (!DoMatch(fop_pattern->function, fop_obj->function, table, table_list)) 
 			return false;
-		for (int i = 0; i < fop_pattern->variables.size(); i++) 
+		for (ptrdiff_t i = 0; i < fop_pattern->variables.size(); i++) 
 			if (!DoMatch(fop_pattern->variables[i], fop_obj->variables[i], table, table_list)) return false;
-		for (int i = 0; i < fop_pattern->fparameter.size(); i++) 
+		for (ptrdiff_t i = 0; i < fop_pattern->fparameter.size(); i++) 
 			if (!DoMatch(fop_pattern->fparameter[i], fop_obj->fparameter[i], table, table_list)) return false;
-		for (int i = 0; i < fop_pattern->parameter.size(); i++) 
+		for (ptrdiff_t i = 0; i < fop_pattern->parameter.size(); i++) 
 			if (!DoMatch(fop_pattern->parameter[i], fop_obj->parameter[i], table, table_list)) return false;
 		break;
 	}
@@ -202,17 +202,17 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			}
 		}
 		// 要匹配 pattern 中项的个数。没有残项就全部，有残项，不匹配残项。
-		int matchsize = with_residual ? pattern_factors.size() - 1 : pattern_factors.size();
+		ptrdiff_t matchsize = with_residual ? pattern_factors.size() - 1 : pattern_factors.size();
 		if (matchsize > obj_factors.size())	// 判断长短
 			return false;
 
 		std::vector<bool> md(obj_factors.size(), false);	// 互斥约束
-		std::vector<std::list<int>> feasible; // 直接约束的可行集合
+		std::vector<std::list<ptrdiff_t>> feasible; // 直接约束的可行集合
 		feasible.resize(matchsize);
-		int table_size = table_list.size();
+		ptrdiff_t table_size = table_list.size();
 		// 先得到直接约束的可行集合
-		for (int i = 0; i < matchsize; i++) {
-			for (int j = 0; j < obj_factors.size(); j++) {
+		for (ptrdiff_t i = 0; i < matchsize; i++) {
+			for (ptrdiff_t j = 0; j < obj_factors.size(); j++) {
 				if (DoMatch(pattern_factors[i], obj_factors[j], table, table_list))
 					feasible[i].push_back(j);
 				// 恢复匹配表
@@ -225,13 +225,13 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				return false;
 		}
 		// 对互斥约束前向检验，枚举剩下的情况
-		std::vector<std::list<int>::iterator> it;
+		std::vector<std::list<ptrdiff_t>::iterator> it;
 		for (auto& jt : feasible)
 			it.push_back(jt.begin());
-		std::vector<int> table_sizes;
+		std::vector<ptrdiff_t> table_sizes;
 		table_sizes.resize(matchsize);
 		table_sizes[0] = table_list.size();
-		for (int i = 0; i < matchsize;) {
+		for (ptrdiff_t i = 0; i < matchsize;) {
 			// 恢复匹配表至 i 未匹配的状态
 			while (table_list.size() > table_sizes[i]) {
 				table.erase(table_list.back());
@@ -267,22 +267,13 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		}
 		// 处理残项
 		if (with_residual) {
-			Ptr<MathObject> factors_residual ;
-			if (matchsize == obj_factors.size()) {
-				// residual 若为空，至少给一个1
-				factors_residual = New<Atom>("1");
+			// 收集残项
+			Ptr<Item> item_res = New<Item>();
+			for (ptrdiff_t j = 0; j < obj_factors.size(); j++) {
+				if (!md[j])
+					item_res->push_back(obj_factors[j]);
 			}
-			else {
-				Ptr<Item> item_res = New<Item>();
-				for (int j = 0; j < obj_factors.size(); j++) {
-					if (!md[j])
-						item_res->push_back(obj_factors[j]);
-				}
-				if (item_res->factors.size() == 1)
-					factors_residual = item_res->factors[0];
-				else
-					factors_residual = item_res;
-			}
+			Ptr<MathObject> factors_residual = ReduceItem(item_res);
 			// 比较table中的项
 			auto itres = table.find(residual);
 			if (itres == table.end()) {
@@ -320,17 +311,17 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 			}
 		}
 		// 要匹配 pattern 中项的个数。没有残项就全部，有残项，不匹配残项。
-		int matchsize = with_residual ? pattern_items.size() - 1 : pattern_items.size();
+		ptrdiff_t matchsize = with_residual ? pattern_items.size() - 1 : pattern_items.size();
 		if (matchsize > obj_items.size())	// 判断长短
 			return false;
 
 		std::vector<bool> md(obj_items.size(), false);	// 是否已经配过
-		std::vector<std::list<int>> feasible; // 直接约束的可行集合
+		std::vector<std::list<ptrdiff_t>> feasible; // 直接约束的可行集合
 		feasible.resize(matchsize);
-		int table_size = table_list.size();
+		ptrdiff_t table_size = table_list.size();
 		// 先得到直接约束的可行集合
-		for (int i = 0; i < matchsize; i++) {
-			for (int j = 0; j < obj_items.size(); j++) {
+		for (ptrdiff_t i = 0; i < matchsize; i++) {
+			for (ptrdiff_t j = 0; j < obj_items.size(); j++) {
 				if (DoMatch(pattern_items[i], obj_items[j], table, table_list))
 					feasible[i].push_back(j);
 				// 恢复匹配表
@@ -343,13 +334,13 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 				return false;
 		}
 		// 对互斥约束前向检验，枚举剩下的情况
-		std::vector<std::list<int>::iterator> it;
+		std::vector<std::list<ptrdiff_t>::iterator> it;
 		for (auto& jt : feasible)
 			it.push_back(jt.begin());
-		std::vector<int> table_sizes;
+		std::vector<ptrdiff_t> table_sizes;
 		table_sizes.resize(matchsize);
 		table_sizes[0] = table_list.size();
-		for (int i = 0; i < matchsize;) {
+		for (ptrdiff_t i = 0; i < matchsize;) {
 			// 恢复匹配表至 i 未匹配的状态
 			while (table_list.size() > table_sizes[i]) {
 				table.erase(table_list.back());
@@ -385,22 +376,13 @@ bool mathS::DoMatch(Ptr<MathObject> pattern, Ptr<MathObject> obj, std::map<std::
 		}
 		// 处理残项
 		if (with_residual) {
-			Ptr<MathObject> items_residual;
-			if (matchsize == obj_items.size()) {
-				// items_residual若为空，则至少给一个0
-				items_residual = New<Atom>("0");
+			// 收集残项
+			Ptr<Polynomial> poly_res = New<Polynomial>();
+			for (ptrdiff_t j = 0; j < obj_items.size(); j++) {
+				if (!md[j])
+					poly_res->push_back(obj_items[j]);
 			}
-			else {
-				Ptr<Polynomial> poly_res = New<Polynomial>();
-				for (int j = 0; j < obj_items.size(); j++) {
-					if (!md[j])
-						poly_res->push_back(obj_items[j]);
-				}
-				if (poly_res->items.size() == 1)
-					items_residual = poly_res->items[0];
-				else
-					items_residual = poly_res;
-			}
+			Ptr<MathObject> items_residual = ReducePolynomial(poly_res);
 			// 比较table中的项
 			auto itres = table.find(residual);
 			if (itres == table.end()) {
@@ -463,7 +445,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		Ptr<Vector> vec_ret = New<Vector>();
 		vec_ret->components.reserve(vec_pattern->components.size());
 		// 对子表达式应用替换，返回拷贝
-		for (int i = 0; i < vec_pattern->components.size(); i++)
+		for (ptrdiff_t i = 0; i < vec_pattern->components.size(); i++)
 			vec_ret->components.push_back(DoReplace(vec_pattern->components[i], table));
 		return vec_ret;
 	}
@@ -473,7 +455,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		func_ret->function = DoReplace(func_pattern->function, table);
 		func_ret->parameter.reserve(func_pattern->parameter.size());
 		// 对子表达式应用替换，返回拷贝
-		for (int i = 0; i < func_pattern->parameter.size(); i++) 
+		for (ptrdiff_t i = 0; i < func_pattern->parameter.size(); i++) 
 			func_ret->parameter.push_back(DoReplace(func_pattern->parameter[i], table));
 		return func_ret;
 	}
@@ -485,15 +467,15 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		fop_ret->fparameter.reserve(fop_pattern->fparameter.size());
 		fop_ret->parameter.reserve(fop_pattern->parameter.size());
 		// 对子表达式应用替换，返回拷贝
-		for (int i = 0; i < fop_pattern->variables.size(); i++) {
+		for (ptrdiff_t i = 0; i < fop_pattern->variables.size(); i++) {
 			auto var = DoReplace(fop_pattern->variables[i], table);
 			if (var->GetType() != MathObject::ATOM)
 				return New<ErrorObject>("Rule: (Unexpected) Cannot replace Functional Operator variable with non-atom object. You may have defined illegal rules. ");
 			fop_ret->variables.push_back(Dynamic_cast<Atom>(var));
 		}	
-		for (int i = 0; i < fop_pattern->fparameter.size(); i++)
+		for (ptrdiff_t i = 0; i < fop_pattern->fparameter.size(); i++)
 			fop_ret->fparameter.push_back(DoReplace(fop_pattern->fparameter[i], table));
-		for (int i = 0; i < fop_pattern->parameter.size(); i++)
+		for (ptrdiff_t i = 0; i < fop_pattern->parameter.size(); i++)
 			fop_ret->parameter.push_back(DoReplace(fop_pattern->parameter[i], table));
 		return fop_ret;
 	}
@@ -510,7 +492,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		Ptr<Item> itm_ret = New<Item>();
 		itm_ret->factors.reserve(itm_pattern->factors.size());
 		// 对子表达式应用替换，返回拷贝
-		for (int i = 0; i < itm_pattern->factors.size(); i++)
+		for (ptrdiff_t i = 0; i < itm_pattern->factors.size(); i++)
 			itm_ret->push_back(DoReplace(itm_pattern->factors[i], table));
 		return itm_ret;
 	}
@@ -523,7 +505,7 @@ Ptr<MathObject> mathS::DoReplace(Ptr<MathObject> pattern, std::map<std::string, 
 		Ptr<Polynomial> poly_ret = New<Polynomial>();
 		poly_ret->items.reserve(poly_pattern->items.size());
 		// 对子表达式应用替换，返回拷贝
-		for (int i = 0; i < poly_pattern->items.size(); i++)
+		for (ptrdiff_t i = 0; i < poly_pattern->items.size(); i++)
 			poly_ret->push_back(DoReplace(poly_pattern->items[i], table));
 		return poly_ret;
 	}
@@ -565,7 +547,7 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		// 分别比较子表达式
 		if (vec_a->components.size() != vec_obj->components.size())
 			return false;
-		for (int i = 0; i < vec_a->components.size(); i++)
+		for (ptrdiff_t i = 0; i < vec_a->components.size(); i++)
 			if (!FullCompare(vec_a->components[i], vec_obj->components[i])) return false;
 		break;
 	}
@@ -580,7 +562,7 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 			return false;
 		if (!FullCompare(func_a->function, func_obj->function))
 			return false;
-		for (int i = 0; i < func_a->parameter.size(); i++) {
+		for (ptrdiff_t i = 0; i < func_a->parameter.size(); i++) {
 			if (!FullCompare(func_a->parameter[i], func_obj->parameter[i]))
 				return false;
 		}
@@ -595,11 +577,11 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 			return false;
 		if (!FullCompare(fop_a->function, fop_obj->function))
 			return false;
-		for (int i = 0; i < fop_a->variables.size(); i++)
+		for (ptrdiff_t i = 0; i < fop_a->variables.size(); i++)
 			if (!FullCompare(fop_a->variables[i], fop_obj->variables[i])) return false;
-		for (int i = 0; i < fop_a->fparameter.size(); i++)
+		for (ptrdiff_t i = 0; i < fop_a->fparameter.size(); i++)
 			if (!FullCompare(fop_a->fparameter[i], fop_obj->fparameter[i])) return false;
-		for (int i = 0; i < fop_a->parameter.size(); i++)
+		for (ptrdiff_t i = 0; i < fop_a->parameter.size(); i++)
 			if (!FullCompare(fop_a->parameter[i], fop_obj->parameter[i])) return false;
 		break;
 	}
@@ -634,9 +616,9 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		auto& b_factors = itm_b->factors;
 
 		std::vector<bool> md(b_factors.size(), false);	// 是否已经配过
-		for (int i = 0; i < a_factors.size(); i++) {
+		for (ptrdiff_t i = 0; i < a_factors.size(); i++) {
 			bool flag = false;
-			for (int j = 0; j < b_factors.size(); j++) {
+			for (ptrdiff_t j = 0; j < b_factors.size(); j++) {
 				if (md[j]) continue;	// 不匹配已经匹配过的项
 				if (FullCompare(a_factors[i], b_factors[j])) {
 					flag = true;
@@ -668,9 +650,9 @@ bool mathS::FullCompare(Ptr<MathObject> a, Ptr<MathObject> b)
 		auto& a_items = poly_a->items;
 		auto& b_items = poly_b->items;
 		std::vector<bool> md(b_items.size(), false);	// 是否已经配过
-		for (int i = 0; i < a_items.size(); i++) {
+		for (ptrdiff_t i = 0; i < a_items.size(); i++) {
 			bool flag = false;
-			for (int j = 0; j < b_items.size(); j++) {
+			for (ptrdiff_t j = 0; j < b_items.size(); j++) {
 				if (md[j]) continue;	// 不匹配已经匹配过的项
 				if (FullCompare(a_items[i], b_items[j])) {
 					flag = true;

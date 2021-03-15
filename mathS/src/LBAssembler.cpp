@@ -20,7 +20,7 @@ void mathS::Assembler::InitializeSTDLIB()
 
 	fop_table["Sum"] = Sum;
 	fop_table["Product"] = Product;
-	fop_table["NDerivative"] = NDerivative;
+	// fop_table["NDerivative"] = NDerivative;
 }
 
 NMath::NFunction mathS::Assembler::Assemble(Ptr<MathObject> expr, std::vector<std::string>& paramsstr)

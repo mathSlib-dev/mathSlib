@@ -1,4 +1,4 @@
-#include <Compute.h>
+#include <Evaluate.h>
 #include <MathParser.h>
 #include <RuleLib.h>
 
@@ -33,9 +33,10 @@ bool mathS::Evaluate(Ptr<Item> input, Ptr<MathObject>& result)
 	Ptr<Item> s = New<Item>();
 	// 先计算子表达式
 	for (auto it : input->factors) {
-		auto s1 = it->DeepCopy();
-		while (Evaluate(s1, s1));
-		s->push_back(s1);
+		bool flag = false;
+		auto s1 = it;
+		while (Evaluate(s1, s1)) flag = true;
+		s->push_back(flag ? s1 : it->DeepCopy());
 	}
 	result = Dynamic_cast<MathObject>(s);
 	// 化简优先
@@ -78,8 +79,11 @@ bool mathS::Evaluate(Ptr<Power> input, Ptr<MathObject>& result) {
 	result = New<Power>(base, exponet);
 	// 常数计算 TODO
 	// 多项式幂展开 TODO 
+	// 展开项因子
 	if (RuleLib::ExpandItemPower(result, result)) return true;
+	// 指数简化
 	if (RuleLib::Power_simplify(result, result)) return true;
+	// 向量幂次展开
 	if (RuleLib::VectorPower(result, result)) return true;
 	return false;
 }
@@ -99,7 +103,9 @@ bool mathS::Evaluate(Ptr<Opposite> input, Ptr<MathObject>& result) {
 	// 计算子表达式
 	while (Evaluate(c, c));
 	result = New<Opposite>(c);
-	// 消除成对负号
+	// 消除常量负号
+	if (RuleLib::ConstantNegative(result, result)) return true;
+	// 消除成对
 	if (RuleLib::Double_negative(result, result)) return true;
 	return false;
 }
@@ -108,18 +114,16 @@ bool mathS::Evaluate(Ptr<Polynomial> input, Ptr<MathObject>& result) {
 	Ptr<Polynomial> s = New<Polynomial>();
 	// 先计算子表达式
 	for (auto it : input->items) {
-		auto s1 = it->DeepCopy();
-		while (Evaluate(s1, s1));
-		s->push_back(s1);
+		bool flag = false;
+		auto s1 = it;
+		while (Evaluate(s1, s1)) flag = true;
+		s->push_back(flag ? s1 : it->DeepCopy());
 	}
 	// 基本的消项、合并同类项处理
-	result = s;
+	result = ReducePolynomial(s);
     while (RuleLib::ConstantPlus(result, result));
-    while (RuleLib::ConstantSubtract(result, result));
 	while (RuleLib::Reduce_opposite_terms(result, result));
-	//bool flag = false;
 	while (RuleLib::Combining_similar_terms(result, result));
-	//if(flag) return true;
-    while (RuleLib::Dropping_zeros(result, result));
+    while (RuleLib::Drop_zeros(result, result));
 	return false;
 }

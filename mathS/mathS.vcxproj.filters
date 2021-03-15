@@ -63,10 +63,10 @@
     <ClCompile Include="src\Rule.cpp">
       <Filter>源文件\Symbolic</Filter>
     </ClCompile>
-    <ClCompile Include="src\Compute.cpp">
+    <ClCompile Include="src\RuleLib.cpp">
       <Filter>源文件\Symbolic</Filter>
     </ClCompile>
-    <ClCompile Include="src\RuleLib.cpp">
+    <ClCompile Include="src\Evaluate.cpp">
       <Filter>源文件\Symbolic</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,14 +107,17 @@
     <ClInclude Include="include\MathFunction.h">
       <Filter>头文件\Symbolic</Filter>
     </ClInclude>
-    <ClInclude Include="include\Compute.h">
-      <Filter>头文件\Symbolic</Filter>
-    </ClInclude>
     <ClInclude Include="include\RuleLib.h">
       <Filter>头文件\Symbolic</Filter>
     </ClInclude>
     <ClInclude Include="include\NAlgorithm.h">
       <Filter>头文件\Numeric</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Evaluate.h">
+      <Filter>头文件\Symbolic</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ConstantEvaluate.h">
+      <Filter>头文件\Symbolic</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

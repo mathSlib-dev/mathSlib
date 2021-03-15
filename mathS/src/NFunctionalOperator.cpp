@@ -51,7 +51,7 @@ Ptr<NMathObject> mathS::NMath::Product(NFuncParamsList f, NParamsList i)
             return New<NMathError>("NMath::Sum: Please follow {START, END, [STEP]}");
         }
     }
-    double st[i.size()], ed[i.size()], sp[i.size()];
+    std::vector<double> st(i.size()), ed(i.size()), sp(i.size());
     NParamsList paramsList;
     for (int t = 0; t < i.size(); t++) {
         auto sumbound = i[t];	// {START, END, [STEP]}
@@ -143,7 +143,7 @@ Ptr<NMathObject> mathS::NMath::Sum(NFuncParamsList f, NParamsList i)
             return New<NMathError>("NMath::Sum: Please follow {START, END, [STEP]}");
         }
     }
-    double st[i.size()], ed[i.size()], sp[i.size()];
+    std::vector<double> st(i.size()), ed(i.size()), sp(i.size());
     NParamsList paramsList;
 	for (int t = 0; t < i.size(); t++) {
         auto sumbound = i[t];	// {START, END, [STEP]}

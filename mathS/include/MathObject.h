@@ -110,7 +110,8 @@ namespace mathS
 		virtual std::string GetString() const = 0;
 		virtual std::string GetLaTeXString() const = 0;
 		virtual int Level() const = 0;
-
+		virtual bool IsZero() const = 0;
+		virtual bool IsOne() const = 0;
 
 		virtual Ptr<MathObject> DeepCopy() const = 0;
 	};
@@ -154,8 +155,9 @@ namespace mathS
 		Atom(const std::string name_str) :str{ name_str } {};
 		~Atom() {}
 
-		Type GetType() const { return Type::ATOM; };
-
+		Type GetType() const { return Type::ATOM; }
+		bool IsZero() const { return AtomType()== Type::NUMBER && NumberValue() == 0.; }
+		bool IsOne() const { return AtomType() == Type::NUMBER && NumberValue() == 1.; }
 		Type AtomType() const;
 		// 返回数值. 暂时只支持double. 如果以后支持了复数，则需要修改此处.
 		double NumberValue() const;
@@ -177,6 +179,8 @@ namespace mathS
 
 		Type GetType() const { return Type::VECTOR; };
 		int Level() const { return LEVEL_VECTOR; };
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 		void push_back(Ptr<MathObject> const f);
 
 		std::string GetString() const;
@@ -196,6 +200,8 @@ namespace mathS
 
 		Type GetType() const { return Type::FUNCTION; };
 		int Level() const { return LEVEL_FUNCTION; };
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
@@ -217,6 +223,8 @@ namespace mathS
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 	};
 
 	class Locate : public MathObject
@@ -234,6 +242,8 @@ namespace mathS
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 	};
 	class Power : public MathObject
 	{
@@ -251,6 +261,8 @@ namespace mathS
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 	};
 
 	class Inverse : public MathObject
@@ -268,6 +280,8 @@ namespace mathS
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 	};
 
 	class Item : public MathObject
@@ -285,7 +299,10 @@ namespace mathS
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 	};
+	Ptr<MathObject> ReduceItem(Ptr<Item> itm);
 
 	class Opposite : public MathObject 
 	{
@@ -302,6 +319,8 @@ namespace mathS
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 	};
 	class Polynomial : public MathObject
 	{
@@ -316,10 +335,15 @@ namespace mathS
 		int Level() const { return LEVEL_POLYNOMIAL; };
 		std::string GetString() const;
 		std::string GetLaTeXString() const;
-		Ptr<MathObject> DeepCopy() const;
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 
+		Ptr<MathObject> DeepCopy() const;
 		void push_back(Ptr<MathObject> const itm);
+
 	};
+	// 将只有一项的多项式移出来；将一项没有的多项式化为 0
+	Ptr<MathObject> ReducePolynomial(Ptr<Polynomial> poly);
 
 	class Map : public MathObject
 	{
@@ -334,6 +358,8 @@ namespace mathS
 
 		Type GetType() const { return Type::MAP; };
 		int Level() const { return LEVEL_MAP; };
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 		std::string GetString() const ;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
@@ -353,6 +379,8 @@ namespace mathS
 
 		Type GetType() const { return Type::COMPARE; };
 		int Level() const { return LEVEL_COMPARE; };
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 		std::string GetString() const ;
 		std::string GetLaTeXString() const;
 		Ptr<MathObject> DeepCopy() const;
@@ -369,6 +397,8 @@ namespace mathS
 
 		Type GetType() const { return Type::ERROR; };
 		int Level() const { return LEVEL_ERROR; };
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 		std::string GetString() const { return info; };
 		std::string GetLaTeXString() const { return info; };
 		Ptr<MathObject> DeepCopy() const;
@@ -384,6 +414,8 @@ namespace mathS
 
 		Type GetType() const { return Type::EMPTY; };
 		int Level() const { return LEVEL_EMPTY; };
+		bool IsZero() const { return false; }
+		bool IsOne() const { return false; }
 		std::string GetString() const { return std::string(); };
 		std::string GetLaTeXString() const { return std::string(); };
 		Ptr<MathObject> DeepCopy() const;

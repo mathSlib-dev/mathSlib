@@ -5,7 +5,7 @@
 #include <MathParser.h>
 #include <LBAssembler.h>
 #include <Rule.h>
-#include <Compute.h>
+#include <Evaluate.h>
 
 using namespace mathS;
 
@@ -17,11 +17,12 @@ int main() {
    
     // Evaluate测试
     while (true) {
+        std::cout << ">>> ";
         getline(std::cin, str);
         auto obj = Parse(str);
         while (Evaluate(obj, obj));
         std::cout << obj->GetString() << std::endl;
-    }
+    } 
     /*// Rule模块测试
     while (true) {
         std::cout << "Source pattern: ";
@@ -45,7 +46,8 @@ int main() {
     }*/
               
     // 计算器程序；测试LBAssembler
-    /*while (true) {
+    while (true) {
+        std::cout << ">>> ";
         getline(std::cin, str);
         auto mobj = Parse(str);
 
@@ -59,8 +61,8 @@ int main() {
         // 组装
         auto f = assembler.Assemble(mobj, params);
         // 输出结果
-        std::cout << "Answer = " << f({})->GetString() << std::endl;
-        std::cout << "Latex = " << mobj->GetLaTeXString() << std::endl;
-    }*/
+        std::cout << f({})->GetString() << std::endl;
+        // std::cout << "Latex = " << mobj->GetLaTeXString() << std::endl;
+    }
     return 0;
 }

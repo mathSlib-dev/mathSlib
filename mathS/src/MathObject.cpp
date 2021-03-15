@@ -264,16 +264,18 @@ std::string mathS::Polynomial::GetString() const
 {
 	std::string ret;
 
-	for (int i = 0; i < items.size(); i++)
-	{
-		if (items[i]->Level() < LEVEL_POLYNOMIAL)
-		{
-			if (items[i]->GetType() != Type::OPPOSITE && i != 0)
+	for (int i = 0; i < items.size(); i++) {
+		if (items[i]->Level() < LEVEL_POLYNOMIAL) {
+			auto t_type = items[i]->GetType();
+			if (t_type != Type::OPPOSITE && i != 0 && 
+				!(t_type == Type::ATOM 
+					&& Dynamic_cast<Atom, MathObject>(items[i])->AtomType() == Type::NUMBER 
+					&& Dynamic_cast<Atom, MathObject>(items[i])->NumberValue() < 0.)
+				)
 				ret += "+";
 			ret += items[i]->GetString();
 		}
-		else
-		{
+		else {
 			ret += "+(" + items[i]->GetString() + ")";
 		}
 	}
@@ -307,6 +309,26 @@ mathS::Ptr<MathObject> mathS::Polynomial::DeepCopy() const
 	for (auto it : items)
 		ret->items.push_back(it->DeepCopy());
 	return ret;
+}
+
+Ptr<MathObject> mathS::ReduceItem(Ptr<Item> itm)
+{
+	if (itm->factors.size() > 1)
+		return itm;
+	if (itm->factors.size() == 0)
+		return New<Atom>("1");
+	if (itm->factors.size() == 1)
+		return itm->factors[0];
+}
+
+Ptr<MathObject> mathS::ReducePolynomial(Ptr<Polynomial> poly)
+{
+	if (poly->items.size() > 1)
+		return poly;
+	if (poly->items.size() == 0)
+		return New<Atom>("0");
+	if (poly->items.size() == 1)
+		return poly->items[0];
 }
 
 void mathS::Polynomial::push_back(Ptr<MathObject> const f)
@@ -375,7 +397,7 @@ mathS::Ptr<MathObject> mathS::Compare::DeepCopy() const
 
 mathS::MathObject::Type mathS::Atom::AtomType() const
 {
-	if ('0' <= str[0] && str[0] <= '9')
+	if (str[0] == '-' ||('0' <= str[0] && str[0] <= '9'))
 		return Type::NUMBER;
 	else if (('a' <= str[0] && str[0] <= 'z') || ('A' <= str[0] && str[0] <= 'Z') || str[0] == '_' || str[0] == '$')
 		return Type::VARIABLE;
