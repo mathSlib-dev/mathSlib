@@ -1,7 +1,7 @@
 #pragma once
 
-#include <NMathObject.h>
-#include <NFunction.h>
+#include "NMathObject.h"
+#include "NFunction.h"
 
 namespace mathS {
 

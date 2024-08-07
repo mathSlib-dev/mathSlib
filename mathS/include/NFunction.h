@@ -1,5 +1,5 @@
 #pragma once
-#include <NMathObject.h>
+#include "NMathObject.h"
 /*
 	NFunction.h 中，定义了常用的NFunction. 称作标准NFunction库.
 */

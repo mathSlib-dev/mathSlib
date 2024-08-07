@@ -1,11 +1,11 @@
 #pragma once
 
-#include <MathObject.h>
+#include "MathObject.h"
 
 namespace mathS {
 	
 	namespace ConstantEvaluate {
-		// ³£Á¿¼Ó·¨¡£µ÷ÓÃÇ°Òª¼ì²éÊÇ·ñÎªÊý×Ö Atom
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Ó·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°Òªï¿½ï¿½ï¿½ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½ï¿½ Atom
 		Ptr<MathObject> Plus(Ptr<Atom> a, Ptr<Atom> b) {
 			return New<Atom>(std::to_string(a->NumberValue() + b->NumberValue()));
 		}

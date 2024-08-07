@@ -1,5 +1,5 @@
 #pragma once
-#include <NFunction.h>
+#include "NFunction.h"
 
 namespace mathS {
 	namespace NMath {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Rule.h>
+#include "Rule.h"
 
 /*
 	使用某些策略运用一系列Rule并返回一个MathObject，我们把这称为Evaluate。Evaluate的参数和返回类型与Rule相同，但作用不一样

@@ -1,8 +1,8 @@
 #pragma once
-#include <MathObject.h>
+#include "MathObject.h"
 #include <map>
 #include <list>
-#include <MathParser.h>
+#include "MathParser.h"
 
 namespace mathS {
 	// Rule的第一个参数是输入obj，第二个引用是返回值。Rule引用不会改变输入obj指向的内容，引用返回的涉及到obj中对应内容都是拷贝。

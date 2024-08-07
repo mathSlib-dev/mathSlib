@@ -1,8 +1,8 @@
 #pragma once
 
-#include <MathObject.h>
+#include "MathObject.h"
 #include <string>
-#include <lexer.h>
+#include "lexer.h"
 
 /*
 	In this file, we introduce methods that parse text input of expressions 

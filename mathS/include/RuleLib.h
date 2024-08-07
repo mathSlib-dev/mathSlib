@@ -1,49 +1,49 @@
 #pragma once
 
-#include <Rule.h>
+#include "Rule.h"
 
 namespace mathS {
-	// ¹æÔò¿â£¬ÔÚÕâÀï¿ÉÒÔÐ´°üÀ¨Ö±½ÓÉú³ÉµÄ¹æÔò£¬»òÊÇ±ØÐëÒª³ÌÐò½øÐÐµÄ¹æÔò
+	// ï¿½ï¿½ï¿½ï¿½â£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ÉµÄ¹ï¿½ï¿½ò£¬»ï¿½ï¿½Ç±ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÄ¹ï¿½ï¿½ï¿½
 	namespace RuleLib {
 
-		// ¶Ô Item ÖÐµÄµÚÒ»¸öÏòÁ¿³Ë·¨Õ¹¿ª
+		// ï¿½ï¿½ Item ï¿½ÐµÄµï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½Õ¹ï¿½ï¿½
 		bool VectorMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst);
-		// °´³Ë·¨·ÖÅäÂÉ¶Ô Item ÖÐµÚÒ»¸öPolynomial¼Ó·¨Õ¹¿ª
+		// ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É¶ï¿½ Item ï¿½Ðµï¿½Ò»ï¿½ï¿½Polynomialï¿½Ó·ï¿½Õ¹ï¿½ï¿½
 		bool ExpandDistributive(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
-		// ³£Á¿»¯¼ò
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		bool ConstantPlus(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 		bool ConstantNegative(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 		bool ConstantMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
-		// Item Í¬µ×ÊýÃÝºÏ²¢
+		// Item Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ÝºÏ²ï¿½
 		static Rule Power_reduction_1 = MakeRule(Parse("_a/_a*_RES_"), Parse("_RES_"));
 		static Rule Power_reduction_2 = MakeRule(Parse("_a*_a*_RES_"), Parse("_a^2*_RES_"));
 		static Rule Power_reduction_3 = MakeRule(Parse("_a^_e*_a*_RES_"), Parse("_RES_*_a^(_e+1)"));
 		static Rule Power_reduction_4 = MakeRule(Parse("_a^_e/_a^_*_RES_"), Parse("_RES_*_a^(_e-1)"));
 		static Rule Power_reduction_5 = MakeRule(Parse("_a^_e1*_a^_e2*_RES_"), Parse("_RES_*_a^(_e1+_e2)"));
 		static Rule Power_reduction_6 = MakeRule(Parse("_a^_e1/_a^_e2*_RES_"), Parse("_RES_*_a^(_e1-_e2)"));
-		// È¥µô 1
+		// È¥ï¿½ï¿½ 1
 		bool Drop_ones(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
-		// ³£ÊýÏî³Ë·¨¼ÆËã
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë·ï¿½ï¿½ï¿½ï¿½ï¿½
 //		bool ConstantMultiply(Ptr<MathObject> obj, Ptr<MathObject>& rst);
-		// ³£ÊýÏî·Ö×Ó·ÖÄ¸Ô¼·Ö
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó·ï¿½Ä¸Ô¼ï¿½ï¿½
 		bool ConstantFractionReduction(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
 		static Rule Power_simplify = MakeRule(Parse("(_a^_e1)^_e2"), Parse("_a^(_e1*_e2)"));
 		
 		// (a*b)^e=a^e*b^e
 		bool ExpandItemPower(Ptr<MathObject> obj, Ptr<MathObject>& rst);
-		// {a,b}^{c,d}»ò{a,b}^c»òa^{b,c}
+		// {a,b}^{c,d}ï¿½ï¿½{a,b}^cï¿½ï¿½a^{b,c}
 		bool VectorPower(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 
-		// ¶àÏîÊ½»¯¼ò
+		// ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½
 		static Rule Reduce_opposite_terms = MakeRule(Parse("_a-_a+_RES_"), Parse("_RES_"));
 		static Rule Combining_similar_terms = MakeRule(Parse("#a*_res_+#b*_res_+_RES_"), Parse("(#a+#b)*_res_+_RES_"));
 		bool Drop_zeros(Ptr<MathObject> obj, Ptr<MathObject>& rst);
 		
-		// ¸ººÅ»¯¼ò
+		// ï¿½ï¿½ï¿½Å»ï¿½ï¿½ï¿½
 		static Rule Double_negative = MakeRule(Parse("-(-_a)"), Parse("_a"));
 
 		static Rule Double_inverse_1 = MakeRule(Parse("/(/_a)"), Parse("_a"));
